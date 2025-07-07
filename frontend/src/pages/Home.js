@@ -62,7 +62,7 @@ const Home = () => {
     // —— FORM DATA HAZIR ——
   
     try {
-      const response = await fetch('https://api.akillimacanalizi.com/start-analysis', {
+      const response = await fetch('https://akillimacanalizi.com/start-analysis', {
         method: 'POST',
         body: formDataToSend
       });
@@ -73,7 +73,7 @@ const Home = () => {
         setAnalysisMessage('🔄 Analiz devam ediyor...');
   
         const interval = setInterval(async () => {
-          const statusResponse = await fetch('https://api.akillimacanalizi.com/analysis-status');
+          const statusResponse = await fetch('https://akillimacanalizi.com/analysis-status');
           const statusResult = await statusResponse.json();
   
           if (statusResult.status === 'completed') {
@@ -106,7 +106,7 @@ const Home = () => {
     setPredicting(true);
     setPrediction('');
     try {
-      const res = await fetch('https://api.akillimacanalizi.com/predict-match', {
+      const res = await fetch('https://akillimacanalizi.com/predict-match', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({

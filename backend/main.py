@@ -35,18 +35,12 @@ from team_info import (
 app = FastAPI(title="Futbol Analiz API")  # type: ignore
 
 # CORS ayarları
-origins = [
-    "https://akillimacanalizi.com",
-    "https://www.akillimacanalizi.com",
-    "http://localhost:3000",  # GKarenin geliştirme ortamı
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # Herkese izin ver (test için)
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Global değişkenler

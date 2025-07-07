@@ -42,10 +42,10 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=origins,     # Net domain listesi
+    allow_credentials=True,    # Gerekiyorsa True
+    allow_methods=["*"],       # Tüm HTTP methodlar
+    allow_headers=["*"],       # Tüm headerlar
 )
 
 # Global değişkenler

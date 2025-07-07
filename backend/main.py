@@ -34,6 +34,14 @@ from team_info import (
 
 app = FastAPI(title="Futbol Analiz API")  # type: ignore
 
+# CORS ayarları
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Global değişkenler
 team_a_color = None
@@ -43,7 +51,7 @@ analysis_running = False
 analysis_thread: Optional[threading.Thread] = None
 analysis_results: Optional[Dict[str, Any]] = None
 
-    
+# Renk çıkarım fonksiyonları
 
 def extract_jersey_hsv(path: str) -> Optional[np.ndarray]:
     img = cv2.imread(path)
@@ -170,20 +178,10 @@ def main_analysis(
     if youtube_url:
         print("🎥 Video analizi başlatılıyor...")
         try:
-            # Önce MP4 almayı dene, olmazsa en iyi formata geç
-            ydl_opts = {
-                'quiet': True,
-                'format': 'bestvideo[ext=mp4]+bestaudio/best'
-            }
+            ydl_opts = {'quiet': True, 'format': 'bestvideo[ext=mp4][vcodec^=avc1][height<=720][height>=480]'}
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(youtube_url, download=False) or {}
-            # bazen 'url' yerine 'formats' listesinde olur
             stream_url = info.get('url')
-            if not stream_url and 'formats' in info:
-                # en yüksek kalite video+audio formatını al
-                fmt = info['formats'][-1]
-                stream_url = fmt.get('url')
-
             if stream_url:
                 cap = cv2.VideoCapture(stream_url)
                 frame_count = 0
@@ -195,8 +193,6 @@ def main_analysis(
                     frame_count += 1
                 cap.release()
                 print(f"✅ {frame_count} frame analiz edildi")
-            else:
-                print("⚠️ Video stream URL bulunamadı, atlanıyor.")
         except Exception as e:
             print(f"⚠️ Video analizi hatası: {e}")
 
@@ -272,16 +268,10 @@ async def predict_match_endpoint(team_a: str = Form(...), team_b: str = Form(...
     prediction = predict_match(team_a, team_b)
     return {"prediction": prediction}
 
-
 @app.get("/team-info/{team_name}")
 async def team_info_endpoint(team_name: str) -> Any:
     maclar, w, d, l = get_team_last_5_matches_with_tactics(team_name)
     return {"team_name": team_name, "last_5": maclar, "stats": {"w": w, "d": d, "l": l}}
-
-@app.get("/match-history/{team_a}/{team_b}")
-async def match_history_endpoint(team_a: str, team_b: str) -> Any:
-    matches = get_last_matches(team_a, team_b)
-    return {"matches": matches}
 
 if __name__ == "__main__":
     import uvicorn  # type: ignore

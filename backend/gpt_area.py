@@ -216,19 +216,24 @@ def hazirla_prompt_string(
     return prompt
 
 # --- LLM'ye sorgu gönderme ---
-def sor_local_llm(prompt: str, model: str = "mistral") -> str:
+def sor_local_llm(prompt: str, model: str = "mistralai/Mistral-7B-Instruct-v0.2") -> str:
     try:
-        url = "http://localhost:11434/generate"
+        url = "http://localhost:8000/v1/chat/completions"
         headers = {"Content-Type": "application/json"}
-        data = {"model": model, "prompt": prompt, "stream": False}
+        data = {
+            "model": model,
+            "messages": [
+                {"role": "user", "content": prompt}
+            ]
+        }
         response = requests.post(url, headers=headers, json=data)
         if response.ok:
             json_data = response.json()
-            if isinstance(json_data, dict):
-                return json_data.get("response", "")
+            return json_data["choices"][0]["message"]["content"]
         return f"Hata: {response.status_code} - {response.text}"
     except Exception as e:
         return f"LLM bağlantısı başarısız: {e}"
+
 
 # --- Dışa açılan fonksiyon ---
 def predict_match(team_a: str, team_b: str) -> str:

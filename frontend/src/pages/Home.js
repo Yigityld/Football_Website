@@ -15,6 +15,8 @@ const Home = () => {
   const [analysisStatus, setAnalysisStatus] = useState('idle');
   const [analysisMessage, setAnalysisMessage] = useState('');
   const [analysisResults, setAnalysisResults] = useState(null);
+  const [prediction, setPrediction] = useState('');         
+  const [predicting, setPredicting] = useState(false);      
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -23,6 +25,7 @@ const Home = () => {
       [name]: value
     }));
   };
+  
 
   const handleFileChange = (e, team) => {
     const file = e.target.files[0];
@@ -95,6 +98,31 @@ const Home = () => {
       setLoading(false);
     }
   };
+
+
+    // — Tahmin butonuna tıklanınca çalışacak
+  const handlePredict = async () => {
+    if (!formData.teamA || !formData.teamB) return;
+    setPredicting(true);
+    setPrediction('');
+    try {
+      const res = await fetch('http://localhost:8000/predict-match', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          team_a: formData.teamA,
+          team_b: formData.teamB
+        })
+      });
+      const data = await res.json();
+      setPrediction(data.prediction || 'Tahmin alınamadı');
+    } catch {
+      setPrediction('Tahmin hatası');
+    } finally {
+      setPredicting(false);
+    }
+  };
+
   
 
   return (
@@ -514,6 +542,28 @@ const Home = () => {
                         <span className="text-gray-500 text-sm">{match.date}</span>
                       </div>
                     ))}
+                  {/* — Tahmin Et Butonu — */}
+                  <div className="flex justify-center mt-4">
+                    <button
+                      onClick={handlePredict}
+                      disabled={predicting || analysisStatus !== 'completed'}
+                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50"
+                    >
+                      {predicting ? 'Tahmin Yapılıyor…' : 'Gpt İle Tahmin Et'}
+                    </button>
+                  </div>
+
+                  {/* — Tahmin Kartı — */}
+                  <div className="mt-6 p-4 bg-white/10 rounded-xl border border-white/20">
+                    <h3 className="text-xl font-bold text-center text-green-300 mb-2">
+                      🤖 Maç Sonucu Tahmini
+                    </h3>
+                    {prediction
+                      ? <p className="text-center text-white text-2xl">{prediction}</p>
+                      : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
+                    }
+                  </div>
+
                   </div>
                 </div>
               )}

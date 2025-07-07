@@ -218,7 +218,7 @@ def hazirla_prompt_string(
 # --- LLM'ye sorgu gönderme ---
 def sor_local_llm(prompt: str, model: str = "mistral") -> str:
     try:
-        url = "http://localhost:11434/api/generate"
+        url = "http://localhost:11434/generate"
         headers = {"Content-Type": "application/json"}
         data = {"model": model, "prompt": prompt, "stream": False}
         response = requests.post(url, headers=headers, json=data)

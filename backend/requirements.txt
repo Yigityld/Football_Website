@@ -69,3 +69,4 @@ vidgear==0.3.3
 yarg==0.1.10
 youtube-dl==2021.12.17
 yt-dlp==2025.6.30
+fastapi

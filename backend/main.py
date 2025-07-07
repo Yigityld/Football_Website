@@ -285,4 +285,6 @@ async def team_info_endpoint(team_name: str) -> Any:
 
 if __name__ == "__main__":
     import uvicorn  # type: ignore
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port, reload=True)

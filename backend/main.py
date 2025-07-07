@@ -34,7 +34,20 @@ from team_info import (
 
 app = FastAPI(title="Futbol Analiz API")  # type: ignore
 
+@app.get("/")
+def root():
+    return {"message": "API çalışıyor!"}
 # CORS ayarları
+<<<<<<< HEAD
+=======
+origins = [
+    "https://akillimacanalizi.com",
+    "https://www.akillimacanalizi.com",
+    "http://localhost:3000",
+    "https://football-website-alpha.vercel.app"
+]
+
+>>>>>>> 1e0e25fd6509b64d982e933477bb1a636401da3b
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Herkese izin ver (test için)

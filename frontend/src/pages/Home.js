@@ -46,8 +46,8 @@ const Home = () => {
   
     // —— BURAYA EKLEYİN ——
     const formDataToSend = new FormData();
-    formDataToSend.append('team_a', formData.teamA);
-    formDataToSend.append('team_b', formData.teamB);
+    formDataToSend.append('team_a', formData.teamA || 'defaultTeamA');
+    formDataToSend.append('team_b', formData.teamB || 'defaultTeamB');
     formDataToSend.append('main_ref', formData.mainRef || '');
     formDataToSend.append('side_ref', formData.sideRef || '');
     if (formData.youtubeUrl) {

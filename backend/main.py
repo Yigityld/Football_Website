@@ -34,14 +34,6 @@ from team_info import (
 
 app = FastAPI(title="Futbol Analiz API")  # type: ignore
 
-# CORS ayarları
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://football-frontend.vercel.app"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Global değişkenler
 team_a_color = None

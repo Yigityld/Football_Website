@@ -21,7 +21,7 @@ const Home = () => {
 
 
   // Backend URL'ini ayarla - production'da Render URL'ini kullan
-  const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
+  const BASE_URL = process.env.REACT_APP_API_URL || 'https://akillimacanalizi.com';
 
   // Test backend bağlantısı
   const testBackendConnection = async () => {

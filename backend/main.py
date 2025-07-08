@@ -177,7 +177,7 @@ async def test() -> Dict[str, str]:
 async def test_fetch():
     import requests
     try:
-        r = requests.get("https://www.transfermarkt.com.tr", timeout=10)
+        r = requests.get("https://www.transfermarkt.com.tr", timeout=30)
         return {"status": r.status_code}
     except Exception as e:
         import traceback

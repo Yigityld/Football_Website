@@ -256,6 +256,8 @@ async def start_analysis(
         global analysis_results, analysis_running
         try:
             analysis_results = main_analysis(team_a, team_b, main_ref, side_ref, ta_path, tb_path, youtube_url)
+        except Exception as e:
+            print(f"ANALYSIS THREAD ERROR: {e}")
         finally:
             analysis_running = False
 

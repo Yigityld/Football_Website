@@ -42,7 +42,8 @@ origins = [
     "https://akillimacanalizi.com",
     "https://www.akillimacanalizi.com",
     "http://localhost:3000",
-    "https://football-website-alpha.vercel.app"
+    "https://football-website-alpha.vercel.app",
+    "https://akillimacanalizi.vercel.app"
 ]
 
 app.add_middleware(

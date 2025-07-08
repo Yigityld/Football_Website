@@ -19,7 +19,8 @@ const Home = () => {
   const [predicting, setPredicting] = useState(false);
 
 
-  const BASE_URL = process.env.REACT_APP_API_URL;
+  // Backend URL'ini ayarla - production'da Render URL'ini kullan
+  const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
 
 
   const handleInputChange = (e) => {
@@ -65,7 +66,7 @@ const Home = () => {
   }
 
   try {
-    const response = await fetch(${BASE_URL}/start-analysis, {
+    const response = await fetch(`${BASE_URL}/start-analysis`, {
 
       method: 'POST',
       body: formDataToSend
@@ -84,7 +85,7 @@ const Home = () => {
       setAnalysisMessage('🔄 Analiz devam ediyor...');
 
       const interval = setInterval(async () => {
-      const statusResponse = await fetch(${BASE_URL}/analysis-status);
+      const statusResponse = await fetch(`${BASE_URL}/analysis-status`);
 
         const statusResult = await statusResponse.json();
 
@@ -118,7 +119,7 @@ const Home = () => {
     setPredicting(true);
     setPrediction('');
     try {
-        const res = await fetch(${BASE_URL}/predict-match, {
+        const res = await fetch(`${BASE_URL}/predict-match`, {
 
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -159,10 +160,10 @@ const Home = () => {
             key={i}
             className="absolute w-1 h-1 bg-cyan-400 rounded-full animate-pulse"
             style={{
-              left: ${Math.random() * 100}%,
-              top: ${Math.random() * 100}%,
-              animationDelay: ${Math.random() * 3}s,
-              animationDuration: ${2 + Math.random() * 3}s
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 3}s`
             }}
           />
         ))}
@@ -424,7 +425,7 @@ const Home = () => {
                   <div className="flex items-center mb-4">
                     {analysisResults.teams.team_a.logo && (
                       <img
-                        src={data:image/png;base64,${analysisResults.teams.team_a.logo}}
+                        src={`data:image/png;base64,${analysisResults.teams.team_a.logo}`}
                         alt="Team A Logo"
                         className="w-12 h-12 rounded-full mr-3"
                       />
@@ -462,7 +463,7 @@ const Home = () => {
                   <div className="flex items-center mb-4">
                     {analysisResults.teams.team_b.logo && (
                       <img
-                        src={data:image/png;base64,${analysisResults.teams.team_b.logo}}
+                        src={`data:image/png;base64,${analysisResults.teams.team_b.logo}`}
                         alt="Team B Logo"
                         className="w-12 h-12 rounded-full mr-3"
                       />
@@ -506,7 +507,7 @@ const Home = () => {
                         <div className="flex items-center mb-4">
                           {analysisResults.referees.main.photo && (
                             <img
-                              src={data:image/png;base64,${analysisResults.referees.main.photo}}
+                              src={`data:image/png;base64,${analysisResults.referees.main.photo}`}
                               alt="Main Referee"
                               className="w-12 h-12 rounded-full mr-3"
                             />
@@ -525,7 +526,7 @@ const Home = () => {
                           <div className="flex items-center mb-4">
                             {analysisResults.referees.side.photo && (
                               <img
-                                src={data:image/png;base64,${analysisResults.referees.side.photo}}
+                                src={`data:image/png;base64,${analysisResults.referees.side.photo}`}
                                 alt="Side Referee"
                                 className="w-12 h-12 rounded-full mr-3"
                               />

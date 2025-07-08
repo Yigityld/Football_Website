@@ -37,6 +37,7 @@ app = FastAPI(title="Futbol Analiz API")  # type: ignore
 @app.get("/")
 def root():
     return {"message": "API çalışıyor!"}
+<<<<<<< HEAD
 # CORS ayarları
 <<<<<<< HEAD
 =======
@@ -52,6 +53,13 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Herkese izin ver (test için)
     allow_credentials=True,
+=======
+# CORS ayarları - tüm origin'lere izin ver (production için güvenli değil ama test için)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Tüm origin'lere izin ver
+    allow_credentials=False,  # allow_origins=["*"] ile birlikte False olmalı
+>>>>>>> b7dea1a2d439c03e650a877aa081520bf175ae6a
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -217,16 +225,25 @@ def main_analysis(
 @app.on_event("startup")
 async def startup_event() -> None:
     global model
-    # Proje kök dizininde /model/bestdeneme.pt olduğunu varsayıyoruz
-    model_path = os.path.join(os.getcwd(), "model", "bestdeneme.pt")
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f"Model dosyası bulunamadı: {model_path}")
-    model = YOLO(model_path)
+    try:
+        # Proje kök dizininde /model/bestdeneme.pt olduğunu varsayıyoruz
+        model_path = os.path.join(os.getcwd(), "model", "bestdeneme.pt")
+        if not os.path.exists(model_path):
+            print(f"⚠️ Model dosyası bulunamadı: {model_path}")
+            return
+        model = YOLO(model_path)
+        print("✅ Model başarıyla yüklendi")
+    except Exception as e:
+        print(f"⚠️ Model yükleme hatası: {e}")
 
 
 @app.get("/")
 async def root() -> Dict[str, str]:
-    return {"message": "API çalışıyor"}
+    return {"message": "API çalışıyor", "status": "ok"}
+
+@app.get("/test")
+async def test() -> Dict[str, str]:
+    return {"message": "Test endpoint çalışıyor", "cors": "enabled"}
 
 @app.post("/start-analysis")
 async def start_analysis(

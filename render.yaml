@@ -4,5 +4,5 @@ services:
     runtime: python
     plan: free
     rootDir: backend
-    buildCommand: ""
-    startCommand: gunicorn main:app -k uvicorn.workers.UvicornWorker
+    buildCommand: pip install -r requirements_simple.txt
+    startCommand: gunicorn test_app:app -k uvicorn.workers.UvicornWorker

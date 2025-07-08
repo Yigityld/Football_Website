@@ -16,7 +16,9 @@ const Home = () => {
   const [analysisMessage, setAnalysisMessage] = useState('');
   const [analysisResults, setAnalysisResults] = useState(null);
   const [prediction, setPrediction] = useState('');         
-  const [predicting, setPredicting] = useState(false);      
+  const [predicting, setPredicting] = useState(false);    
+  
+  
   const BASE_URL = process.env.REACT_APP_API_URL;
 
 
@@ -40,28 +42,6 @@ const Home = () => {
     }
   };
 
-  const handleStartAnalysis = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setAnalysisStatus('starting');
-    setAnalysisMessage('Analiz başlatılıyor...');
-  
-    // —— BURAYA EKLEYİN ——
-    const formDataToSend = new FormData();
-    formDataToSend.append('team_a', formData.teamA || 'defaultTeamA');
-    formDataToSend.append('team_b', formData.teamB || 'defaultTeamB');
-    formDataToSend.append('main_ref', formData.mainRef || '');
-    formDataToSend.append('side_ref', formData.sideRef || '');
-    if (formData.youtubeUrl) {
-      formDataToSend.append('youtube_url', formData.youtubeUrl);
-    }
-    if (teamAJersey) {
-      formDataToSend.append('team_a_jersey', teamAJersey);
-    }
-    if (teamBJersey) {
-      formDataToSend.append('team_b_jersey', teamBJersey);
-    }
-    // —— FORM DATA HAZIR ——
   
     const handleStartAnalysis = async (e) => {
   e.preventDefault();
@@ -615,5 +595,5 @@ const Home = () => {
     </div>
   );
 };
-}
+
 export default Home; 

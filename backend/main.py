@@ -207,11 +207,16 @@ def main_analysis(
 @app.on_event("startup")
 async def startup_event() -> None:
     global model
-    # Proje kök dizininde /model/bestdeneme.pt olduğunu varsayıyoruz
-    model_path = os.path.join(os.getcwd(), "model", "bestdeneme.pt")
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f"Model dosyası bulunamadı: {model_path}")
-    model = YOLO(model_path)
+    try:
+        # Proje kök dizininde /model/bestdeneme.pt olduğunu varsayıyoruz
+        model_path = os.path.join(os.getcwd(), "model", "bestdeneme.pt")
+        if not os.path.exists(model_path):
+            print(f"⚠️ Model dosyası bulunamadı: {model_path}")
+            return
+        model = YOLO(model_path)
+        print("✅ Model başarıyla yüklendi")
+    except Exception as e:
+        print(f"⚠️ Model yükleme hatası: {e}")
 
 
 @app.get("/")

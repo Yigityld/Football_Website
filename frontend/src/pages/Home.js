@@ -26,7 +26,8 @@ const Home = () => {
   // Test backend bağlantısı
   const testBackendConnection = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/test`);
+      setTestResult('🔄 Backend test ediliyor...');
+      const response = await fetch(`${BASE_URL}/health`);
       const data = await response.json();
       setTestResult(`✅ Backend çalışıyor: ${data.message}`);
     } catch (error) {

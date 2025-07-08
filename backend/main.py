@@ -14,6 +14,7 @@ from typing import Optional, Any, Dict
 import requests
 from bs4.element import Tag  # type: ignore
 from datetime import datetime
+import traceback
 
 # İçerik Getirici Fonksiyonlar GPT Alanı için
 from gpt_area import (
@@ -106,9 +107,12 @@ def main_analysis(
 
     print("[main_analysis] Başladı!")
     try:
-        print("[main_analysis] Takım bilgisi çekiliyor...")
+        print(f"[main_analysis] fetch_team_info({team_a}) çağrılıyor...")
         team_a_info = fetch_team_info(team_a)
+        print(f"[main_analysis] team_a_info: {team_a_info}")
+        print(f"[main_analysis] fetch_team_info({team_b}) çağrılıyor...")
         team_b_info = fetch_team_info(team_b)
+        print(f"[main_analysis] team_b_info: {team_b_info}")
         print("[main_analysis] Hakem bilgisi çekiliyor...")
         main_ref_info, main_ref_img = get_referee_info(main_ref) if main_ref else ("", None)
         side_ref_info, side_ref_img = get_referee_info(side_ref) if side_ref else ("", None)
@@ -185,6 +189,7 @@ def main_analysis(
         return summary_data
     except Exception as e:
         print(f"[main_analysis] HATA: {e}")
+        traceback.print_exc()
         raise
 
 
@@ -249,6 +254,7 @@ async def start_analysis(
             print(f"[THREAD] analysis_results set edildi: {analysis_results is not None}")
         except Exception as e:
             print(f"ANALYSIS THREAD ERROR: {e}")
+            traceback.print_exc()
         finally:
             analysis_running = False
 

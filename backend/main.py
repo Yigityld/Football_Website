@@ -15,6 +15,8 @@ from typing import Optional, Any, Dict
 import requests
 from bs4.element import Tag  # type: ignore
 from datetime import datetime
+from video_processor import process_video
+
 
 # İçerik Getirici Fonksiyonlar GPT Alanı için
 from gpt_area import (
@@ -170,7 +172,6 @@ def main_analysis(
 
     # Model yükle
     if model is None:
-        import os
         model_path = os.path.join(os.getcwd(), "model", "bestdeneme.pt")
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model dosyası bulunamadı: {model_path}")
@@ -181,31 +182,34 @@ def main_analysis(
         team_a_color = extract_jersey_hsv(team_a_jersey_path)
     if team_b_jersey_path:
         team_b_color = extract_jersey_hsv(team_b_jersey_path)
+    # Video analizi (opsiyonel, örnekleme + indirme)
 
-    # Video analizi (opsiyonel, basit)
+
     if youtube_url:
         print("🎥 Video analizi başlatılıyor...")
-        try:
-            ydl_opts = {'quiet': True, 'format': 'bestvideo[ext=mp4][vcodec^=avc1][height<=720][height>=480]'}
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(youtube_url, download=False) or {}
-            stream_url = info.get('url')
-            if stream_url:
-                cap = cv2.VideoCapture(stream_url)
-                frame_count = 0
-                max_frames = 50
-                while cap.isOpened() and frame_count < max_frames:
-                    ret, frame = cap.read()
-                    if not ret:
-                        break
-                    frame_count += 1
-                cap.release()
-                print(f"✅ {frame_count} frame analiz edildi")
-        except Exception as e:
-            print(f"⚠️ Video analizi hatası: {e}")
+        annotated = process_video(
+            video_source=youtube_url,
+            team_a_color=team_a_color,
+            team_b_color=team_b_color,
+            team_a_name=team_a,
+            team_b_name=team_b,
+            main_ref_name=main_ref or "Main Referee",
+            side_ref_name=side_ref or "Side Referee",
+            class_thresholds={
+                # eğer özelleştirilmiş eşikleriniz varsa buraya
+                'Player': 0.63,
+                'Ball': 0.5,
+                'Main Referee': 0.5,
+                'Side Referee': 0.5,
+                # …
+            },
+            max_samples=5,
+            sample_rate=30
+        )
+        summary_data['annotated_frames'] = annotated
 
-    print("✅ Özet tamamlandı!")
-    return summary_data
+        print("✅ Özet tamamlandı!")
+        return summary_data
 
 
 

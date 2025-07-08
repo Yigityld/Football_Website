@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+
 app = FastAPI()
 
 # CORS ayarları
@@ -23,3 +24,4 @@ async def test():
 @app.get("/health")
 async def health():
     return {"status": "healthy", "message": "Backend çalışıyor"} 
+

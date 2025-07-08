@@ -17,6 +17,8 @@ const Home = () => {
   const [analysisResults, setAnalysisResults] = useState(null);
   const [prediction, setPrediction] = useState('');         
   const [predicting, setPredicting] = useState(false);      
+  const BASE_URL = process.env.REACT_APP_API_URL;
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -83,7 +85,8 @@ const Home = () => {
   }
 
   try {
-    const response = await fetch('https://www.akillimacanalizi.com/start-analysis', {
+    const response = await fetch(`${BASE_URL}/start-analysis`, {
+ 
       method: 'POST',
       body: formDataToSend
     });
@@ -101,7 +104,8 @@ const Home = () => {
       setAnalysisMessage('🔄 Analiz devam ediyor...');
 
       const interval = setInterval(async () => {
-        const statusResponse = await fetch('https://www.akillimacanalizi.com/analysis-status');
+      const statusResponse = await fetch(`${BASE_URL}/analysis-status`);
+
         const statusResult = await statusResponse.json();
 
         if (statusResult.status === 'completed') {
@@ -134,7 +138,8 @@ const Home = () => {
     setPredicting(true);
     setPrediction('');
     try {
-      const res = await fetch('https://www.akillimacanalizi.com/predict-match', {
+        const res = await fetch(`${BASE_URL}/predict-match`, {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({

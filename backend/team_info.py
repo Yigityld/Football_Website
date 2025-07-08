@@ -12,7 +12,7 @@ def search_team_url(team_name: str) -> Optional[str]:
     search_url = f"https://www.transfermarkt.com.tr/schnellsuche/ergebnis/schnellsuche?query={query}"
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
-        resp = requests.get(search_url, headers=headers)
+        resp = requests.get(search_url, headers=headers, timeout=10)
         if resp.status_code != 200:
             return None
         soup = BeautifulSoup(resp.text, "html.parser")
@@ -77,7 +77,7 @@ def team_name_Temizle(team_name: str) -> str:
 def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str, Any]], int, int, int]:
     def fetch_matches(url: str) -> List[Dict[str, Any]]:
         try:
-            r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+            r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
             if r.status_code != 200:
                 return []
             s = BeautifulSoup(r.text, "html.parser")
@@ -144,7 +144,7 @@ def get_last_matches(team_a: str, team_b: str) -> List[Dict[str, Any]]:
         return []
     url = f"https://www.transfermarkt.com.tr/vergleich/bilanzdetail/verein/{a_id}/gegner_id/{b_id}"
     try:
-        r = requests.get(url, headers={"User-Agent":"Mozilla/5.0"})
+        r = requests.get(url, headers={"User-Agent":"Mozilla/5.0"}, timeout=10)
         if r.status_code!=200:
             return []
         s = BeautifulSoup(r.text, "html.parser")
@@ -177,7 +177,7 @@ def search_referee(name: str) -> Optional[str]:
     q=name.replace(" ","+")
     u=f"https://www.transfermarkt.com.tr/schnellsuche/ergebnis/schnellsuche?query={q}"
     try:
-        r=requests.get(u,headers={"User-Agent":"Mozilla/5.0"})
+        r=requests.get(u,headers={"User-Agent":"Mozilla/5.0"}, timeout=10)
         if r.status_code!=200: return None
         s=BeautifulSoup(r.text,"html.parser")
         l=s.find("a",href=re.compile(r"/profil/schiedsrichter/"))
@@ -196,7 +196,7 @@ def get_referee_info(name: str, season:str="2024") -> Tuple[str,Optional[str]]:
     if not u.endswith("/"): u+="/"
     u+=f"saison/{season}"
     try:
-        r=requests.get(u,headers={"User-Agent":"Mozilla/5.0"})
+        r=requests.get(u,headers={"User-Agent":"Mozilla/5.0"}, timeout=10)
         if r.status_code!=200: return f"<b>❌ Hata:{r.status_code}</b>",None
         s=BeautifulSoup(r.text,"html.parser")
         img_tag = s.find("img", class_="data-header__profile-image")
@@ -248,7 +248,7 @@ def search_team_url(team_name: str) -> Optional[str]:
     query = team_name.replace(" ", "+")
     url = f"https://www.transfermarkt.com.tr/schnellsuche/ergebnis/schnellsuche?query={query}"
     headers = {"User-Agent": "Mozilla/5.0"}
-    resp = requests.get(url, headers=headers)
+    resp = requests.get(url, headers=headers, timeout=10)
     if resp.status_code != 200:
         return None
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -275,7 +275,7 @@ def get_team_info(name: str) -> Dict[str, Any]:
         return {}
 
     headers = {"User-Agent": "Mozilla/5.0"}
-    resp = requests.get(url, headers=headers)
+    resp = requests.get(url, headers=headers, timeout=10)
     if resp.status_code != 200:
         return {}
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -341,7 +341,7 @@ def get_team_info(name: str) -> Dict[str, Any]:
 def get_image_as_base64(url: str) -> Optional[str]:
     if not url: return None
     try:
-        r=requests.get(url,headers={"User-Agent":"Mozilla/5.0"})
+        r=requests.get(url,headers={"User-Agent":"Mozilla/5.0"}, timeout=10)
         if r.status_code==200:
             return base64.b64encode(r.content).decode()
     except Exception as e:

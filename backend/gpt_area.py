@@ -10,7 +10,7 @@ def search_team_url(team_name: str) -> Optional[str]:
     query = team_name.replace(" ", "+")
     search_url = f"https://www.transfermarkt.com.tr/schnellsuche/ergebnis/schnellsuche?query={query}"
     headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(search_url, headers=headers)
+    response = requests.get(search_url, headers=headers, timeout=10)
     if response.status_code != 200:
         return None
     soup = BeautifulSoup(response.text, "html.parser")
@@ -74,7 +74,7 @@ def team_name_Temizle(team_name: str) -> str:
 def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], int, int, int]:
     def fetch_matches_from_url(url: str) -> List[Dict]:
         headers = {"User-Agent": "Mozilla/5.0"}
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)
         if response.status_code != 200:
             return []
 
@@ -153,7 +153,7 @@ def get_last_matches(team_a: str, team_b: str) -> List[Dict]:
 
     url = f"https://www.transfermarkt.com.tr/vergleich/bilanzdetail/verein/{team_a_id}/gegner_id/{team_b_id}"
     headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=10)
     if response.status_code != 200:
         return []
 

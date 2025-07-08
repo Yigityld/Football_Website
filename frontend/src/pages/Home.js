@@ -16,7 +16,11 @@ const Home = () => {
   const [analysisMessage, setAnalysisMessage] = useState('');
   const [analysisResults, setAnalysisResults] = useState(null);
   const [prediction, setPrediction] = useState('');         
-  const [predicting, setPredicting] = useState(false);      
+  const [predicting, setPredicting] = useState(false);
+
+
+  const BASE_URL = process.env.REACT_APP_API_URL;
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +29,7 @@ const Home = () => {
       [name]: value
     }));
   };
-  
+
 
   const handleFileChange = (e, team) => {
     const file = e.target.files[0];
@@ -38,29 +42,7 @@ const Home = () => {
     }
   };
 
-  const handleStartAnalysis = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setAnalysisStatus('starting');
-    setAnalysisMessage('Analiz başlatılıyor...');
-  
-    // —— BURAYA EKLEYİN ——
-    const formDataToSend = new FormData();
-    formDataToSend.append('team_a', formData.teamA || 'defaultTeamA');
-    formDataToSend.append('team_b', formData.teamB || 'defaultTeamB');
-    formDataToSend.append('main_ref', formData.mainRef || '');
-    formDataToSend.append('side_ref', formData.sideRef || '');
-    if (formData.youtubeUrl) {
-      formDataToSend.append('youtube_url', formData.youtubeUrl);
-    }
-    if (teamAJersey) {
-      formDataToSend.append('team_a_jersey', teamAJersey);
-    }
-    if (teamBJersey) {
-      formDataToSend.append('team_b_jersey', teamBJersey);
-    }
-    // —— FORM DATA HAZIR ——
-  
+
     const handleStartAnalysis = async (e) => {
   e.preventDefault();
   setLoading(true);
@@ -83,7 +65,8 @@ const Home = () => {
   }
 
   try {
-    const response = await fetch('https://www.akillimacanalizi.com/start-analysis', {
+    const response = await fetch(${BASE_URL}/start-analysis, {
+
       method: 'POST',
       body: formDataToSend
     });
@@ -101,7 +84,8 @@ const Home = () => {
       setAnalysisMessage('🔄 Analiz devam ediyor...');
 
       const interval = setInterval(async () => {
-        const statusResponse = await fetch('https://www.akillimacanalizi.com/analysis-status');
+      const statusResponse = await fetch(${BASE_URL}/analysis-status);
+
         const statusResult = await statusResponse.json();
 
         if (statusResult.status === 'completed') {
@@ -134,7 +118,8 @@ const Home = () => {
     setPredicting(true);
     setPrediction('');
     try {
-      const res = await fetch('https://www.akillimacanalizi.com/predict-match', {
+        const res = await fetch(${BASE_URL}/predict-match, {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -151,7 +136,7 @@ const Home = () => {
     }
   };
 
-  
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
@@ -174,10 +159,10 @@ const Home = () => {
             key={i}
             className="absolute w-1 h-1 bg-cyan-400 rounded-full animate-pulse"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 3}s`
+              left: ${Math.random() * 100}%,
+              top: ${Math.random() * 100}%,
+              animationDelay: ${Math.random() * 3}s,
+              animationDuration: ${2 + Math.random() * 3}s
             }}
           />
         ))}
@@ -209,7 +194,7 @@ const Home = () => {
           <div className="backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 rounded-3xl border border-white/20 shadow-2xl p-10 mb-8 relative overflow-hidden">
             {/* Form Background Glow */}
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-pink-500/5 rounded-3xl"></div>
-            
+
             {/* Corner Decorations */}
             <div className="absolute top-0 left-0 w-20 h-20 border-l-2 border-t-2 border-cyan-400 rounded-tl-3xl"></div>
             <div className="absolute top-0 right-0 w-20 h-20 border-r-2 border-t-2 border-purple-400 rounded-tr-3xl"></div>
@@ -229,7 +214,7 @@ const Home = () => {
                       </div>
                       <h3 className="text-xl font-bold text-cyan-300">Takım A</h3>
                     </div>
-                    
+
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-cyan-200 mb-2">
@@ -244,7 +229,7 @@ const Home = () => {
                           className="w-full px-4 py-3 bg-black/50 border border-cyan-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all duration-300"
                         />
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-cyan-200 mb-2">
                           Forma Görseli
@@ -270,7 +255,7 @@ const Home = () => {
                       </div>
                       <h3 className="text-xl font-bold text-purple-300">Takım B</h3>
                     </div>
-                    
+
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-purple-200 mb-2">
@@ -285,7 +270,7 @@ const Home = () => {
                           className="w-full px-4 py-3 bg-black/50 border border-purple-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 transition-all duration-300"
                         />
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-purple-200 mb-2">
                           Forma Görseli
@@ -310,11 +295,11 @@ const Home = () => {
                   <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300">
                     <div className="flex items-center mb-4">
                       <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-white font-bold">👨‍⚖️</span>
+                        <span className="text-white font-bold">👨‍⚖</span>
                       </div>
                       <h3 className="text-xl font-bold text-yellow-300">Ana Hakem</h3>
                     </div>
-                    
+
                     <input
                       type="text"
                       name="mainRef"
@@ -325,18 +310,18 @@ const Home = () => {
                     />
                   </div>
                 </div>
-                
+
                 {/* Side Referee Card */}
                 <div className="group relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
                   <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/30 hover:border-orange-400/50 transition-all duration-300">
                     <div className="flex items-center mb-4">
                       <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-white font-bold">👨‍⚖️</span>
+                        <span className="text-white font-bold">👨‍⚖</span>
                       </div>
                       <h3 className="text-xl font-bold text-orange-300">Yan Hakem</h3>
                     </div>
-                    
+
                     <input
                       type="text"
                       name="sideRef"
@@ -360,7 +345,7 @@ const Home = () => {
                     <h3 className="text-xl font-bold text-red-300">YouTube Maç Linki</h3>
                     <span className="ml-2 px-2 py-1 bg-red-500/20 text-red-300 rounded-full text-xs border border-red-500/30">Opsiyonel</span>
                   </div>
-                  
+
                   <input
                     type="url"
                     name="youtubeUrl"
@@ -402,7 +387,7 @@ const Home = () => {
           {analysisStatus !== 'idle' && (
             <div className="backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 rounded-3xl border border-white/20 shadow-2xl p-8 mb-8 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 rounded-3xl"></div>
-              
+
               <div className="relative z-10">
                 <div className="flex items-center mb-6">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mr-4">
@@ -410,7 +395,7 @@ const Home = () => {
                   </div>
                   <h3 className="text-2xl font-bold text-blue-400">Analiz Durumu</h3>
                 </div>
-                
+
                 <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/30">
                   <p className="text-white text-xl mb-4">{analysisMessage}</p>
                   {analysisStatus === 'running' && (
@@ -429,31 +414,31 @@ const Home = () => {
           {/* Analysis Results Display */}
           {analysisResults && (
             <div className="backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 rounded-3xl border border-white/20 shadow-2xl p-8 mt-8">
-              
+
               <h2 className="text-3xl font-bold text-center text-cyan-300 mb-8">📊 Analiz Sonuçları</h2>
-              
+
               {/* Teams Section */}
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 {/* Team A */}
                 <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-cyan-500/30">
                   <div className="flex items-center mb-4">
                     {analysisResults.teams.team_a.logo && (
-                      <img 
-                        src={`data:image/png;base64,${analysisResults.teams.team_a.logo}`} 
-                        alt="Team A Logo" 
+                      <img
+                        src={data:image/png;base64,${analysisResults.teams.team_a.logo}}
+                        alt="Team A Logo"
                         className="w-12 h-12 rounded-full mr-3"
                       />
                     )}
                     <h3 className="text-xl font-bold text-cyan-300">{analysisResults.teams.team_a.name}</h3>
                   </div>
-                  
+
                   <div className="space-y-3 text-sm text-gray-300">
                   <p><span className="text-cyan-400">Lig:</span> {analysisResults.teams.team_a.info.Lig || 'Bilinmiyor'}</p>
                   <p><span className="text-cyan-400">Sıralama:</span> {analysisResults.teams.team_a.info['Lig Sıralaması'] || 'Bilinmiyor'}</p>
                   <p><span className="text-cyan-400">Kadro Değeri:</span> {analysisResults.teams.team_a.info['Kadro Değeri'] || 'Bilinmiyor'}</p>
                   <p><span className="text-cyan-400">Yaş Ortalaması:</span> {analysisResults.teams.team_a.info['Yaş Ortalaması'] || 'Bilinmiyor'}</p>
                   </div>
-                  
+
                   <div className="mt-4 p-3 bg-cyan-500/10 rounded-lg">
                     <h4 className="text-cyan-300 font-semibold mb-2">Son 5 Maç</h4>
                     <div className="space-y-1">
@@ -465,8 +450,8 @@ const Home = () => {
                       ))}
                     </div>
                     <div className="mt-2 text-xs text-cyan-300">
-                      Galibiyet: {analysisResults.teams.team_a.stats.wins} | 
-                      Beraberlik: {analysisResults.teams.team_a.stats.draws} | 
+                      Galibiyet: {analysisResults.teams.team_a.stats.wins} |
+                      Beraberlik: {analysisResults.teams.team_a.stats.draws} |
                       Mağlubiyet: {analysisResults.teams.team_a.stats.losses}
                     </div>
                   </div>
@@ -476,22 +461,22 @@ const Home = () => {
                 <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
                   <div className="flex items-center mb-4">
                     {analysisResults.teams.team_b.logo && (
-                      <img 
-                        src={`data:image/png;base64,${analysisResults.teams.team_b.logo}`} 
-                        alt="Team B Logo" 
+                      <img
+                        src={data:image/png;base64,${analysisResults.teams.team_b.logo}}
+                        alt="Team B Logo"
                         className="w-12 h-12 rounded-full mr-3"
                       />
                     )}
                     <h3 className="text-xl font-bold text-purple-300">{analysisResults.teams.team_b.name}</h3>
                   </div>
-                  
+
                   <div className="space-y-3 text-sm text-gray-300">
                     <p><span className="text-purple-400">Lig:</span> {analysisResults.teams.team_b.info.Lig || 'Bilinmiyor'}</p>
                     <p><span className="text-purple-400">Sıralama:</span> {analysisResults.teams.team_b.info['Lig Sıralaması'] || 'Bilinmiyor'}</p>
                     <p><span className="text-purple-400">Kadro Değeri:</span> {analysisResults.teams.team_b.info['Kadro Değeri'] || 'Bilinmiyor'}</p>
                     <p><span className="text-purple-400">Yaş Ortalaması:</span> {analysisResults.teams.team_b.info['Yaş Ortalaması'] || 'Bilinmiyor'}</p>
                   </div>
-                  
+
                   <div className="mt-4 p-3 bg-purple-500/10 rounded-lg">
                     <h4 className="text-purple-300 font-semibold mb-2">Son 5 Maç</h4>
                     <div className="space-y-1">
@@ -503,8 +488,8 @@ const Home = () => {
                       ))}
                     </div>
                     <div className="mt-2 text-xs text-purple-300">
-                      Galibiyet: {analysisResults.teams.team_b.stats.wins} | 
-                      Beraberlik: {analysisResults.teams.team_b.stats.draws} | 
+                      Galibiyet: {analysisResults.teams.team_b.stats.wins} |
+                      Beraberlik: {analysisResults.teams.team_b.stats.draws} |
                       Mağlubiyet: {analysisResults.teams.team_b.stats.losses}
                     </div>
                   </div>
@@ -514,40 +499,40 @@ const Home = () => {
               {/* Referees Section */}
               {(analysisResults.referees.main || analysisResults.referees.side) && (
                 <div className="mb-8">
-                  <h3 className="text-2xl font-bold text-center text-green-300 mb-6">👨‍⚖️ Hakem Bilgileri</h3>
+                  <h3 className="text-2xl font-bold text-center text-green-300 mb-6">👨‍⚖ Hakem Bilgileri</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     {analysisResults.referees.main && (
                       <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-green-500/30">
                         <div className="flex items-center mb-4">
                           {analysisResults.referees.main.photo && (
-                            <img 
-                              src={`data:image/png;base64,${analysisResults.referees.main.photo}`} 
-                              alt="Main Referee" 
+                            <img
+                              src={data:image/png;base64,${analysisResults.referees.main.photo}}
+                              alt="Main Referee"
                               className="w-12 h-12 rounded-full mr-3"
                             />
                           )}
                           <h4 className="text-lg font-bold text-green-300">Ana Hakem</h4>
                         </div>
-                        <div 
+                        <div
                           className="text-sm text-gray-300"
                           dangerouslySetInnerHTML={{ __html: analysisResults.referees.main.info }}
                         />
                       </div>
                     )}
-                    
+
                     {analysisResults.referees.side && (
                       <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-green-500/30">
                           <div className="flex items-center mb-4">
                             {analysisResults.referees.side.photo && (
-                              <img 
-                                src={`data:image/png;base64,${analysisResults.referees.side.photo}`} 
-                                alt="Side Referee" 
+                              <img
+                                src={data:image/png;base64,${analysisResults.referees.side.photo}}
+                                alt="Side Referee"
                                 className="w-12 h-12 rounded-full mr-3"
                               />
                             )}
                             <h4 className="text-lg font-bold text-green-300">Yan Hakem</h4>
                           </div>
-                          <div 
+                          <div
                             className="text-sm text-gray-300"
                             dangerouslySetInnerHTML={{ __html: analysisResults.referees.side.info }}
                           />
@@ -611,4 +596,4 @@ const Home = () => {
   );
 };
 
-export default Home; 
+export default Home;

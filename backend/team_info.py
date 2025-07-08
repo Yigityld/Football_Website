@@ -291,35 +291,6 @@ def get_referee_info(name: str, season:str="2024") -> Tuple[str,Optional[str]]:
         return f"<b>❌ Hata:{e}</b>",None
 
 # Takım bilgisi
-def search_team_url(team_name: str) -> Optional[str]:
-    query = team_name.replace(" ", "+")
-    url = f"https://www.transfermarkt.com.tr/schnellsuche/ergebnis/schnellsuche?query={query}"
-    headers = {"User-Agent": "Mozilla/5.0"}
-    resp = requests.get(url, headers=headers, timeout=30)
-    if resp.status_code != 200:
-        return None
-    soup = BeautifulSoup(resp.text, "html.parser")
-    # Tüm <a> tag'ları arasından takım linki ara
-    results = soup.select("a[href*='/startseite/verein/']")
-    for a in results:
-        img = a.find("img")
-        if img and img.has_attr("alt"):
-            alt = img["alt"].strip().lower()
-            if team_name.lower() in alt:
-
-                return "https://www.transfermarkt.com.tr" + a["href"]
-        # Hiç uymadıysa ilkine geç
-        if results:
-            return "https://www.transfermarkt.com.tr" + results[0]["href"]
-    except requests.exceptions.Timeout:
-        print("[ERROR] search_team_url zaman aşımına uğradı.")
-        return None
-    except Exception as e:
-        print(f"[DEBUG] search_team_url HATA: {e}")
-        import traceback; traceback.print_exc()
-    return None
-
-
 def get_team_info(name: str) -> Dict[str, Any]:
     print(f"[DEBUG] get_team_info çağrıldı: {name}")
     try:
@@ -385,6 +356,9 @@ def get_team_info(name: str) -> Dict[str, Any]:
         }
         print(f"[DEBUG] get_team_info sonucu: {result}")
         return result
+    except requests.exceptions.Timeout:
+        print("[ERROR] get_team_info zaman aşımına uğradı.")
+        return {}
     except Exception as e:
         print(f"[DEBUG] get_team_info HATA: {e}")
         import traceback; traceback.print_exc()

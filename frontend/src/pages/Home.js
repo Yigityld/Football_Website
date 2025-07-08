@@ -84,7 +84,7 @@ const Home = () => {
       setAnalysisMessage('🔄 Analiz devam ediyor...');
 
       const interval = setInterval(async () => {
-      const statusResponse = await fetch(`${BASE_URL}/analysis-status`);
+      const statusResponse = await fetch(`${BASE_URL}/analysis-status`);    
 
         const statusResult = await statusResponse.json();
 
@@ -118,7 +118,7 @@ const Home = () => {
     setPredicting(true);
     setPrediction('');
     try {
-        const res = await fetch(`${BASE_URL}/predict-match`, {
+        const res = await fetch(`${BASE_URL}/predict-match`, {
 
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

@@ -1,7 +1,7 @@
 import multiprocessing
 import cv2
 import numpy as np
-from ultralytics import YOLO  # type: ignore
+# from ultralytics import YOLO  # type: ignore  # <-- KALDIRILDI
 from sklearn.cluster import KMeans  # type: ignore
 import yt_dlp  # type: ignore
 import os
@@ -46,7 +46,6 @@ app.add_middleware(
 # Global değişkenler
 team_a_color = None
 team_b_color = None
-model: Optional[YOLO] = None
 analysis_running = False
 analysis_thread: Optional[threading.Thread] = None
 analysis_results: Optional[Dict[str, Any]] = None
@@ -103,7 +102,7 @@ def main_analysis(
     team_b_jersey_path: Optional[str] = None,
     youtube_url: Optional[str] = None
 ) -> Dict[str, Any]:
-    global team_a_color, team_b_color, model
+    global team_a_color, team_b_color
 
     print("[main_analysis] Başladı!")
     try:
@@ -150,41 +149,8 @@ def main_analysis(
                 "main": {"name": main_ref, "info": main_ref_info, "photo": main_ref_photo} if main_ref else None,
                 "side": {"name": side_ref, "info": side_ref_info, "photo": side_ref_photo} if side_ref else None
             },
-            "head_to_head": head_to_head_matches,
-            "youtube_url": youtube_url
+            "head_to_head": head_to_head_matches
         }
-        print("[main_analysis] Model yükleniyor...")
-        if model is None:
-            import os
-            model_path = os.path.join(os.getcwd(), "model", "bestdeneme.pt")
-            if not os.path.exists(model_path):
-                raise FileNotFoundError(f"Model dosyası bulunamadı: {model_path}")
-            model = YOLO(model_path)  # type: ignore
-        print("[main_analysis] Forma renk çıkarımı yapılıyor...")
-        if team_a_jersey_path:
-            team_a_color = extract_jersey_hsv(team_a_jersey_path)
-        if team_b_jersey_path:
-            team_b_color = extract_jersey_hsv(team_b_jersey_path)
-        if youtube_url:
-            print("[main_analysis] Video analizi başlatılıyor...")
-            try:
-                ydl_opts = {'quiet': True, 'format': 'bestvideo[ext=mp4][vcodec^=avc1][height<=720][height>=480]'}
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    info = ydl.extract_info(youtube_url, download=False) or {}
-                stream_url = info.get('url')
-                if stream_url:
-                    cap = cv2.VideoCapture(stream_url)
-                    frame_count = 0
-                    max_frames = 50
-                    while cap.isOpened() and frame_count < max_frames:
-                        ret, frame = cap.read()
-                        if not ret:
-                            break
-                        frame_count += 1
-                    cap.release()
-                    print(f"[main_analysis] {frame_count} frame analiz edildi")
-            except Exception as e:
-                print(f"[main_analysis] Video analizi hatası: {e}")
         print("[main_analysis] Bitti, summary_data dönüyor!")
         return summary_data
     except Exception as e:
@@ -196,17 +162,7 @@ def main_analysis(
 
 @app.on_event("startup")
 async def startup_event() -> None:
-    global model
-    try:
-        # Proje kök dizininde /model/bestdeneme.pt olduğunu varsayıyoruz
-        model_path = os.path.join(os.getcwd(), "model", "bestdeneme.pt")
-        if not os.path.exists(model_path):
-            print(f"⚠️ Model dosyası bulunamadı: {model_path}")
-            return
-        model = YOLO(model_path)
-        print("✅ Model başarıyla yüklendi")
-    except Exception as e:
-        print(f"⚠️ Model yükleme hatası: {e}")
+    pass
 
 
 @app.get("/")

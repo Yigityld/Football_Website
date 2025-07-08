@@ -8,6 +8,7 @@ import os
 import base64
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form  # type: ignore
 from fastapi.middleware.cors import CORSMiddleware  # type: ignore
+from fastapi.responses import JSONResponse
 import tempfile
 import threading
 from typing import Optional, Any, Dict
@@ -33,13 +34,21 @@ from team_info import (
 
 app = FastAPI(title="Futbol Analiz API")  # type: ignore
 
-# CORS ayarları - tüm origin'lere izin ver (production için güvenli değil ama test için)
+
+# CORS ayarları
+origins = [
+    "https://akillimacanalizi.com",
+    "https://www.akillimacanalizi.com",
+    "http://localhost:3000",  # GKarenin geliştirme ortamı
+]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Tüm origin'lere izin ver
-    allow_credentials=False,  # allow_origins=["*"] ile birlikte False olmalı
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 # Global değişkenler
@@ -203,25 +212,16 @@ def main_analysis(
 @app.on_event("startup")
 async def startup_event() -> None:
     global model
-    try:
-        # Proje kök dizininde /model/bestdeneme.pt olduğunu varsayıyoruz
-        model_path = os.path.join(os.getcwd(), "model", "bestdeneme.pt")
-        if not os.path.exists(model_path):
-            print(f"⚠️ Model dosyası bulunamadı: {model_path}")
-            return
-        model = YOLO(model_path)
-        print("✅ Model başarıyla yüklendi")
-    except Exception as e:
-        print(f"⚠️ Model yükleme hatası: {e}")
+    # Proje kök dizininde /model/bestdeneme.pt olduğunu varsayıyoruz
+    model_path = os.path.join(os.getcwd(), "model", "bestdeneme.pt")
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model dosyası bulunamadı: {model_path}")
+    model = YOLO(model_path)
 
 
 @app.get("/")
 async def root() -> Dict[str, str]:
-    return {"message": "API çalışıyor", "status": "ok"}
-
-@app.get("/test")
-async def test() -> Dict[str, str]:
-    return {"message": "Test endpoint çalışıyor", "cors": "enabled"}
+    return {"message": "API çalışıyor"}
 
 @app.post("/start-analysis")
 async def start_analysis(
@@ -256,8 +256,6 @@ async def start_analysis(
         global analysis_results, analysis_running
         try:
             analysis_results = main_analysis(team_a, team_b, main_ref, side_ref, ta_path, tb_path, youtube_url)
-        except Exception as e:
-            print(f"ANALYSIS THREAD ERROR: {e}")
         finally:
             analysis_running = False
 
@@ -285,6 +283,4 @@ async def team_info_endpoint(team_name: str) -> Any:
 
 if __name__ == "__main__":
     import uvicorn  # type: ignore
-
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)

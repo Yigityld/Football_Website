@@ -104,7 +104,7 @@ def main_analysis(
 ) -> Dict[str, Any]:
     global team_a_color, team_b_color, model
 
-    print("✅ Özet başlatılıyor...")
+    print("[main_analysis] Başladı!")
     # Takım bilgilerini çek (senkron fonksiyon)
     print("📊 Takım bilgileri çekiliyor...")
     team_a_info = fetch_team_info(team_a)
@@ -195,7 +195,7 @@ def main_analysis(
         except Exception as e:
             print(f"⚠️ Video analizi hatası: {e}")
 
-    print("✅ Özet tamamlandı!")
+    print("[main_analysis] Bitti, summary_data dönüyor!")
     return summary_data
 
 
@@ -255,7 +255,9 @@ async def start_analysis(
     def run():
         global analysis_results, analysis_running
         try:
+            print("[THREAD] Analiz thread'i başlatıldı!")
             analysis_results = main_analysis(team_a, team_b, main_ref, side_ref, ta_path, tb_path, youtube_url)
+            print(f"[THREAD] analysis_results set edildi: {analysis_results is not None}")
         except Exception as e:
             print(f"ANALYSIS THREAD ERROR: {e}")
         finally:
@@ -267,10 +269,13 @@ async def start_analysis(
 
 @app.get("/analysis-status")
 async def analysis_status() -> Any:
+    print(f"[analysis_status] analysis_thread alive: {analysis_thread.is_alive() if analysis_thread else None}, analysis_results: {analysis_results is not None}")
     if analysis_thread and analysis_thread.is_alive():
         return {"status": "running"}
     if analysis_results is not None:
+        print(f"[analysis_status] Tamamlandı, sonuç dönülüyor!")
         return {"status": "completed", "results": analysis_results}
+    print(f"[analysis_status] Idle dönülüyor!")
     return {"status": "idle"}
 
 @app.post("/predict-match")

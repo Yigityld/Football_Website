@@ -37,19 +37,11 @@ app = FastAPI(title="Futbol Analiz API")  # type: ignore
 @app.get("/")
 def root():
     return {"message": "API çalışıyor!"}
-# CORS ayarları
-origins = [
-    "https://akillimacanalizi.com",
-    "https://www.akillimacanalizi.com",
-    "http://localhost:3000",
-    "https://football-website-alpha.vercel.app",
-    "https://akillimacanalizi.vercel.app"
-]
-
+# CORS ayarları - tüm origin'lere izin ver (production için güvenli değil ama test için)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],  # Tüm origin'lere izin ver
+    allow_credentials=False,  # allow_origins=["*"] ile birlikte False olmalı
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -224,7 +216,11 @@ async def startup_event() -> None:
 
 @app.get("/")
 async def root() -> Dict[str, str]:
-    return {"message": "API çalışıyor"}
+    return {"message": "API çalışıyor", "status": "ok"}
+
+@app.get("/test")
+async def test() -> Dict[str, str]:
+    return {"message": "Test endpoint çalışıyor", "cors": "enabled"}
 
 @app.post("/start-analysis")
 async def start_analysis(

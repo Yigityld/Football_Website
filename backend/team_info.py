@@ -295,21 +295,18 @@ def search_team_url(team_name: str) -> Optional[str]:
     query = team_name.replace(" ", "+")
     url = f"https://www.transfermarkt.com.tr/schnellsuche/ergebnis/schnellsuche?query={query}"
     headers = {"User-Agent": "Mozilla/5.0"}
-    try:
-        resp = requests.get(url, headers=headers, timeout=30)
-        if resp.status_code != 200:
-            return None
-        soup = BeautifulSoup(resp.text, "html.parser")
-        # Tüm <a> tag'ları arasından takım linki ara
-        results = soup.select("a[href*='/startseite/verein/']")
-        for a in results:
-            img = a.find("img")
-            if img and img.has_attr("alt"):
-                alt = img["alt"].strip().lower()
-                if team_name.lower() in alt:
-                    return "https://www.transfermarkt.com.tr" + a["href"]
-            # img yoksa link metni ile kontrol et
-            if a.text.strip().lower() == team_name.lower():
+    resp = requests.get(url, headers=headers, timeout=30)
+    if resp.status_code != 200:
+        return None
+    soup = BeautifulSoup(resp.text, "html.parser")
+    # Tüm <a> tag'ları arasından takım linki ara
+    results = soup.select("a[href*='/startseite/verein/']")
+    for a in results:
+        img = a.find("img")
+        if img and img.has_attr("alt"):
+            alt = img["alt"].strip().lower()
+            if team_name.lower() in alt:
+
                 return "https://www.transfermarkt.com.tr" + a["href"]
         # Hiç uymadıysa ilkine geç
         if results:
@@ -332,66 +329,62 @@ def get_team_info(name: str) -> Dict[str, Any]:
             print("[DEBUG] Takım URL bulunamadı!")
             return {}
         headers = {"User-Agent": "Mozilla/5.0"}
-        try:
-            resp = requests.get(url, headers=headers, timeout=30)
-            print(f"[DEBUG] requests.get status: {resp.status_code}")
-            if resp.status_code != 200:
-                print(f"[DEBUG] Takım sayfası çekilemedi! Status: {resp.status_code}")
-                return {}
-            soup = BeautifulSoup(resp.text, "html.parser")
-            tn = soup.find("h1", class_="data-header__headline-wrapper")
-            team_name = tn.get_text(strip=True) if isinstance(tn, Tag) else "?"
-            print(f"[DEBUG] Takım adı: {team_name}")
-            lg = soup.find("span", class_="data-header__club")
-            league_name = lg.get_text(strip=True) if isinstance(lg, Tag) else "?"
-            print(f"[DEBUG] Lig adı: {league_name}")
-            league_rank = "?"
-            for label in soup.find_all("span", class_="data-header__label"):
-                if "Lig Sıralaması" in label.get_text():
-                    cont = label.find_next_sibling("span", class_="data-header__content")
-                    if isinstance(cont, Tag):
-                        a = cont.find("a")
-                        league_rank = a.get_text(strip=True) if isinstance(a, Tag) else cont.get_text(strip=True)
-                    break
-            print(f"[DEBUG] Lig sıralaması: {league_rank}")
-            logo_div = soup.find("div", class_="data-header__profile-container")
-            logo_img = logo_div.find("img") if isinstance(logo_div, Tag) else None
-            logo_url = logo_img["src"] if isinstance(logo_img, Tag) and logo_img.has_attr("src") else None
-            print(f"[DEBUG] Logo URL: {logo_url}")
-            cups: list[str] = []
-            for cup in soup.find_all("a", class_="data-header__success-data") if isinstance(soup, Tag) else []:
-                title = cup.get("title", "Kupa") if isinstance(cup, Tag) else "Kupa"
-                num = cup.find("span", class_="data-header__success-number") if isinstance(cup, Tag) else None
-                cups.append(f"{title}: {num.get_text(strip=True) if isinstance(num, Tag) else '?'}")
-            print(f"[DEBUG] Kupalar: {cups}")
-            market = soup.find("a", class_="data-header__market-value-wrapper")
-            squad_value = market.get_text(strip=True) if isinstance(market, Tag) else "?"
-            print(f"[DEBUG] Kadro değeri: {squad_value}")
-            def find_data(label_text: str) -> str:
-                for li in soup.select("ul.data-header__items li") if isinstance(soup, Tag) else []:
-                    if label_text in li.get_text():
-                        cont = li.find("span", class_="data-header__content") if isinstance(li, Tag) else None
-                        return cont.get_text(strip=True) if isinstance(cont, Tag) else "?"
-                return "?"
-            age_avg = find_data("Yaş ortalaması")
-            stadium = find_data("Stadyum")
-            print(f"[DEBUG] Yaş ortalaması: {age_avg}")
-            print(f"[DEBUG] Stadyum: {stadium}")
-            result = {
-                "Takım": team_name,
-                "Lig": league_name,
-                "Lig Sıralaması": league_rank,
-                "Logo URL": logo_url,
-                "Kupalar": cups,
-                "Kadro Değeri": squad_value,
-                "Yaş Ortalaması": age_avg,
-                "Stadyum": stadium
-            }
-            print(f"[DEBUG] get_team_info sonucu: {result}")
-            return result
-    except requests.exceptions.Timeout:
-        print("[ERROR] get_team_info zaman aşımına uğradı.")
-        return {}
+        resp = requests.get(url, headers=headers, timeout=30)
+        print(f"[DEBUG] requests.get status: {resp.status_code}")
+        if resp.status_code != 200:
+            print(f"[DEBUG] Takım sayfası çekilemedi! Status: {resp.status_code}")
+            return {}
+        soup = BeautifulSoup(resp.text, "html.parser")
+        tn = soup.find("h1", class_="data-header__headline-wrapper")
+        team_name = tn.get_text(strip=True) if isinstance(tn, Tag) else "?"
+        print(f"[DEBUG] Takım adı: {team_name}")
+        lg = soup.find("span", class_="data-header__club")
+        league_name = lg.get_text(strip=True) if isinstance(lg, Tag) else "?"
+        print(f"[DEBUG] Lig adı: {league_name}")
+        league_rank = "?"
+        for label in soup.find_all("span", class_="data-header__label"):
+            if "Lig Sıralaması" in label.get_text():
+                cont = label.find_next_sibling("span", class_="data-header__content")
+                if isinstance(cont, Tag):
+                    a = cont.find("a")
+                    league_rank = a.get_text(strip=True) if isinstance(a, Tag) else cont.get_text(strip=True)
+                break
+        print(f"[DEBUG] Lig sıralaması: {league_rank}")
+        logo_div = soup.find("div", class_="data-header__profile-container")
+        logo_img = logo_div.find("img") if isinstance(logo_div, Tag) else None
+        logo_url = logo_img["src"] if isinstance(logo_img, Tag) and logo_img.has_attr("src") else None
+        print(f"[DEBUG] Logo URL: {logo_url}")
+        cups: list[str] = []
+        for cup in soup.find_all("a", class_="data-header__success-data") if isinstance(soup, Tag) else []:
+            title = cup.get("title", "Kupa") if isinstance(cup, Tag) else "Kupa"
+            num = cup.find("span", class_="data-header__success-number") if isinstance(cup, Tag) else None
+            cups.append(f"{title}: {num.get_text(strip=True) if isinstance(num, Tag) else '?'}")
+        print(f"[DEBUG] Kupalar: {cups}")
+        market = soup.find("a", class_="data-header__market-value-wrapper")
+        squad_value = market.get_text(strip=True) if isinstance(market, Tag) else "?"
+        print(f"[DEBUG] Kadro değeri: {squad_value}")
+        def find_data(label_text: str) -> str:
+            for li in soup.select("ul.data-header__items li") if isinstance(soup, Tag) else []:
+                if label_text in li.get_text():
+                    cont = li.find("span", class_="data-header__content") if isinstance(li, Tag) else None
+                    return cont.get_text(strip=True) if isinstance(cont, Tag) else "?"
+            return "?"
+        age_avg = find_data("Yaş ortalaması")
+        stadium = find_data("Stadyum")
+        print(f"[DEBUG] Yaş ortalaması: {age_avg}")
+        print(f"[DEBUG] Stadyum: {stadium}")
+        result = {
+            "Takım": team_name,
+            "Lig": league_name,
+            "Lig Sıralaması": league_rank,
+            "Logo URL": logo_url,
+            "Kupalar": cups,
+            "Kadro Değeri": squad_value,
+            "Yaş Ortalaması": age_avg,
+            "Stadyum": stadium
+        }
+        print(f"[DEBUG] get_team_info sonucu: {result}")
+        return result
     except Exception as e:
         print(f"[DEBUG] get_team_info HATA: {e}")
         import traceback; traceback.print_exc()

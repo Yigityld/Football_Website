@@ -21,7 +21,7 @@ const Home = () => {
 
 
   // Backend URL'ini ayarla - production'da Render URL'ini kullan
-  const BASE_URL = process.env.REACT_APP_API_URL || 'https://api.akillimacanalizi.com';
+  const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
 
   // Test backend bağlantısı
   const testBackendConnection = async () => {
@@ -108,7 +108,7 @@ const Home = () => {
           setAnalysisResults(statusResult.results);
           setLoading(false);
         }
-      }, 800000);
+      }, 5000);
     } else {
       setAnalysisStatus('error');
       setAnalysisMessage('❌ Analiz başlatılamadı');

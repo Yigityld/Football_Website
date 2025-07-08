@@ -108,7 +108,7 @@ const Home = () => {
           setAnalysisResults(statusResult.results);
           setLoading(false);
         }
-      }, 190000);
+      }, 290000);
     } else {
       setAnalysisStatus('error');
       setAnalysisMessage('❌ Analiz başlatılamadı');

@@ -217,6 +217,17 @@ async def root() -> Dict[str, str]:
 async def test() -> Dict[str, str]:
     return {"message": "Test endpoint çalışıyor", "cors": "enabled"}
 
+@app.get("/test-fetch")
+async def test_fetch():
+    import requests
+    try:
+        r = requests.get("https://www.transfermarkt.com.tr", timeout=10)
+        return {"status": r.status_code}
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}
+
 @app.post("/start-analysis")
 async def start_analysis(
     team_a: str = Form(...),

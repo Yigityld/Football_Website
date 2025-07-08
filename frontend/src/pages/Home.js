@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 const Home = () => {
@@ -18,10 +17,22 @@ const Home = () => {
   const [analysisResults, setAnalysisResults] = useState(null);
   const [prediction, setPrediction] = useState('');         
   const [predicting, setPredicting] = useState(false);
+  const [testResult, setTestResult] = useState('');
 
 
   // Backend URL'ini ayarla - production'da Render URL'ini kullan
   const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
+
+  // Test backend bağlantısı
+  const testBackendConnection = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/test`);
+      const data = await response.json();
+      setTestResult(`✅ Backend çalışıyor: ${data.message}`);
+    } catch (error) {
+      setTestResult(`❌ Backend hatası: ${error.message}`);
+    }
+  };
 
 
   const handleInputChange = (e) => {
@@ -190,6 +201,24 @@ const Home = () => {
               <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm border border-purple-500/30">Renk Analizi</span>
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm border border-green-500/30">Gerçek Zamanlı</span>
             </div>
+            
+            {/* Test Backend Connection Button */}
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={testBackendConnection}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-105 active:scale-95"
+              >
+                🔗 Backend Bağlantısını Test Et
+              </button>
+            </div>
+            
+            {testResult && (
+              <div className="mt-4 text-center">
+                <p className={`text-lg ${testResult.includes('✅') ? 'text-green-400' : 'text-red-400'}`}>
+                  {testResult}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Enhanced Main Form */}

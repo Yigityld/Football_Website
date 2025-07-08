@@ -8,7 +8,6 @@ import os
 import base64
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form  # type: ignore
 from fastapi.middleware.cors import CORSMiddleware  # type: ignore
-from fastapi.responses import JSONResponse
 import tempfile
 import threading
 from typing import Optional, Any, Dict
@@ -34,32 +33,11 @@ from team_info import (
 
 app = FastAPI(title="Futbol Analiz API")  # type: ignore
 
-@app.get("/")
-def root():
-    return {"message": "API çalışıyor!"}
-<<<<<<< HEAD
-# CORS ayarları
-<<<<<<< HEAD
-=======
-origins = [
-    "https://akillimacanalizi.com",
-    "https://www.akillimacanalizi.com",
-    "http://localhost:3000",
-    "https://football-website-alpha.vercel.app"
-]
-
->>>>>>> 1e0e25fd6509b64d982e933477bb1a636401da3b
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Herkese izin ver (test için)
-    allow_credentials=True,
-=======
 # CORS ayarları - tüm origin'lere izin ver (production için güvenli değil ama test için)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Tüm origin'lere izin ver
     allow_credentials=False,  # allow_origins=["*"] ile birlikte False olmalı
->>>>>>> b7dea1a2d439c03e650a877aa081520bf175ae6a
     allow_methods=["*"],
     allow_headers=["*"],
 )

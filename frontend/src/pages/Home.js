@@ -61,43 +61,71 @@ const Home = () => {
     }
     // —— FORM DATA HAZIR ——
   
+    const handleStartAnalysis = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setAnalysisStatus('starting');
+  setAnalysisMessage('Analiz başlatılıyor...');
+
+  const formDataToSend = new FormData();
+  formDataToSend.append('team_a', formData.teamA || 'defaultTeamA');
+  formDataToSend.append('team_b', formData.teamB || 'defaultTeamB');
+  formDataToSend.append('main_ref', formData.mainRef || '');
+  formDataToSend.append('side_ref', formData.sideRef || '');
+  if (formData.youtubeUrl) {
+    formDataToSend.append('youtube_url', formData.youtubeUrl);
+  }
+  if (teamAJersey) {
+    formDataToSend.append('team_a_jersey', teamAJersey);
+  }
+  if (teamBJersey) {
+    formDataToSend.append('team_b_jersey', teamBJersey);
+  }
+
+  try {
+    const response = await fetch('https://www.akillimacanalizi.com/start-analysis', {
+      method: 'POST',
+      body: formDataToSend
+    });
+
+    const text = await response.text();
+    let result = null;
     try {
-      const response = await fetch('https://www.akillimacanalizi.com/start-analysis', {
-        method: 'POST',
-        body: formDataToSend
-      });
-      const result = await response.json();
-  
-      if (response.ok) {
-        setAnalysisStatus('running');
-        setAnalysisMessage('🔄 Analiz devam ediyor...');
-  
-        const interval = setInterval(async () => {
-          const statusResponse = await fetch('https://www.akillimacanalizi.com/analysis-status');
-          const statusResult = await statusResponse.json();
-  
-          if (statusResult.status === 'completed') {
-            clearInterval(interval);
-            setAnalysisStatus('completed');
-            setAnalysisMessage('✅ Analiz tamamlandı!');
-            setAnalysisResults(statusResult.results);
-            setLoading(false);
-          }
-        }, 2000);
-  
-      } else {
-        setAnalysisStatus('error');
-        setAnalysisMessage('❌ Analiz başlatılamadı');
-        setLoading(false);
-      }
-  
-    } catch (err) {
-      console.error(err);
+      result = text ? JSON.parse(text) : null;
+    } catch (parseErr) {
+      console.warn("Yanıt JSON değil:", parseErr);
+    }
+
+    if (response.ok && result) {
+      setAnalysisStatus('running');
+      setAnalysisMessage('🔄 Analiz devam ediyor...');
+
+      const interval = setInterval(async () => {
+        const statusResponse = await fetch('https://www.akillimacanalizi.com/analysis-status');
+        const statusResult = await statusResponse.json();
+
+        if (statusResult.status === 'completed') {
+          clearInterval(interval);
+          setAnalysisStatus('completed');
+          setAnalysisMessage('✅ Analiz tamamlandı!');
+          setAnalysisResults(statusResult.results);
+          setLoading(false);
+        }
+      }, 2000);
+    } else {
       setAnalysisStatus('error');
-      setAnalysisMessage('❌ Bağlantı hatası');
+      setAnalysisMessage('❌ Analiz başlatılamadı');
       setLoading(false);
     }
-  };
+
+  } catch (err) {
+    console.error("İstek hatası:", err);
+    setAnalysisStatus('error');
+    setAnalysisMessage('❌ Bağlantı hatası');
+    setLoading(false);
+  }
+};
+
 
 
     // — Tahmin butonuna tıklanınca çalışacak

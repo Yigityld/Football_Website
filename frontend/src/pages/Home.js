@@ -404,77 +404,95 @@ const Home = () => {
               {/* Teams Section */}
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 {/* Team A */}
-                <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-cyan-500/30">
-                  <div className="flex items-center mb-4">
+                <div className="bg-gradient-to-br from-cyan-900/60 to-cyan-700/40 rounded-2xl shadow-xl p-8 backdrop-blur-md border border-cyan-400/30">
+                  <div className="flex items-center mb-6">
                     {analysisResults.teams.team_a.logo && (
                       <img
                         src={`data:image/png;base64,${analysisResults.teams.team_a.logo}`}
                         alt="Team A Logo"
-                        className="w-12 h-12 rounded-full mr-3"
+                        className="w-16 h-16 rounded-full mr-4 border-4 border-cyan-300 shadow-lg"
                       />
                     )}
-                    <h3 className="text-xl font-bold text-cyan-300">{analysisResults.teams.team_a.name}</h3>
+                    <h3 className="text-3xl font-extrabold text-cyan-200 tracking-tight drop-shadow-lg">{analysisResults.teams.team_a.name}</h3>
                   </div>
 
-                  <div className="space-y-3 text-sm text-gray-300">
-                  <p><span className="text-cyan-400">Lig:</span> {analysisResults.teams.team_a.info.Lig || 'Bilinmiyor'}</p>
-                  <p><span className="text-cyan-400">Sıralama:</span> {analysisResults.teams.team_a.info['Lig Sıralaması'] || 'Bilinmiyor'}</p>
-                  <p><span className="text-cyan-400">Kadro Değeri:</span> {analysisResults.teams.team_a.info['Kadro Değeri'] || 'Bilinmiyor'}</p>
-                  <p><span className="text-cyan-400">Yaş Ortalaması:</span> {analysisResults.teams.team_a.info['Yaş Ortalaması'] || 'Bilinmiyor'}</p>
+                  <div className="space-y-2 text-base text-cyan-100 mb-6">
+                    <div><span className="font-bold text-cyan-300">Lig:</span> {analysisResults.teams.team_a.info.Lig || 'Bilinmiyor'}</div>
+                    <div><span className="font-bold text-cyan-300">Sıralama:</span> {analysisResults.teams.team_a.info['Lig Sıralaması'] || '?'}</div>
+                    <div><span className="font-bold text-cyan-300">Kadro Değeri:</span> {analysisResults.teams.team_a.info['Kadro Değeri'] || 'Bilinmiyor'}</div>
+                    <div><span className="font-bold text-cyan-300">Yaş Ortalaması:</span> {analysisResults.teams.team_a.info['Yaş Ortalaması'] || 'Bilinmiyor'}</div>
                   </div>
 
-                  <div className="mt-4 p-3 bg-cyan-500/10 rounded-lg">
-                    <h4 className="text-cyan-300 font-semibold mb-2">Son 5 Maç</h4>
-                    <div className="space-y-1">
-                      {analysisResults.teams.team_a.last_matches.map((match, index) => (
-                        <div key={index} className="flex justify-between text-xs">
-                          <span>{match.rakip}</span>
-                          <span className="text-cyan-400">{match.sonuc} {match.emoji}</span>
+                  <div className="bg-gradient-to-br from-cyan-800/60 to-cyan-600/40 rounded-2xl shadow-lg p-6 backdrop-blur-md border border-cyan-400/20">
+                    <h4 className="text-cyan-200 text-xl font-extrabold mb-4 flex items-center gap-2">
+                      <span className="material-icons text-2xl">sports_soccer</span>
+                      Son 5 Maç
+                    </h4>
+                    <div className="space-y-3">
+                      {analysisResults.teams.team_a.last_matches.map((match, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 hover:bg-cyan-400/10"
+                        >
+                          <span className="font-semibold text-cyan-100">{match.rakip}</span>
+                          <span className="font-mono text-lg font-bold text-cyan-200">{match.sonuc}</span>
+                          <span className="text-2xl">
+                            {match.emoji === '✅' ? '✔️' : match.emoji === '❌' ? '❌' : '➖'}
+                          </span>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-2 text-xs text-cyan-300">
-                      Galibiyet: {analysisResults.teams.team_a.stats.wins} |
-                      Beraberlik: {analysisResults.teams.team_a.stats.draws} |
-                      Mağlubiyet: {analysisResults.teams.team_a.stats.losses}
+                    <div className="mt-4 flex justify-between text-sm text-cyan-300 font-medium">
+                      <span>Galibiyet: {analysisResults.teams.team_a.stats.wins}</span>
+                      <span>Beraberlik: {analysisResults.teams.team_a.stats.draws}</span>
+                      <span>Mağlubiyet: {analysisResults.teams.team_a.stats.losses}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Team B */}
-                <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-                  <div className="flex items-center mb-4">
+                <div className="bg-gradient-to-br from-purple-900/60 to-purple-700/40 rounded-2xl shadow-xl p-8 backdrop-blur-md border border-purple-400/30">
+                  <div className="flex items-center mb-6">
                     {analysisResults.teams.team_b.logo && (
                       <img
                         src={`data:image/png;base64,${analysisResults.teams.team_b.logo}`}
                         alt="Team B Logo"
-                        className="w-12 h-12 rounded-full mr-3"
+                        className="w-16 h-16 rounded-full mr-4 border-4 border-purple-300 shadow-lg"
                       />
                     )}
-                    <h3 className="text-xl font-bold text-purple-300">{analysisResults.teams.team_b.name}</h3>
+                    <h3 className="text-3xl font-extrabold text-purple-200 tracking-tight drop-shadow-lg">{analysisResults.teams.team_b.name}</h3>
                   </div>
 
-                  <div className="space-y-3 text-sm text-gray-300">
-                    <p><span className="text-purple-400">Lig:</span> {analysisResults.teams.team_b.info.Lig || 'Bilinmiyor'}</p>
-                    <p><span className="text-purple-400">Sıralama:</span> {analysisResults.teams.team_b.info['Lig Sıralaması'] || 'Bilinmiyor'}</p>
-                    <p><span className="text-purple-400">Kadro Değeri:</span> {analysisResults.teams.team_b.info['Kadro Değeri'] || 'Bilinmiyor'}</p>
-                    <p><span className="text-purple-400">Yaş Ortalaması:</span> {analysisResults.teams.team_b.info['Yaş Ortalaması'] || 'Bilinmiyor'}</p>
+                  <div className="space-y-2 text-base text-purple-100 mb-6">
+                    <div><span className="font-bold text-purple-300">Lig:</span> {analysisResults.teams.team_b.info.Lig || 'Bilinmiyor'}</div>
+                    <div><span className="font-bold text-purple-300">Sıralama:</span> {analysisResults.teams.team_b.info['Lig Sıralaması'] || '?'}</div>
+                    <div><span className="font-bold text-purple-300">Kadro Değeri:</span> {analysisResults.teams.team_b.info['Kadro Değeri'] || 'Bilinmiyor'}</div>
+                    <div><span className="font-bold text-purple-300">Yaş Ortalaması:</span> {analysisResults.teams.team_b.info['Yaş Ortalaması'] || 'Bilinmiyor'}</div>
                   </div>
 
-                  <div className="mt-4 p-3 bg-purple-500/10 rounded-lg">
-                    <h4 className="text-purple-300 font-semibold mb-2">Son 5 Maç</h4>
-                    <div className="space-y-1">
-                      {analysisResults.teams.team_b.last_matches.map((match, index) => (
-                        <div key={index} className="flex justify-between text-xs">
-                          <span>{match.rakip}</span>
-                          <span className="text-purple-400">{match.sonuc} {match.emoji}</span>
+                  <div className="bg-gradient-to-br from-purple-800/60 to-purple-600/40 rounded-2xl shadow-lg p-6 backdrop-blur-md border border-purple-400/20">
+                    <h4 className="text-purple-200 text-xl font-extrabold mb-4 flex items-center gap-2">
+                      <span className="material-icons text-2xl">sports_soccer</span>
+                      Son 5 Maç
+                    </h4>
+                    <div className="space-y-3">
+                      {analysisResults.teams.team_b.last_matches.map((match, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 hover:bg-purple-400/10"
+                        >
+                          <span className="font-semibold text-purple-100">{match.rakip}</span>
+                          <span className="font-mono text-lg font-bold text-purple-200">{match.sonuc}</span>
+                          <span className="text-2xl">
+                            {match.emoji === '✅' ? '✔️' : match.emoji === '❌' ? '❌' : '➖'}
+                          </span>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-2 text-xs text-purple-300">
-                      Galibiyet: {analysisResults.teams.team_b.stats.wins} |
-                      Beraberlik: {analysisResults.teams.team_b.stats.draws} |
-                      Mağlubiyet: {analysisResults.teams.team_b.stats.losses}
+                    <div className="mt-4 flex justify-between text-sm text-purple-300 font-medium">
+                      <span>Galibiyet: {analysisResults.teams.team_b.stats.wins}</span>
+                      <span>Beraberlik: {analysisResults.teams.team_b.stats.draws}</span>
+                      <span>Mağlubiyet: {analysisResults.teams.team_b.stats.losses}</span>
                     </div>
                   </div>
                 </div>

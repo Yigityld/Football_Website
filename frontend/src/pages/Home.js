@@ -603,48 +603,51 @@ const handleAnalysis = () => {
                     </button>
                   </div>
                   {showAnalysis && analysisResults && (
-                    <div className="grid md:grid-cols-4 gap-6 mt-6">
-                      {/* Galatasaray Analizi */}
-                      <div className="p-4 bg-white/10 rounded-xl border border-white/20">
-                        <h3 className="text-xl font-bold text-center text-cyan-300 mb-2 font-sans">
+                    <div className="grid md:grid-cols-4 gap-8 mt-8">
+                      {/* Takım A Analizi */}
+                      <div className="bg-gradient-to-br from-cyan-900/60 to-cyan-700/40 rounded-3xl shadow-2xl p-8 border border-cyan-400/30 backdrop-blur-md hover:shadow-cyan-400/30 transition-all">
+                        <h3 className="text-2xl font-extrabold text-center text-cyan-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
+                          <span className="text-2xl">🟦</span>
                           {analysisResults.teams.team_a.name} Analizi
                         </h3>
-                        <div className="text-white text-base font-mono space-y-2 text-center">
-                          <div>Son 5 maçta Kaybettiği Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.stats.losses} / 5</span></div>
-                          <div>Son 5 maçta Berabere Kaldığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.stats.draws} / 5</span></div>
-                          <div>Son 5 maçta Kazandığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.stats.wins} / 5</span></div>
-                          <div>Son 5 maçta 2.5 üst bitmiş maç sayısı: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5</span></div>
-                          <div>Son 5 maçta Handikaplı Kazandığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5</span></div>
-                          <div>Son 5 maçta Karşılıklı Gol Olan Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5</span></div>
+                        <div className="text-cyan-100 text-base font-mono space-y-3 text-center">
+                          <div><span className="font-bold text-cyan-300">Kaybettiği Maç:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.stats.losses} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">Berabere:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.stats.draws} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">Kazandığı Maç:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.stats.wins} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">2.5 Üst:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">Handikaplı Galibiyet:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">Karşılıklı Gol:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5</span></div>
                         </div>
                       </div>
-                      {/* Fenerbahçe Analizi */}
-                      <div className="p-4 bg-white/10 rounded-xl border border-white/20">
-                        <h3 className="text-xl font-bold text-center text-purple-300 mb-2 font-sans">
+                      {/* Takım B Analizi */}
+                      <div className="bg-gradient-to-br from-purple-900/60 to-purple-700/40 rounded-3xl shadow-2xl p-8 border border-purple-400/30 backdrop-blur-md hover:shadow-purple-400/30 transition-all">
+                        <h3 className="text-2xl font-extrabold text-center text-purple-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
+                          <span className="text-2xl">🟪</span>
                           {analysisResults.teams.team_b.name} Analizi
                         </h3>
-                        <div className="text-white text-base font-mono space-y-2 text-center">
-                          <div>Son 5 maçta Kaybettiği Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.stats.losses} / 5</span></div>
-                          <div>Son 5 maçta Berabere Kaldığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.stats.draws} / 5</span></div>
-                          <div>Son 5 maçta Kazandığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.stats.wins} / 5</span></div>
-                          <div>Son 5 maçta 2.5 üst bitmiş maç sayısı: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5</span></div>
-                          <div>Son 5 maçta Handikaplı Kazandığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5</span></div>
-                          <div>Son 5 maçta Karşılıklı Gol Olan Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5</span></div>
+                        <div className="text-purple-100 text-base font-mono space-y-3 text-center">
+                          <div><span className="font-bold text-purple-300">Kaybettiği Maç:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.stats.losses} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">Berabere:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.stats.draws} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">Kazandığı Maç:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.stats.wins} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">2.5 Üst:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">Handikaplı Galibiyet:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">Karşılıklı Gol:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5</span></div>
                         </div>
                       </div>
                       {/* Aralarındaki Maçlar Analizi */}
-                      <div className="p-4 bg-white/10 rounded-xl border border-white/20">
-                        <h3 className="text-xl font-bold text-center text-yellow-300 mb-2 font-sans">
+                      <div className="bg-gradient-to-br from-yellow-900/60 to-yellow-700/40 rounded-3xl shadow-2xl p-8 border border-yellow-400/30 backdrop-blur-md hover:shadow-yellow-400/30 transition-all">
+                        <h3 className="text-2xl font-extrabold text-center text-yellow-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
+                          <span className="text-2xl">⚔️</span>
                           Aralarındaki Maçlar Analizi
                         </h3>
-                        <div className="text-white text-base font-mono space-y-2 text-center">
-                          <div>Karşılıklı Gol Olan Maç Sayısı: <span className="font-bold">{
+                        <div className="text-yellow-100 text-base font-mono space-y-3 text-center">
+                          <div><span className="font-bold text-yellow-300">Karşılıklı Gol:</span> <span className="bg-yellow-800/40 px-2 py-1 rounded-lg font-bold">{
                             (analysisResults.head_to_head || []).filter(m => {
                               const parts = (m.result || '').split(':');
                               return parts.length === 2 && parseInt(parts[0]) > 0 && parseInt(parts[1]) > 0;
                             }).length
                           } / {(analysisResults.head_to_head || []).length}</span></div>
-                          <div>2.5 üst bitmiş maç sayısı: <span className="font-bold">{
+                          <div><span className="font-bold text-yellow-300">2.5 Üst:</span> <span className="bg-yellow-800/40 px-2 py-1 rounded-lg font-bold">{
                             (analysisResults.head_to_head || []).filter(m => {
                               const parts = (m.result || '').split(':');
                               return parts.length === 2 && (parseInt(parts[0]) + parseInt(parts[1]) > 2);
@@ -653,14 +656,15 @@ const handleAnalysis = () => {
                         </div>
                       </div>
                       {/* Hakem Analizi */}
-                      <div className="p-4 bg-white/10 rounded-xl border border-white/20">
-                        <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
+                      <div className="bg-gradient-to-br from-green-900/60 to-green-700/40 rounded-3xl shadow-2xl p-8 border border-green-400/30 backdrop-blur-md hover:shadow-green-400/30 transition-all">
+                        <h3 className="text-2xl font-extrabold text-center text-green-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
+                          <span className="text-2xl">🧑‍⚖️</span>
                           Hakem Analizi
                         </h3>
-                        <div className="text-white text-base font-mono space-y-2 text-center">
-                          <div>Maç Başı Sarı Kart: <span className="font-bold">{analysisResults.referees.main?.referee_analysis?.avg_yellow ?? '-'}</span></div>
-                          <div>Maç Başı Penaltı: <span className="font-bold">{analysisResults.referees.main?.referee_analysis?.avg_penalty ?? '-'}</span></div>
-                          <div>Maç Başı Kırmızı Kart: <span className="font-bold">{analysisResults.referees.main?.referee_analysis?.avg_red ?? '-'}</span></div>
+                        <div className="text-green-100 text-base font-mono space-y-3 text-center">
+                          <div><span className="font-bold text-green-300">Maç Başı Sarı Kart:</span> <span className="bg-green-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_yellow ?? '-'}</span></div>
+                          <div><span className="font-bold text-green-300">Maç Başı Penaltı:</span> <span className="bg-green-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_penalty ?? '-'}</span></div>
+                          <div><span className="font-bold text-green-300">Maç Başı Kırmızı Kart:</span> <span className="bg-green-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_red ?? '-'}</span></div>
                         </div>
                       </div>
                     </div>

@@ -606,61 +606,65 @@ const handleAnalysis = () => {
                     <div className="grid md:grid-cols-4 gap-8 mt-8">
                       {/* Takım A Analizi */}
                       <div className="modern-card animate-border-cyan">
-                        <h3 className="text-2xl font-extrabold text-center text-cyan-200 mb-4 drop-shadow-lg">
+                        <h3 className="text-2xl font-extrabold text-center text-cyan-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
+                          <span className="text-2xl">🟦</span>
                           {analysisResults.teams.team_a.name} Analizi
                         </h3>
                         <div className="text-cyan-100 text-base font-mono space-y-3 text-center">
-                          <div><span className="font-bold text-cyan-300">Kaybettiği Maç:</span><br/>{analysisResults.teams.team_a.stats.losses} / 5</div>
-                          <div><span className="font-bold text-cyan-300">Berabere:</span><br/>{analysisResults.teams.team_a.stats.draws} / 5</div>
-                          <div><span className="font-bold text-cyan-300">Kazandığı Maç:</span><br/>{analysisResults.teams.team_a.stats.wins} / 5</div>
-                          <div><span className="font-bold text-cyan-300">2.5 Üst:</span><br/>{analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5</div>
-                          <div><span className="font-bold text-cyan-300">Handikaplı Galibiyet:</span><br/>{analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5</div>
-                          <div><span className="font-bold text-cyan-300">Karşılıklı Gol:</span><br/>{analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5</div>
+                          <div><span className="font-bold text-cyan-300">Kaybettiği Maç:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.stats.losses} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">Berabere:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.stats.draws} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">Kazandığı Maç:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.stats.wins} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">2.5 Üst:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">Handikaplı Galibiyet:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5</span></div>
+                          <div><span className="font-bold text-cyan-300">Karşılıklı Gol:</span> <span className="bg-cyan-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5</span></div>
                         </div>
                       </div>
                       {/* Takım B Analizi */}
                       <div className="modern-card animate-border-purple">
-                        <h3 className="text-2xl font-extrabold text-center text-purple-200 mb-4 drop-shadow-lg">
+                        <h3 className="text-2xl font-extrabold text-center text-purple-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
+                          <span className="text-2xl">🟪</span>
                           {analysisResults.teams.team_b.name} Analizi
                         </h3>
                         <div className="text-purple-100 text-base font-mono space-y-3 text-center">
-                          <div><span className="font-bold text-purple-300">Kaybettiği Maç:</span><br/>{analysisResults.teams.team_b.stats.losses} / 5</div>
-                          <div><span className="font-bold text-purple-300">Berabere:</span><br/>{analysisResults.teams.team_b.stats.draws} / 5</div>
-                          <div><span className="font-bold text-purple-300">Kazandığı Maç:</span><br/>{analysisResults.teams.team_b.stats.wins} / 5</div>
-                          <div><span className="font-bold text-purple-300">2.5 Üst:</span><br/>{analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5</div>
-                          <div><span className="font-bold text-purple-300">Handikaplı Galibiyet:</span><br/>{analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5</div>
-                          <div><span className="font-bold text-purple-300">Karşılıklı Gol:</span><br/>{analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5</div>
+                          <div><span className="font-bold text-purple-300">Kaybettiği Maç:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.stats.losses} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">Berabere:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.stats.draws} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">Kazandığı Maç:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.stats.wins} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">2.5 Üst:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">Handikaplı Galibiyet:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5</span></div>
+                          <div><span className="font-bold text-purple-300">Karşılıklı Gol:</span> <span className="bg-purple-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5</span></div>
                         </div>
                       </div>
                       {/* Aralarındaki Maçlar Analizi */}
                       <div className="modern-card animate-border-amber">
-                        <h3 className="text-2xl font-extrabold text-center text-yellow-200 mb-4 drop-shadow-lg">
+                        <h3 className="text-2xl font-extrabold text-center text-yellow-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
+                          <span className="text-2xl">⚔️</span>
                           Aralarındaki Maçlar Analizi
                         </h3>
                         <div className="text-yellow-100 text-base font-mono space-y-3 text-center">
-                          <div><span className="font-bold text-yellow-300">Karşılıklı Gol:</span><br/>{
+                          <div><span className="font-bold text-yellow-300">Karşılıklı Gol:</span> <span className="bg-yellow-800/40 px-2 py-1 rounded-lg font-bold">{
                             (analysisResults.head_to_head || []).filter(m => {
                               const parts = (m.result || '').split(':');
                               return parts.length === 2 && parseInt(parts[0]) > 0 && parseInt(parts[1]) > 0;
                             }).length
-                          } / {(analysisResults.head_to_head || []).length}</div>
-                          <div><span className="font-bold text-yellow-300">2.5 Üst:</span><br/>{
+                          } / {(analysisResults.head_to_head || []).length}</span></div>
+                          <div><span className="font-bold text-yellow-300">2.5 Üst:</span> <span className="bg-yellow-800/40 px-2 py-1 rounded-lg font-bold">{
                             (analysisResults.head_to_head || []).filter(m => {
                               const parts = (m.result || '').split(':');
                               return parts.length === 2 && (parseInt(parts[0]) + parseInt(parts[1]) > 2);
                             }).length
-                          } / {(analysisResults.head_to_head || []).length}</div>
+                          } / {(analysisResults.head_to_head || []).length}</span></div>
                         </div>
                       </div>
                       {/* Hakem Analizi */}
                       <div className="modern-card animate-border-green">
-                        <h3 className="text-2xl font-extrabold text-center text-green-200 mb-4 drop-shadow-lg">
+                        <h3 className="text-2xl font-extrabold text-center text-green-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
+                          <span className="text-2xl">🧑‍⚖️</span>
                           Hakem Analizi
                         </h3>
                         <div className="text-green-100 text-base font-mono space-y-3 text-center">
-                          <div><span className="font-bold text-green-300">Maç Başı Sarı Kart:</span><br/>{analysisResults.referees.main?.referee_analysis?.avg_yellow ?? '-'}</div>
-                          <div><span className="font-bold text-green-300">Maç Başı Penaltı:</span><br/>{analysisResults.referees.main?.referee_analysis?.avg_penalty ?? '-'}</div>
-                          <div><span className="font-bold text-green-300">Maç Başı Kırmızı Kart:</span><br/>{analysisResults.referees.main?.referee_analysis?.avg_red ?? '-'}</div>
+                          <div><span className="font-bold text-green-300">Maç Başı Sarı Kart:</span> <span className="bg-green-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_yellow ?? '-'}</span></div>
+                          <div><span className="font-bold text-green-300">Maç Başı Penaltı:</span> <span className="bg-green-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_penalty ?? '-'}</span></div>
+                          <div><span className="font-bold text-green-300">Maç Başı Kırmızı Kart:</span> <span className="bg-green-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_red ?? '-'}</span></div>
                         </div>
                       </div>
                     </div>

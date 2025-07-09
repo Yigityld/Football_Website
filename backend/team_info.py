@@ -229,13 +229,7 @@ def analyze_team_performance(team_name: str, matches: list[dict], w: int, d: int
 
     ust_gol = total_goals / 5
 
-    print(f"Maç başı atılan gol sayısı = {ust_gol}")
-    print(f"2.5 Üst biten maç sayısı = {ust_olan_mac}")
-    print(f"{team_name} in son 5 macta kazandığı maç sayısı {w} ")
-    print(f"{team_name} in son 5 macta berabere maç sayısı {d} ")
-    print(f"{team_name} in son 5 macta kaybettiği maç sayısı {l} ")
-    print(f"{team_name} in son 5 macta handikapla kazandığı  maç sayısı {handikap} ")
-    print(f"{team_name} in son 5 macta karşılıklı gol olan maç sayısı {karsilikli} ")
+    
 
 def get_last_matches(team_a: str, team_b: str) -> List[Dict[str, Any]]:
     print(f"[DEBUG] get_last_matches çağrıldı: {team_a} vs {team_b}")

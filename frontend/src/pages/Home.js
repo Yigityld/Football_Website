@@ -603,29 +603,53 @@ const handleAnalysis = () => {
                     </button>
                   </div>
                   {showAnalysis && analysisResults && (
-                    <div className="grid md:grid-cols-3 gap-6 mt-6">
-                      {/* Team A Analizi */}
+                    <div className="grid md:grid-cols-4 gap-6 mt-6">
+                      {/* Galatasaray Analizi */}
                       <div className="p-4 bg-white/10 rounded-xl border border-white/20">
                         <h3 className="text-xl font-bold text-center text-cyan-300 mb-2 font-sans">
                           {analysisResults.teams.team_a.name} Analizi
                         </h3>
                         <div className="text-white text-base font-mono space-y-2 text-center">
-                          <div>2.5 Üst: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5</span></div>
-                          <div>Tümünü Kazandı: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.all_win ? 'Evet' : 'Hayır'}</span></div>
-                          <div>Handikaplı Galibiyet: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5</span></div>
-                          <div>Karşılıklı Gol Var: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5</span></div>
+                          <div>Son 5 maçta Kaybettiği Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.stats.losses} / 5</span></div>
+                          <div>Son 5 maçta Berabere Kaldığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.stats.draws} / 5</span></div>
+                          <div>Son 5 maçta Kazandığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.stats.wins} / 5</span></div>
+                          <div>Son 5 maçta 2.5 üst bitmiş maç sayısı: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5</span></div>
+                          <div>Son 5 maçta Handikaplı Kazandığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5</span></div>
+                          <div>Son 5 maçta Karşılıklı Gol Olan Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5</span></div>
                         </div>
                       </div>
-                      {/* Team B Analizi */}
+                      {/* Fenerbahçe Analizi */}
                       <div className="p-4 bg-white/10 rounded-xl border border-white/20">
                         <h3 className="text-xl font-bold text-center text-purple-300 mb-2 font-sans">
                           {analysisResults.teams.team_b.name} Analizi
                         </h3>
                         <div className="text-white text-base font-mono space-y-2 text-center">
-                          <div>2.5 Üst: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5</span></div>
-                          <div>Tümünü Kazandı: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.all_win ? 'Evet' : 'Hayır'}</span></div>
-                          <div>Handikaplı Galibiyet: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5</span></div>
-                          <div>Karşılıklı Gol Var: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5</span></div>
+                          <div>Son 5 maçta Kaybettiği Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.stats.losses} / 5</span></div>
+                          <div>Son 5 maçta Berabere Kaldığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.stats.draws} / 5</span></div>
+                          <div>Son 5 maçta Kazandığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.stats.wins} / 5</span></div>
+                          <div>Son 5 maçta 2.5 üst bitmiş maç sayısı: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5</span></div>
+                          <div>Son 5 maçta Handikaplı Kazandığı Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5</span></div>
+                          <div>Son 5 maçta Karşılıklı Gol Olan Maç Sayısı: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5</span></div>
+                        </div>
+                      </div>
+                      {/* Aralarındaki Maçlar Analizi */}
+                      <div className="p-4 bg-white/10 rounded-xl border border-white/20">
+                        <h3 className="text-xl font-bold text-center text-yellow-300 mb-2 font-sans">
+                          Aralarındaki Maçlar Analizi
+                        </h3>
+                        <div className="text-white text-base font-mono space-y-2 text-center">
+                          <div>Karşılıklı Gol Olan Maç Sayısı: <span className="font-bold">{
+                            (analysisResults.head_to_head || []).filter(m => {
+                              const parts = (m.result || '').split(':');
+                              return parts.length === 2 && parseInt(parts[0]) > 0 && parseInt(parts[1]) > 0;
+                            }).length
+                          } / {(analysisResults.head_to_head || []).length}</span></div>
+                          <div>2.5 üst bitmiş maç sayısı: <span className="font-bold">{
+                            (analysisResults.head_to_head || []).filter(m => {
+                              const parts = (m.result || '').split(':');
+                              return parts.length === 2 && (parseInt(parts[0]) + parseInt(parts[1]) > 2);
+                            }).length
+                          } / {(analysisResults.head_to_head || []).length}</span></div>
                         </div>
                       </div>
                       {/* Hakem Analizi */}

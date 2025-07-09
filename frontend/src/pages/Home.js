@@ -500,45 +500,34 @@ const Home = () => {
 
               {/* Referees Section */}
               {(analysisResults.referees.main || analysisResults.referees.side) && (
-                <div className="mb-8">
-                  <h3 className="text-2xl font-bold text-center text-green-300 mb-6">👨‍⚖ Hakem Bilgileri</h3>
-                  <div className="grid md:grid-cols-2 gap-6">
+                <div className="mb-12">
+                  <h2 className="text-3xl font-extrabold text-center text-green-300 mb-8 flex items-center justify-center gap-2 drop-shadow-lg">
+                    <span className="text-3xl">👨‍⚖️</span> Hakem Bilgileri
+                  </h2>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {/* Ana Hakem */}
                     {analysisResults.referees.main && (
-                      <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-green-500/30">
-                        <div className="flex items-center mb-4">
-                          {analysisResults.referees.main.photo && (
-                            <img
-                              src={`data:image/png;base64,${analysisResults.referees.main.photo}`}
-                              alt="Main Referee"
-                              className="w-12 h-12 rounded-full mr-3"
-                            />
-                          )}
-                          <h4 className="text-lg font-bold text-green-300">Ana Hakem</h4>
+                      <div className="bg-gradient-to-br from-green-900/60 to-green-700/40 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-green-400/30">
+                        {analysisResults.referees.main.photo && (
+                          <img src={`data:image/png;base64,${analysisResults.referees.main.photo}`} alt="Ana Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-green-300 shadow-lg" />
+                        )}
+                        <h3 className="text-2xl font-extrabold text-green-200 mb-2 font-sans tracking-tight">{analysisResults.referees.main.name || "Ana Hakem"}</h3>
+                        <div className="text-base text-green-100 space-y-1 text-center font-mono">
+                          <div dangerouslySetInnerHTML={{ __html: analysisResults.referees.main.info }} />
                         </div>
-                        <div
-                          className="text-sm text-gray-300"
-                          dangerouslySetInnerHTML={{ __html: analysisResults.referees.main.info }}
-                        />
                       </div>
                     )}
-
+                    {/* Yan Hakem */}
                     {analysisResults.referees.side && (
-                      <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-green-500/30">
-                          <div className="flex items-center mb-4">
-                            {analysisResults.referees.side.photo && (
-                              <img
-                                src={`data:image/png;base64,${analysisResults.referees.side.photo}`}
-                                alt="Side Referee"
-                                className="w-12 h-12 rounded-full mr-3"
-                              />
-                            )}
-                            <h4 className="text-lg font-bold text-green-300">Yan Hakem</h4>
-                          </div>
-                          <div
-                            className="text-sm text-gray-300"
-                            dangerouslySetInnerHTML={{ __html: analysisResults.referees.side.info }}
-                          />
+                      <div className="bg-gradient-to-br from-yellow-900/60 to-yellow-700/40 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-yellow-400/30">
+                        {analysisResults.referees.side.photo && (
+                          <img src={`data:image/png;base64,${analysisResults.referees.side.photo}`} alt="Yan Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-yellow-300 shadow-lg" />
+                        )}
+                        <h3 className="text-2xl font-extrabold text-yellow-200 mb-2 font-sans tracking-tight">{analysisResults.referees.side.name || "Yan Hakem"}</h3>
+                        <div className="text-base text-yellow-100 space-y-1 text-center font-mono">
+                          <div dangerouslySetInnerHTML={{ __html: analysisResults.referees.side.info }} />
                         </div>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -546,39 +535,37 @@ const Home = () => {
 
               {/* Head to Head Matches */}
               {analysisResults.head_to_head && analysisResults.head_to_head.length > 0 && (
-                <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-yellow-500/30">
-                  <h3 className="text-2xl font-bold text-center text-yellow-300 mb-6">⚽ İki Takım Arası Son Maçlar</h3>
+                <div className="bg-gradient-to-br from-yellow-900/60 to-yellow-700/40 rounded-2xl shadow-xl p-8 border border-yellow-400/30 mb-8">
+                  <h3 className="text-2xl font-extrabold text-center text-yellow-300 mb-6 flex items-center gap-2 drop-shadow-lg">
+                    <span className="text-2xl">⚽</span> İki Takım Arası Son Maçlar
+                  </h3>
                   <div className="space-y-3">
-                    {analysisResults.head_to_head.map((match, index) => (
-                      <div key={index} className="flex justify-between items-center p-3 bg-yellow-500/10 rounded-lg">
-                        <span className="text-gray-300">{match.guest_team}</span>
-                        <span className="text-yellow-400 font-bold">{match.result}</span>
-                        <span className="text-gray-300">{match.home_team}</span>
-                        <span className="text-gray-500 text-sm">{match.date}</span>
+                    {analysisResults.head_to_head.map((match, idx) => (
+                      <div key={idx} className="flex justify-between items-center px-6 py-3 bg-yellow-500/10 rounded-xl font-mono text-lg font-semibold text-yellow-100 shadow hover:bg-yellow-500/20 transition-all">
+                        <span>{match.guest_team}</span>
+                        <span className="text-yellow-300 font-bold">{match.result}</span>
+                        <span>{match.home_team}</span>
+                        <span className="text-yellow-200 text-sm">{match.date}</span>
                       </div>
                     ))}
-                  {/* — Tahmin Et Butonu — */}
-                  <div className="flex justify-center mt-4">
+                  </div>
+                  <div className="flex justify-center mt-6">
                     <button
                       onClick={handlePredict}
                       disabled={predicting || analysisStatus !== 'completed'}
-                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50"
+                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
                     >
-                      {predicting ? 'Tahmin Yapılıyor…' : 'Gpt İle Tahmin Et'}
+                      {predicting ? 'Tahmin Yapılıyor…' : 'Gpt ile Tahmin Et'}
                     </button>
                   </div>
-
-                  {/* — Tahmin Kartı — */}
                   <div className="mt-6 p-4 bg-white/10 rounded-xl border border-white/20">
-                    <h3 className="text-xl font-bold text-center text-green-300 mb-2">
+                    <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
                       🤖 Maç Sonucu Tahmini
                     </h3>
                     {prediction
-                      ? <p className="text-center text-white text-2xl">{prediction}</p>
+                      ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
                       : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
                     }
-                  </div>
-
                   </div>
                 </div>
               )}

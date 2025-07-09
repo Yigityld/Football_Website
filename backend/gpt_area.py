@@ -7,6 +7,21 @@ from typing import List, Dict, Tuple, Optional
 import time
 import os
 
+# Ortam değişkeninden Hugging Face token’ını al
+HF_TOKEN = os.getenv("HF_TOKEN")
+if not HF_TOKEN:
+    raise RuntimeError("HF_TOKEN tanımlı değil. Lütfen ortam değişkeni olarak ekle.")
+
+# Kullanacağın model adı
+MODEL = "gpt2-medium"  # veya projen için başka bir HF modeli
+API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
+
+# Her istek için header
+HF_HEADERS = {
+    "Authorization": f"Bearer {HF_TOKEN}",
+    "Content-Type": "application/json"
+}
+
 # --- Takım URL ve ID çekme fonksiyonları ---
 def safe_get(url, headers=None, timeout=30, retries=3, wait=2):
     for attempt in range(retries):
@@ -231,23 +246,18 @@ def hazirla_prompt_string(
     return prompt
 
 # --- LLM'ye sorgu gönderme ---
-def sor_local_llm(prompt: str, model: str = "mistral") -> str:
-    try:
-        url = os.environ.get("LLM_API_URL", "http://localhost:11434/api/generate")
-        headers = {"Content-Type": "application/json"}
-        data = {
-            "model": model,
-            "prompt": prompt,
-            "stream": False
-        }
-        response = requests.post(url, headers=headers, json=data)
-        if response.ok:
-            json_data = response.json()
-            return json_data.get("response", "Cevap alınamadı.")
-        return f"Hata: {response.status_code} - {response.text}"
-    except Exception as e:
-        return f"Ollama bağlantısı başarısız: {e}"
-
+def sor_hf(prompt: str) -> str:
+    payload = {
+        "inputs": prompt,
+        "options": {"use_cache": False}
+    }
+    r = requests.post(API_URL, headers=HF_HEADERS, json=payload, timeout=30)
+    data = r.json()
+    # Eğer hata döndüyse dönen mesajı ver
+    if isinstance(data, dict) and data.get("error"):
+        return f"HF Hata: {data['error']}"
+    # Aksi halde üretilen metni al
+    return data[0].get("generated_text", "Cevap alınamadı.")
 
 # --- Dışa açılan fonksiyon ---
 def predict_match(team_a: str, team_b: str) -> str:
@@ -255,4 +265,4 @@ def predict_match(team_a: str, team_b: str) -> str:
     maclar_b, wins_b, draws_b, losses_b = get_team_last_5_matches_with_tactics(team_b)
     ikili = get_last_matches(team_a, team_b)
     prompt = hazirla_prompt_string(ikili, team_a, maclar_a, wins_a, draws_a, losses_a, team_b, maclar_b, wins_b, draws_b, losses_b)
-    return sor_local_llm(prompt)
+    return sor_hf(prompt)

@@ -9,8 +9,23 @@ import os
 
 # Ortam değişkeninden Hugging Face token’ını al
 HF_TOKEN = os.getenv("HF_TOKEN")
+
 if not HF_TOKEN:
-    raise RuntimeError("HF_TOKEN tanımlı değil. Lütfen ortam değişkeni olarak ekle.")
+    # Ortam değişkeni olarak bulunamazsa, Secret Files yolunu dene
+    secret_file_path = "/etc/secrets/HF_TOKEN"
+    if os.path.exists(secret_file_path):
+        try:
+            with open(secret_file_path, 'r') as f:
+                HF_TOKEN = f.read().strip() # Dosyanın içeriğini oku ve boşlukları temizle
+            print("HF_TOKEN başarıyla Secret Files dosyasından okundu.")
+        except Exception as e:
+            raise RuntimeError(f"HF_TOKEN Secret Files dosyasından okunurken bir hata oluştu: {e}")
+    else:
+        # Ne ortam değişkeninde ne de Secret Files yolunda bulunamadı
+        raise RuntimeError("HF_TOKEN tanımlı değil. Lütfen ortam değişkeni olarak ekleyin veya Secret Files olarak doğru şekilde yüklediğinizden emin olun.")
+
+# Artık HF_TOKEN'i kullanabilirsiniz
+print(f"Kullanılan HF_TOKEN: {'*' * len(HF_TOKEN) if HF_TOKEN else 'Yok'}") # Güvenlik için token'ın kendisini yazdırma
 
 # Kullanacağın model adı
 MODEL = "gpt2-medium"  # veya projen için başka bir HF modeli

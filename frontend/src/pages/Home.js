@@ -566,23 +566,34 @@ const handleAnalysis = () => {
 
               {/* Head to Head Matches */}
               {analysisResults && analysisResults.head_to_head && analysisResults.head_to_head.length > 0 && (
-                <div className="w-full flex justify-center mb-8">
-                  <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white max-w-3xl w-full relative">
-                    <h3 className="text-2xl font-extrabold text-center text-yellow-300 mb-6 flex items-center gap-2 drop-shadow-lg">
-                      <span className="text-2xl">⚽</span> İki Takım Arası Son Maçlar
-                    </h3>
-                    <div className="space-y-3">
-                      {analysisResults.head_to_head.map((match, idx) => (
-                        <div key={idx} className="flex justify-between items-center px-6 py-3 bg-yellow-500/10 rounded-xl font-mono text-lg font-semibold text-yellow-100 shadow hover:bg-yellow-500/20 transition-all">
-                          <span>{match.guest_team}</span>
-                          <span className="text-yellow-300 font-bold">{match.result}</span>
-                          <span>{match.home_team}</span>
-                          <span className="text-yellow-200 text-sm">{match.date}</span>
-                        </div>
-                      ))}
+                <>
+                  <div className="w-full flex justify-center mb-4">
+                    <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white max-w-3xl w-full relative">
+                      <h3 className="text-2xl font-extrabold text-center text-yellow-300 mb-6 flex items-center gap-2 drop-shadow-lg">
+                        <span className="text-2xl">⚽</span> İki Takım Arası Son Maçlar
+                      </h3>
+                      <div className="space-y-3">
+                        {analysisResults.head_to_head.map((match, idx) => (
+                          <div key={idx} className="flex justify-between items-center px-6 py-3 bg-yellow-500/10 rounded-xl font-mono text-lg font-semibold text-yellow-100 shadow hover:bg-yellow-500/20 transition-all">
+                            <span>{match.guest_team}</span>
+                            <span className="text-yellow-300 font-bold">{match.result}</span>
+                            <span>{match.home_team}</span>
+                            <span className="text-yellow-200 text-sm">{match.date}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
+                  <div className="w-full flex justify-center mb-4">
+                    <button
+                      onClick={handlePredict}
+                      disabled={predicting || analysisStatus !== 'completed'}
+                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
+                    >
+                      {predicting ? 'Tahmin Yapılıyor…' : 'Gpt ile Tahmin Et'}
+                    </button>
+                  </div>
+                </>
               )}
 
               {/* Prediction Section */}

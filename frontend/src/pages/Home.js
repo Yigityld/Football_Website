@@ -430,9 +430,7 @@ const handleAnalysis = () => {
                         className="w-16 h-16 rounded-full mr-4 border-4 border-cyan-300 shadow-lg"
                       />
                     )}
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl px-4 py-2 flex-1">
-                      <h3 className="text-3xl font-extrabold text-white tracking-tight drop-shadow-lg">{analysisResults.teams.team_a.name}</h3>
-                    </div>
+                    <h3 className="text-3xl font-extrabold text-cyan-200 tracking-tight drop-shadow-lg">{analysisResults.teams.team_a.name}</h3>
                   </div>
 
                   <div className="space-y-2 text-base text-cyan-100 mb-6">
@@ -480,9 +478,7 @@ const handleAnalysis = () => {
                         className="w-16 h-16 rounded-full mr-4 border-4 border-purple-300 shadow-lg"
                       />
                     )}
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl px-4 py-2 flex-1">
-                      <h3 className="text-3xl font-extrabold text-white tracking-tight drop-shadow-lg">{analysisResults.teams.team_b.name}</h3>
-                    </div>
+                    <h3 className="text-3xl font-extrabold text-purple-200 tracking-tight drop-shadow-lg">{analysisResults.teams.team_b.name}</h3>
                   </div>
 
                   <div className="space-y-2 text-base text-purple-100 mb-6">
@@ -524,7 +520,7 @@ const handleAnalysis = () => {
               {/* Referees Section */}
               {(analysisResults.referees.main || analysisResults.referees.side) && (
                 <div className="mb-12">
-                  <h2 className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl px-4 py-2 text-3xl font-extrabold text-white text-center mb-8 flex items-center justify-center gap-2 drop-shadow-lg">
+                  <h2 className="text-3xl font-extrabold text-center text-green-300 mb-8 flex items-center justify-center gap-2 drop-shadow-lg">
                     <span className="text-3xl">👨‍⚖️</span> Hakem Bilgileri
                   </h2>
                   <div className="grid md:grid-cols-2 gap-8">

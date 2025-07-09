@@ -9,6 +9,13 @@ import os
 
 # Ortam değişkeninden Hugging Face token’ını al
 HF_TOKEN = os.getenv("HF_TOKEN")
+MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
+API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
+HF_HEADERS = {
+    "Authorization": f"Bearer {HF_TOKEN}",
+    "Content-Type": "application/json"
+}
+
 
 if not HF_TOKEN:
     # Ortam değişkeni olarak bulunamazsa, Secret Files yolunu dene
@@ -27,11 +34,10 @@ if not HF_TOKEN:
 # Artık HF_TOKEN'i kullanabilirsiniz
 print(f"Kullanılan HF_TOKEN: {'*' * len(HF_TOKEN) if HF_TOKEN else 'Yok'}") # Güvenlik için token'ın kendisini yazdırma
 
-# Kullanacağın model adı
-MODEL = "gpt2-medium"  # veya projen için başka bir HF modeli
-API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
 
-# Her istek için header
+HF_TOKEN = os.getenv("HF_TOKEN")
+MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
+API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
 HF_HEADERS = {
     "Authorization": f"Bearer {HF_TOKEN}",
     "Content-Type": "application/json"
@@ -351,27 +357,26 @@ def sor_hf(prompt: str) -> str:
     }
     r = requests.post(API_URL, headers=HF_HEADERS, json=payload, timeout=30)
 
-    # 1) HTTP hata kodu
-    if not r.ok:
-        err_body = r.text.strip() or "<empty response>"
-        return f"HF API Hatası {r.status_code}: {err_body}"
+    if r.status_code == 404:
+        # Muhtemelen lisans kabul edilmedi veya MODEL yanlış
+        return ("HF API Hatası 404: Model bulunamadı. "
+                "Lütfen Hugging Face'de “mistralai/Mistral-7B-Instruct-v0.2” sayfasına gidip "
+                "lisansı kabul ettiğinizden emin olun ve MODEL değişkeninizi kontrol edin.")
 
-    # 2) JSON parse
+    if not r.ok:
+        return f"HF API Hatası {r.status_code}: {r.text.strip() or '<empty>'}"
+
     try:
         data = r.json()
     except ValueError:
-        snippet = (r.text or "<empty>").strip()[:200]
-        return f"HF API non-JSON yanıtı: {snippet}"
+        return f"HF API non-JSON yanıt: {r.text[:200]}"
 
-    # 3) API-level error
     if isinstance(data, dict) and data.get("error"):
         return f"HF Hata: {data['error']}"
 
-    # 4) Beklenen liste-format
     if isinstance(data, list) and data:
         return data[0].get("generated_text", "Cevap alınamadı.")
 
-    # 5) Beklenmeyen format
     return f"HF API’den beklenmeyen format: {data}"
 
 # --- predict_match fonksiyonu ---

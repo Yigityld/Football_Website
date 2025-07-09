@@ -291,6 +291,7 @@ def get_last_matches(team_a: str, team_b: str) -> List[Dict]:
             continue
     return matches[:5]
 
+# --- Prompt hazırlama (aynı kalıyor) ---
 def prepare_the_prompt(
     matches: List[Dict],
     team_a: str,
@@ -304,7 +305,6 @@ def prepare_the_prompt(
     draws_b: int,
     losses_b: int
 ) -> str:
-    # Son 5 maçları satır satır hazırla
     last5_a = "\n".join(
         f"{m['tarih']} vs {m['rakip']} | Result: {m['sonuc']} | Formation: {m['dizilis']}"
         for m in maclar_a
@@ -313,7 +313,6 @@ def prepare_the_prompt(
         f"{m['tarih']} vs {m['rakip']} | Result: {m['sonuc']} | Formation: {m['dizilis']}"
         for m in maclar_b
     )
-    # Head-to-head
     h2h = "\n".join(
         f"{m['date']} - {m['guest_team']} {m['result']} {m['home_team']}"
         for m in matches
@@ -339,7 +338,7 @@ Prediction: {team_a} X – Y {team_b}
 Do not add any extra commentary, explanation, or text.
 """
 
-# --- Güncellenmiş HF Inference API çağrısı ---
+# --- Geliştirilmiş HF Inference API çağrısı ---
 def sor_hf(prompt: str) -> str:
     payload = {
         "inputs": prompt,
@@ -351,13 +350,31 @@ def sor_hf(prompt: str) -> str:
         }
     }
     r = requests.post(API_URL, headers=HF_HEADERS, json=payload, timeout=30)
-    data = r.json()
+
+    # 1) HTTP hata kodu
+    if not r.ok:
+        err_body = r.text.strip() or "<empty response>"
+        return f"HF API Hatası {r.status_code}: {err_body}"
+
+    # 2) JSON parse
+    try:
+        data = r.json()
+    except ValueError:
+        snippet = (r.text or "<empty>").strip()[:200]
+        return f"HF API non-JSON yanıtı: {snippet}"
+
+    # 3) API-level error
     if isinstance(data, dict) and data.get("error"):
         return f"HF Hata: {data['error']}"
-    # API, list içindeki tek elemanı döner
-    return data[0].get("generated_text", "Cevap alınamadı.")
 
-# --- predict_match fonksiyonunu sor_hf ile güncelle ---
+    # 4) Beklenen liste-format
+    if isinstance(data, list) and data:
+        return data[0].get("generated_text", "Cevap alınamadı.")
+
+    # 5) Beklenmeyen format
+    return f"HF API’den beklenmeyen format: {data}"
+
+# --- predict_match fonksiyonu ---
 def predict_match(team_a: str, team_b: str) -> str:
     maclar_a, wins_a, draws_a, losses_a, _ = get_team_last_5_matches_with_tactics(team_a)
     maclar_b, wins_b, draws_b, losses_b, _ = get_team_last_5_matches_with_tactics(team_b)

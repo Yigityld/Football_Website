@@ -3,8 +3,11 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 import re
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional, Tuple, Coroutine
 import base64
+import httpx
+import asyncio
+from functools import lru_cache
 
 # --- Takım URL ve ID çekme fonksiyonları ---
 def search_team_url(team_name: str) -> Optional[str]:
@@ -374,3 +377,65 @@ def get_image_as_base64(url: str) -> Optional[str]:
     except Exception as e:
         print(f"get_image_as_base64 error:{e}")
     return None
+
+# --- Takım URL ve ID çekme fonksiyonları ---
+@lru_cache(maxsize=128)
+def search_team_url_cached(team_name: str) -> Optional[str]:
+    return search_team_url(team_name)
+
+async def async_search_team_url(team_name: str) -> Optional[str]:
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, search_team_url_cached, team_name)
+
+async def async_get_team_id_from_url(team_url: Optional[str]) -> Optional[str]:
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_team_id_from_url, team_url)
+
+@lru_cache(maxsize=128)
+def find_team_id_cached(team_name: str) -> Optional[str]:
+    return find_team_id(team_name)
+
+async def async_find_team_id(team_name: str) -> Optional[str]:
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, find_team_id_cached, team_name)
+
+# --- Takımın son 5 maçını getir ---
+@lru_cache(maxsize=128)
+def get_team_last_5_matches_with_tactics_cached(team_name: str):
+    return get_team_last_5_matches_with_tactics(team_name)
+
+async def async_get_team_last_5_matches_with_tactics(team_name: str):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_team_last_5_matches_with_tactics_cached, team_name)
+
+@lru_cache(maxsize=128)
+def get_last_matches_cached(team_a: str, team_b: str):
+    return get_last_matches(team_a, team_b)
+
+async def async_get_last_matches(team_a: str, team_b: str):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_last_matches_cached, team_a, team_b)
+
+@lru_cache(maxsize=128)
+def get_team_info_cached(name: str):
+    return get_team_info(name)
+
+async def async_get_team_info(name: str):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_team_info_cached, name)
+
+@lru_cache(maxsize=128)
+def get_referee_info_cached(name: str, season: str = "2024"):
+    return get_referee_info(name, season)
+
+async def async_get_referee_info(name: str, season: str = "2024"):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_referee_info_cached, name, season)
+
+@lru_cache(maxsize=128)
+def get_image_as_base64_cached(url: str):
+    return get_image_as_base64(url)
+
+async def async_get_image_as_base64(url: str):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_image_as_base64_cached, url)

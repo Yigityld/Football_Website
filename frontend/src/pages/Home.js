@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-const PRIMARY = 'text-blue-500';
-const ACCENT = 'text-amber-500';
-const BG_CARD = 'bg-zinc-800';
-const BORDER_CARD = 'border-zinc-700';
-const BG_MAIN = 'bg-zinc-900';
-const TEXT_MAIN = 'text-zinc-200';
-const TEXT_SUB = 'text-zinc-400';
-
 const Home = () => {
   const [formData, setFormData] = useState({
     teamA: '',
@@ -185,7 +177,7 @@ const handleAnalysis = () => {
 
 
   return (
-    <div className={`${BG_MAIN} min-h-screen relative overflow-hidden`}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Animated Background Grid */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0" style={{
@@ -216,243 +208,315 @@ const handleAnalysis = () => {
 
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="max-w-5xl mx-auto">
-          {/* Header */}
+          {/* Header with Enhanced Styling */}
           <div className="text-center mb-16">
-            <div className="inline-block p-2 rounded-full bg-zinc-800 border border-zinc-700 mb-6">
-              <div className="w-16 h-16 mx-auto bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-2xl text-white">⚽</span>
+            <div className="inline-block p-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm border border-cyan-500/30 mb-6">
+              <div className="w-16 h-16 mx-auto bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full flex items-center justify-center">
+                <span className="text-2xl">⚽</span>
               </div>
             </div>
-            <h1 className="text-5xl font-black text-blue-400 mb-4">Futbol Analiz AI</h1>
-            <p className="text-xl text-zinc-300 font-light tracking-wide mb-2">Yapay Zeka Destekli Maç Analizi Sistemi</p>
+            <h1 className="text-7xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-6 animate-pulse">
+              Futbol Analiz AI
+            </h1>
+            <p className="text-2xl text-gray-300 font-light tracking-wide">
+              Yapay Zeka Destekli Maç Analizi Sistemi
+            </p>
             <div className="mt-4 flex justify-center space-x-2">
-              <span className="px-3 py-1 bg-blue-600/10 text-blue-400 rounded-full text-sm border border-blue-600/20">YOLO Tespit</span>
-              <span className="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-sm border border-amber-500/20">Renk Analizi</span>
-              <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-sm border border-green-500/20">Gerçek Zamanlı</span>
+              <span className="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full text-sm border border-cyan-500/30">YOLO Tespit</span>
+              <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm border border-purple-500/30">Renk Analizi</span>
+              <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm border border-green-500/30">Gerçek Zamanlı</span>
             </div>
+            
+            {/* Test Backend Connection Button */}
             <div className="mt-6 flex justify-center">
               <button
                 onClick={testBackendConnection}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300"
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-105 active:scale-95"
               >
                 🔗 Backend Bağlantısını Test Et
               </button>
             </div>
+            
             {testResult && (
               <div className="mt-4 text-center">
-                <p className={`text-lg ${testResult.includes('✅') ? 'text-green-400' : 'text-red-400'}`}>{testResult}</p>
+                <p className={`text-lg ${testResult.includes('✅') ? 'text-green-400' : 'text-red-400'}`}>
+                  {testResult}
+                </p>
               </div>
             )}
           </div>
 
-          {/* Main Form */}
-          <div className="bg-zinc-800/80 rounded-2xl border border-zinc-700 shadow-2xl p-10 mb-8">
-            <form onSubmit={handleStartAnalysis} className="space-y-8">
+          {/* Enhanced Main Form */}
+          <div className="backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 rounded-3xl border border-white/20 shadow-2xl p-10 mb-8 relative overflow-hidden">
+            {/* Form Background Glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-pink-500/5 rounded-3xl"></div>
+
+            {/* Corner Decorations */}
+            <div className="absolute top-0 left-0 w-20 h-20 border-l-2 border-t-2 border-cyan-400 rounded-tl-3xl"></div>
+            <div className="absolute top-0 right-0 w-20 h-20 border-r-2 border-t-2 border-purple-400 rounded-tr-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 border-l-2 border-b-2 border-green-400 rounded-bl-3xl"></div>
+            <div className="absolute bottom-0 right-0 w-20 h-20 border-r-2 border-b-2 border-pink-400 rounded-br-3xl"></div>
+
+            <form onSubmit={handleStartAnalysis} className="relative z-10 space-y-8">
+              {/* Teams Section with Enhanced Cards */}
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Team A Card */}
-                <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} p-6 shadow-md`}>
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-white font-bold">A</span>
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-cyan-500/30 hover:border-cyan-400/50 transition-all duration-300">
+                    <div className="flex items-center mb-4">
+                      <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white font-bold">A</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-cyan-300">Takım A</h3>
                     </div>
-                    <h3 className="text-lg font-bold text-blue-400">Takım A</h3>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-blue-300 mb-2">Takım Adı</label>
-                    <input
-                      type="text"
-                      name="teamA"
-                      value={formData.teamA}
-                      onChange={handleInputChange}
-                      placeholder="Takım A adını girin..."
-                      className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all duration-300"
-                    />
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-cyan-200 mb-2">
+                          Takım Adı
+                        </label>
+                        <input
+                          type="text"
+                          name="teamA"
+                          value={formData.teamA}
+                          onChange={handleInputChange}
+                          placeholder="Takım A adını girin..."
+                          className="w-full px-4 py-3 bg-black/50 border border-cyan-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all duration-300"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
+
                 {/* Team B Card */}
-                <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} p-6 shadow-md`}>
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-white font-bold">B</span>
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300">
+                    <div className="flex items-center mb-4">
+                      <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white font-bold">B</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-purple-300">Takım B</h3>
                     </div>
-                    <h3 className="text-lg font-bold text-amber-400">Takım B</h3>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-amber-300 mb-2">Takım Adı</label>
-                    <input
-                      type="text"
-                      name="teamB"
-                      value={formData.teamB}
-                      onChange={handleInputChange}
-                      placeholder="Takım B adını girin..."
-                      className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 transition-all duration-300"
-                    />
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-purple-200 mb-2">
+                          Takım Adı
+                        </label>
+                        <input
+                          type="text"
+                          name="teamB"
+                          value={formData.teamB}
+                          onChange={handleInputChange}
+                          placeholder="Takım B adını girin..."
+                          className="w-full px-4 py-3 bg-black/50 border border-purple-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 transition-all duration-300"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              {/* Referees Section */}
+
+              {/* Referees Section with Enhanced Cards */}
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Main Referee Card */}
-                <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} p-6 shadow-md`}>
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-white font-bold">👨‍⚖</span>
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300">
+                    <div className="flex items-center mb-4">
+                      <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white font-bold">👨‍⚖</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-yellow-300">Ana Hakem</h3>
                     </div>
-                    <h3 className="text-lg font-bold text-green-400">Ana Hakem</h3>
+
+                    <input
+                      type="text"
+                      name="mainRef"
+                      value={formData.mainRef}
+                      onChange={handleInputChange}
+                      placeholder="Ana hakem adını girin..."
+                      className="w-full px-4 py-3 bg-black/50 border border-yellow-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/30 transition-all duration-300"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    name="mainRef"
-                    value={formData.mainRef}
-                    onChange={handleInputChange}
-                    placeholder="Ana hakem adını girin..."
-                    className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/30 transition-all duration-300"
-                  />
                 </div>
+
                 {/* Side Referee Card */}
-                <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} p-6 shadow-md`}>
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-white font-bold">👨‍⚖</span>
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/30 hover:border-orange-400/50 transition-all duration-300">
+                    <div className="flex items-center mb-4">
+                      <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-white font-bold">👨‍⚖</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-orange-300">Yan Hakem</h3>
                     </div>
-                    <h3 className="text-lg font-bold text-red-400">Yan Hakem</h3>
+
+                    <input
+                      type="text"
+                      name="sideRef"
+                      value={formData.sideRef}
+                      onChange={handleInputChange}
+                      placeholder="Yan hakem adını girin..."
+                      className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    name="sideRef"
-                    value={formData.sideRef}
-                    onChange={handleInputChange}
-                    placeholder="Yan hakem adını girin..."
-                    className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-400/30 transition-all duration-300"
-                  />
                 </div>
               </div>
-              {/* Action Button */}
+
+              {/* Enhanced Action Button */}
               <div className="flex justify-center pt-8">
-                <button
-                  type="submit"
-                  disabled={loading || analysisStatus === 'running'}
-                  className="px-16 py-6 bg-blue-600 hover:bg-blue-700 text-white font-bold text-2xl rounded-lg shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Başlatılıyor...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-3">
-                      <span className="text-3xl">🔍</span>
-                      <span>Analizi Başlat</span>
-                    </div>
-                  )}
-                </button>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                  <button
+                    type="submit"
+                    disabled={loading || analysisStatus === 'running'}
+                    className="relative px-16 py-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-2xl rounded-2xl shadow-2xl hover:shadow-green-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+                  >
+                    {loading ? (
+                      <div className="flex items-center space-x-3">
+                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Başlatılıyor...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-3">
+                        <span className="text-3xl">🔍</span>
+                        <span>Analizi Başlat</span>
+                      </div>
+                    )}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
 
-          {/* Analysis Status */}
+          {/* Enhanced Analysis Status */}
           {analysisStatus !== 'idle' && (
-            <div className="bg-zinc-800/80 rounded-2xl border border-zinc-700 shadow-2xl p-8 mb-8">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-2xl text-white">📊</span>
-                </div>
-                <h3 className="text-2xl font-bold text-blue-400">Analiz Durumu</h3>
-              </div>
-              <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-700">
-                <p className="text-white text-xl mb-4">{analysisMessage}</p>
-                {analysisStatus === 'running' && (
-                  <div className="space-y-4">
-                    <div className="w-full bg-zinc-700 rounded-full h-3 overflow-hidden">
-                      <div className="bg-blue-600 h-full rounded-full animate-pulse" style={{width: '60%'}}></div>
-                    </div>
-                    <p className="text-zinc-400 text-sm">Takım ve hakem bilgileri çekiliyor...</p>
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 rounded-3xl border border-white/20 shadow-2xl p-8 mb-8 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 rounded-3xl"></div>
+
+              <div className="relative z-10">
+                <div className="flex items-center mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mr-4">
+                    <span className="text-2xl">📊</span>
                   </div>
-                )}
+                  <h3 className="text-2xl font-bold text-blue-400">Analiz Durumu</h3>
+                </div>
+
+                <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/30">
+                  <p className="text-white text-xl mb-4">{analysisMessage}</p>
+                  {analysisStatus === 'running' && (
+                    <div className="space-y-4">
+                      <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                        <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full animate-pulse" style={{width: '60%'}}></div>
+                      </div>
+                      <p className="text-gray-300 text-sm">Takım ve hakem bilgileri çekiliyor...</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
           {/* Analysis Results Display */}
           {analysisResults && (
-            <div className="bg-zinc-800/80 rounded-2xl border border-zinc-700 shadow-2xl p-8 mt-8">
-              <h2 className="text-3xl font-bold text-center text-blue-400 mb-8">📊 Analiz Sonuçları</h2>
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 rounded-3xl border border-white/20 shadow-2xl p-8 mt-8">
+
+              <h2 className="text-3xl font-bold text-center text-cyan-300 mb-8">📊 Analiz Sonuçları</h2>
+
               {/* Teams Section */}
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 {/* Team A */}
-                <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} shadow-md p-8`}>
+                <div className="bg-gradient-to-br from-cyan-900/60 to-cyan-700/40 rounded-2xl shadow-xl p-8 backdrop-blur-md border border-cyan-400/30">
                   <div className="flex items-center mb-6">
                     {analysisResults.teams.team_a.logo && (
                       <img
                         src={`data:image/png;base64,${analysisResults.teams.team_a.logo}`}
                         alt="Team A Logo"
-                        className="w-16 h-16 rounded-full mr-4 border-4 border-blue-400 shadow-lg"
+                        className="w-16 h-16 rounded-full mr-4 border-4 border-cyan-300 shadow-lg"
                       />
                     )}
-                    <h3 className="text-3xl font-extrabold text-blue-200 tracking-tight drop-shadow-lg">{analysisResults.teams.team_a.name}</h3>
+                    <h3 className="text-3xl font-extrabold text-cyan-200 tracking-tight drop-shadow-lg">{analysisResults.teams.team_a.name}</h3>
                   </div>
-                  <div className="space-y-2 text-base text-blue-100 mb-6">
-                    <div><span className="font-bold text-blue-300">Lig:</span> {analysisResults.teams.team_a.info.Lig || 'Bilinmiyor'}</div>
-                    <div><span className="font-bold text-blue-300">Sıralama:</span> {analysisResults.teams.team_a.info['Lig Sıralaması'] || '?'}</div>
-                    <div><span className="font-bold text-blue-300">Kadro Değeri:</span> {analysisResults.teams.team_a.info['Kadro Değeri'] || 'Bilinmiyor'}</div>
-                    <div><span className="font-bold text-blue-300">Yaş Ortalaması:</span> {analysisResults.teams.team_a.info['Yaş Ortalaması'] || 'Bilinmiyor'}</div>
+
+                  <div className="space-y-2 text-base text-cyan-100 mb-6">
+                    <div><span className="font-bold text-cyan-300">Lig:</span> {analysisResults.teams.team_a.info.Lig || 'Bilinmiyor'}</div>
+                    <div><span className="font-bold text-cyan-300">Sıralama:</span> {analysisResults.teams.team_a.info['Lig Sıralaması'] || '?'}</div>
+                    <div><span className="font-bold text-cyan-300">Kadro Değeri:</span> {analysisResults.teams.team_a.info['Kadro Değeri'] || 'Bilinmiyor'}</div>
+                    <div><span className="font-bold text-cyan-300">Yaş Ortalaması:</span> {analysisResults.teams.team_a.info['Yaş Ortalaması'] || 'Bilinmiyor'}</div>
                   </div>
-                  <div className="bg-zinc-900 rounded-xl shadow p-6 border border-zinc-700">
-                    <h4 className="text-blue-200 text-xl font-extrabold mb-4 flex items-center gap-2">Son 5 Maç</h4>
+
+                  <div className="bg-gradient-to-br from-cyan-800/60 to-cyan-600/40 rounded-2xl shadow-lg p-6 backdrop-blur-md border border-cyan-400/20">
+                    <h4 className="text-cyan-200 text-xl font-extrabold mb-4 flex items-center gap-2">
+                      <span className="material-icons text-2xl"></span>
+                      Son 5 Maç
+                    </h4>
                     <div className="space-y-3">
                       {analysisResults.teams.team_a.last_matches.map((match, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 hover:bg-blue-600/10"
+                          className="flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 hover:bg-cyan-400/10"
                         >
-                          <span className="font-semibold text-blue-100">{match.rakip}</span>
-                          <span className="font-mono text-lg font-bold text-blue-200">{match.sonuc}</span>
-                          <span className="text-xs text-blue-300 ml-2">{match.dizilis || ''}</span>
-                          <span className="text-2xl">{match.emoji === '✅' ? '✔️' : match.emoji === '❌' ? '❌' : '➖'}</span>
+                          <span className="font-semibold text-cyan-100">{match.rakip}</span>
+                          <span className="font-mono text-lg font-bold text-cyan-200">{match.sonuc}</span>
+                          <span className="text-xs text-cyan-300 ml-2">{match.dizilis || ''}</span>
+                          <span className="text-2xl">
+                            {match.emoji === '✅' ? '✔️' : match.emoji === '❌' ? '❌' : '➖'}
+                          </span>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-4 flex justify-between text-sm text-blue-300 font-medium">
+                    <div className="mt-4 flex justify-between text-sm text-cyan-300 font-medium">
                       <span>Galibiyet: {analysisResults.teams.team_a.stats.wins}</span>
                       <span>Beraberlik: {analysisResults.teams.team_a.stats.draws}</span>
                       <span>Mağlubiyet: {analysisResults.teams.team_a.stats.losses}</span>
                     </div>
                   </div>
                 </div>
+
                 {/* Team B */}
-                <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} shadow-md p-8`}>
+                <div className="bg-gradient-to-br from-purple-900/60 to-purple-700/40 rounded-2xl shadow-xl p-8 backdrop-blur-md border border-purple-400/30">
                   <div className="flex items-center mb-6">
                     {analysisResults.teams.team_b.logo && (
                       <img
                         src={`data:image/png;base64,${analysisResults.teams.team_b.logo}`}
                         alt="Team B Logo"
-                        className="w-16 h-16 rounded-full mr-4 border-4 border-amber-400 shadow-lg"
+                        className="w-16 h-16 rounded-full mr-4 border-4 border-purple-300 shadow-lg"
                       />
                     )}
-                    <h3 className="text-3xl font-extrabold text-amber-200 tracking-tight drop-shadow-lg">{analysisResults.teams.team_b.name}</h3>
+                    <h3 className="text-3xl font-extrabold text-purple-200 tracking-tight drop-shadow-lg">{analysisResults.teams.team_b.name}</h3>
                   </div>
-                  <div className="space-y-2 text-base text-amber-100 mb-6">
-                    <div><span className="font-bold text-amber-300">Lig:</span> {analysisResults.teams.team_b.info.Lig || 'Bilinmiyor'}</div>
-                    <div><span className="font-bold text-amber-300">Sıralama:</span> {analysisResults.teams.team_b.info['Lig Sıralaması'] || '?'}</div>
-                    <div><span className="font-bold text-amber-300">Kadro Değeri:</span> {analysisResults.teams.team_b.info['Kadro Değeri'] || 'Bilinmiyor'}</div>
-                    <div><span className="font-bold text-amber-300">Yaş Ortalaması:</span> {analysisResults.teams.team_b.info['Yaş Ortalaması'] || 'Bilinmiyor'}</div>
+
+                  <div className="space-y-2 text-base text-purple-100 mb-6">
+                    <div><span className="font-bold text-purple-300">Lig:</span> {analysisResults.teams.team_b.info.Lig || 'Bilinmiyor'}</div>
+                    <div><span className="font-bold text-purple-300">Sıralama:</span> {analysisResults.teams.team_b.info['Lig Sıralaması'] || '?'}</div>
+                    <div><span className="font-bold text-purple-300">Kadro Değeri:</span> {analysisResults.teams.team_b.info['Kadro Değeri'] || 'Bilinmiyor'}</div>
+                    <div><span className="font-bold text-purple-300">Yaş Ortalaması:</span> {analysisResults.teams.team_b.info['Yaş Ortalaması'] || 'Bilinmiyor'}</div>
                   </div>
-                  <div className="bg-zinc-900 rounded-xl shadow p-6 border border-zinc-700">
-                    <h4 className="text-amber-200 text-xl font-extrabold mb-4 flex items-center gap-2">Son 5 Maç</h4>
+
+                  <div className="bg-gradient-to-br from-purple-800/60 to-purple-600/40 rounded-2xl shadow-lg p-6 backdrop-blur-md border border-purple-400/20">
+                    <h4 className="text-purple-200 text-xl font-extrabold mb-4 flex items-center gap-2">
+                      <span className="material-icons text-2xl">sports_soccer</span>
+                      Son 5 Maç
+                    </h4>
                     <div className="space-y-3">
                       {analysisResults.teams.team_b.last_matches.map((match, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 hover:bg-amber-500/10"
+                          className="flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 hover:bg-purple-400/10"
                         >
-                          <span className="font-semibold text-amber-100">{match.rakip}</span>
-                          <span className="font-mono text-lg font-bold text-amber-200">{match.sonuc}</span>
-                          <span className="text-xs text-amber-300 ml-2">{match.dizilis || ''}</span>
-                          <span className="text-2xl">{match.emoji === '✅' ? '✔️' : match.emoji === '❌' ? '❌' : '➖'}</span>
+                          <span className="font-semibold text-purple-100">{match.rakip}</span>
+                          <span className="font-mono text-lg font-bold text-purple-200">{match.sonuc}</span>
+                          <span className="text-xs text-purple-300 ml-2">{match.dizilis || ''}</span>
+                          <span className="text-2xl">
+                            {match.emoji === '✅' ? '✔️' : match.emoji === '❌' ? '❌' : '➖'}
+                          </span>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-4 flex justify-between text-sm text-amber-300 font-medium">
+                    <div className="mt-4 flex justify-between text-sm text-purple-300 font-medium">
                       <span>Galibiyet: {analysisResults.teams.team_b.stats.wins}</span>
                       <span>Beraberlik: {analysisResults.teams.team_b.stats.draws}</span>
                       <span>Mağlubiyet: {analysisResults.teams.team_b.stats.losses}</span>
@@ -460,18 +524,19 @@ const handleAnalysis = () => {
                   </div>
                 </div>
               </div>
+
               {/* Referees Section */}
               {(analysisResults.referees.main || analysisResults.referees.side) && (
                 <div className="mb-12">
-                  <h2 className="text-3xl font-extrabold text-center text-green-400 mb-8 flex items-center justify-center gap-2 drop-shadow-lg">
+                  <h2 className="text-3xl font-extrabold text-center text-green-300 mb-8 flex items-center justify-center gap-2 drop-shadow-lg">
                     <span className="text-3xl">👨‍⚖️</span> Hakem Bilgileri
                   </h2>
                   <div className="grid md:grid-cols-2 gap-8">
                     {/* Ana Hakem */}
                     {analysisResults.referees.main && (
-                      <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} shadow-md p-8 flex flex-col items-center`}>
+                      <div className="bg-gradient-to-br from-green-900/60 to-green-700/40 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-green-400/30">
                         {analysisResults.referees.main.photo && (
-                          <img src={`data:image/png;base64,${analysisResults.referees.main.photo}`} alt="Ana Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-green-400 shadow-lg" />
+                          <img src={`data:image/png;base64,${analysisResults.referees.main.photo}`} alt="Ana Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-green-300 shadow-lg" />
                         )}
                         <h3 className="text-2xl font-extrabold text-green-200 mb-2 font-sans tracking-tight">{analysisResults.referees.main.name || "Ana Hakem"}</h3>
                         <div className="text-base text-green-100 space-y-1 text-center font-mono">
@@ -481,9 +546,9 @@ const handleAnalysis = () => {
                     )}
                     {/* Yan Hakem */}
                     {analysisResults.referees.side && (
-                      <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} shadow-md p-8 flex flex-col items-center`}>
+                      <div className="bg-gradient-to-br from-yellow-900/60 to-yellow-700/40 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-yellow-400/30">
                         {analysisResults.referees.side.photo && (
-                          <img src={`data:image/png;base64,${analysisResults.referees.side.photo}`} alt="Yan Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-yellow-400 shadow-lg" />
+                          <img src={`data:image/png;base64,${analysisResults.referees.side.photo}`} alt="Yan Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-yellow-300 shadow-lg" />
                         )}
                         <h3 className="text-2xl font-extrabold text-yellow-200 mb-2 font-sans tracking-tight">{analysisResults.referees.side.name || "Yan Hakem"}</h3>
                         <div className="text-base text-yellow-100 space-y-1 text-center font-mono">
@@ -494,19 +559,20 @@ const handleAnalysis = () => {
                   </div>
                 </div>
               )}
+
               {/* Head to Head Matches */}
               {analysisResults.head_to_head && analysisResults.head_to_head.length > 0 && (
-                <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} shadow-md p-8 mb-8`}>
-                  <h3 className="text-2xl font-extrabold text-center text-amber-400 mb-6 flex items-center gap-2 drop-shadow-lg">
+                <div className="bg-gradient-to-br from-yellow-900/60 to-yellow-700/40 rounded-2xl shadow-xl p-8 border border-yellow-400/30 mb-8">
+                  <h3 className="text-2xl font-extrabold text-center text-yellow-300 mb-6 flex items-center gap-2 drop-shadow-lg">
                     <span className="text-2xl">⚽</span> İki Takım Arası Son Maçlar
                   </h3>
                   <div className="space-y-3">
                     {analysisResults.head_to_head.map((match, idx) => (
-                      <div key={idx} className="flex justify-between items-center px-6 py-3 bg-zinc-900 rounded-lg font-mono text-lg font-semibold text-amber-100 shadow hover:bg-amber-500/10 transition-all">
+                      <div key={idx} className="flex justify-between items-center px-6 py-3 bg-yellow-500/10 rounded-xl font-mono text-lg font-semibold text-yellow-100 shadow hover:bg-yellow-500/20 transition-all">
                         <span>{match.guest_team}</span>
-                        <span className="text-amber-300 font-bold">{match.result}</span>
+                        <span className="text-yellow-300 font-bold">{match.result}</span>
                         <span>{match.home_team}</span>
-                        <span className="text-amber-200 text-sm">{match.date}</span>
+                        <span className="text-yellow-200 text-sm">{match.date}</span>
                       </div>
                     ))}
                   </div>
@@ -519,115 +585,200 @@ const handleAnalysis = () => {
                       {predicting ? 'Tahmin Yapılıyor…' : 'Gpt ile Tahmin Et'}
                     </button>
                   </div>
-                  <div className="mt-6 p-4 bg-zinc-900 rounded-lg border border-zinc-700">
-                    <h3 className="text-xl font-bold text-center text-green-400 mb-2 font-sans">🤖 Maç Sonucu Tahmini</h3>
+                  <div className="mt-6 p-4 bg-white/10 rounded-xl border border-white/20">
+                    <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
+                      🤖 Maç Sonucu Tahmini
+                    </h3>
                     {prediction
                       ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
-                      : <p className="text-center text-zinc-400">Butona basın, tahmin gelsin</p>
+                      : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
                     }
                   </div>
                   <div className="flex justify-center mt-4">
                     <button
                       onClick={handleAnalysis}
-                      className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold text-lg shadow"
+                      className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-lg shadow"
                     >
                       Analiz yap
                     </button>
                   </div>
                   {showAnalysis && analysisResults && (
                     <div className="grid md:grid-cols-4 gap-8 mt-8">
-                      {/* Takım A Analizi */}
-                      <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} shadow-md p-6`}>
-                        <h3 className="text-2xl font-extrabold text-center text-blue-200 mb-6">{analysisResults.teams.team_a.name} Analizi</h3>
-                        <div className="text-blue-100 text-base font-mono space-y-6 text-center">
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-blue-300">Kaybettiği Maç</span>
-                            <span className="bg-blue-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_a.stats.losses} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-blue-300">Berabere</span>
-                            <span className="bg-blue-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_a.stats.draws} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-blue-300">Kazandığı Maç</span>
-                            <span className="bg-blue-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_a.stats.wins} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-blue-300">2.5 Üst</span>
-                            <span className="bg-blue-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-blue-300">Handikaplı Galibiyet</span>
-                            <span className="bg-blue-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-blue-300">Karşılıklı Gol</span>
-                            <span className="bg-blue-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5</span>
-                          </div>
-                        </div>
-                      </div>
-                      {/* Takım B Analizi */}
-                      <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} shadow-md p-6`}>
-                        <h3 className="text-2xl font-extrabold text-center text-amber-200 mb-6">{analysisResults.teams.team_b.name} Analizi</h3>
-                        <div className="text-amber-100 text-base font-mono space-y-6 text-center">
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-amber-300">Kaybettiği Maç</span>
-                            <span className="bg-amber-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_b.stats.losses} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-amber-300">Berabere</span>
-                            <span className="bg-amber-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_b.stats.draws} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-amber-300">Kazandığı Maç</span>
-                            <span className="bg-amber-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_b.stats.wins} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-amber-300">2.5 Üst</span>
-                            <span className="bg-amber-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-amber-300">Handikaplı Galibiyet</span>
-                            <span className="bg-amber-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-amber-300">Karşılıklı Gol</span>
-                            <span className="bg-amber-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5</span>
+                        {/* Takım A Analizi */}
+                        <div className="modern-card animate-border-cyan bg-cyan-900/70 bg-cyan-gradient p-6 rounded-xl">
+                          <h3 className="text-2xl font-extrabold text-center text-cyan-200 mb-6 flex items-center justify-center gap-2 drop-shadow-lg">
+                            <span className="text-2xl"></span>
+                            {analysisResults.teams.team_a.name} Analizi
+                          </h3>
+
+                          <div className="text-cyan-100 text-base font-mono space-y-6 text-center">
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-cyan-300">Kaybettiği Maç</span>
+                              <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_a.stats.losses} / 5
+                              </span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-cyan-300">Berabere</span>
+                              <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_a.stats.draws} / 5
+                              </span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-cyan-300">Kazandığı Maç</span>
+                              <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_a.stats.wins} / 5
+                              </span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-cyan-300">2.5 Üst</span>
+                              <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5
+                              </span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-cyan-300">Handikaplı Galibiyet</span>
+                              <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5
+                              </span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-cyan-300">Karşılıklı Gol</span>
+                              <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      {/* Aralarındaki Maçlar Analizi */}
-                      <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} shadow-md p-6`}>
-                        <h3 className="text-2xl font-extrabold text-center text-amber-400 mb-6">Aralarındaki Maçlar Analizi</h3>
-                        <div className="text-amber-100 text-base font-mono space-y-6 text-center">
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-amber-300">Karşılıklı Gol</span>
-                            <span className="bg-amber-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{(analysisResults.head_to_head || []).filter(m => {const parts = (m.result || '').split(':');return parts.length === 2 && parseInt(parts[0]) > 0 && parseInt(parts[1]) > 0;}).length} / {(analysisResults.head_to_head || []).length}</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-amber-300">2.5 Üst</span>
-                            <span className="bg-amber-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{(analysisResults.head_to_head || []).filter(m => {const parts = (m.result || '').split(':');return parts.length === 2 && (parseInt(parts[0]) + parseInt(parts[1]) > 2);}).length} / {(analysisResults.head_to_head || []).length}</span>
+
+                        {/* Takım B Analizi */}
+                        <div className="modern-card animate-border-purple bg-purple-900/70 bg-purple-gradient p-6 rounded-xl">
+                          <h3 className="text-2xl font-extrabold text-center text-purple-200 mb-6 flex items-center justify-center gap-2 drop-shadow-lg">
+                            <span className="text-2xl"></span>
+                            {analysisResults.teams.team_b.name} Analizi
+                          </h3>
+
+                          <div className="text-purple-100 text-base font-mono space-y-6 text-center">
+                            {/* Kaybettiği Maç */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-purple-300">Kaybettiği Maç</span>
+                              <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_b.stats.losses} / 5
+                              </span>
+                            </div>
+
+                            {/* Berabere */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-purple-300">Berabere</span>
+                              <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_b.stats.draws} / 5
+                              </span>
+                            </div>
+
+                            {/* Kazandığı Maç */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-purple-300">Kazandığı Maç</span>
+                              <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_b.stats.wins} / 5
+                              </span>
+                            </div>
+
+                            {/* 2.5 Üst */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-purple-300">2.5 Üst</span>
+                              <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5
+                              </span>
+                            </div>
+
+                            {/* Handikaplı Galibiyet */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-purple-300">Handikaplı Galibiyet</span>
+                              <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5
+                              </span>
+                            </div>
+
+                            {/* Karşılıklı Gol */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-purple-300">Karşılıklı Gol</span>
+                              <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      {/* Hakem Analizi */}
-                      <div className={`${BG_CARD} rounded-lg border ${BORDER_CARD} shadow-md p-6`}>
-                        <h3 className="text-2xl font-extrabold text-center text-green-200 mb-6">Hakem Analizi</h3>
-                        <div className="text-green-100 text-base font-mono space-y-6 text-center">
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-green-300">Maç Başı Sarı Kart</span>
-                            <span className="bg-green-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_yellow ?? '-'}</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-green-300">Maç Başı Penaltı</span>
-                            <span className="bg-green-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_penalty ?? '-'}</span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-green-300">Maç Başı Kırmızı Kart</span>
-                            <span className="bg-green-800/40 px-3 py-1 mt-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_red ?? '-'}</span>
+
+                        {/* Aralarındaki Maçlar Analizi */}
+                        <div className="modern-card animate-border-amber bg-amber-900/70 bg-amber-gradient p-6 rounded-xl">
+                          <h3 className="text-2xl font-extrabold text-center text-yellow-200 mb-6 flex items-center justify-center gap-2 drop-shadow-lg">
+                            <span className="text-2xl"></span>
+                            Aralarındaki Maçlar Analizi
+                          </h3>
+
+                          <div className="text-yellow-100 text-base font-mono space-y-6 text-center">
+                            {/* Karşılıklı Gol */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-yellow-300">Karşılıklı Gol</span>
+                              <span className="bg-yellow-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {
+                                  (analysisResults.head_to_head || []).filter(m => {
+                                    const parts = (m.result || '').split(':');
+                                    return parts.length === 2 && parseInt(parts[0]) > 0 && parseInt(parts[1]) > 0;
+                                  }).length
+                                } / {(analysisResults.head_to_head || []).length}
+                              </span>
+                            </div>
+
+                            {/* 2.5 Üst */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-yellow-300">2.5 Üst</span>
+                              <span className="bg-yellow-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {
+                                  (analysisResults.head_to_head || []).filter(m => {
+                                    const parts = (m.result || '').split(':');
+                                    return parts.length === 2 && (parseInt(parts[0]) + parseInt(parts[1]) > 2);
+                                  }).length
+                                } / {(analysisResults.head_to_head || []).length}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
+
+                        {/* Hakem Analizi */}
+                        <div className="modern-card animate-border-green bg-green-900/70 bg-green-gradient p-6 rounded-xl">
+                          <h3 className="text-2xl font-extrabold text-center text-green-200 mb-6 flex items-center justify-center gap-2 drop-shadow-lg">
+                            <span className="text-2xl"></span>
+                            Hakem Analizi
+                          </h3>
+                          
+                          <div className="text-green-100 text-base font-mono space-y-6 text-center">
+                            {/* Sarı Kart */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-green-300">Maç Başı Sarı Kart</span>
+                              <span className="bg-green-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.referees.main?.referee_analysis?.avg_yellow ?? '-'}
+                              </span>
+                            </div>
+
+                            {/* Penaltı */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-green-300">Maç Başı Penaltı</span>
+                              <span className="bg-green-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.referees.main?.referee_analysis?.avg_penalty ?? '-'}
+                              </span>
+                            </div>
+
+                            {/* Kırmızı Kart */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-green-300">Maç Başı Kırmızı Kart</span>
+                              <span className="bg-green-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.referees.main?.referee_analysis?.avg_red ?? '-'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
                     </div>
                   )}
                 </div>

@@ -605,7 +605,7 @@ const handleAnalysis = () => {
                   {showAnalysis && analysisResults && (
                     <div className="grid md:grid-cols-4 gap-8 mt-8">
                       {/* Takım A Analizi */}
-                      <div className="bg-gradient-to-br from-cyan-900/60 to-cyan-700/40 rounded-3xl shadow-2xl p-8 border border-cyan-400/30 backdrop-blur-md hover:shadow-cyan-400/30 transition-all">
+                      <div className="modern-card animate-border-cyan">
                         <h3 className="text-2xl font-extrabold text-center text-cyan-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
                           <span className="text-2xl">🟦</span>
                           {analysisResults.teams.team_a.name} Analizi
@@ -620,7 +620,7 @@ const handleAnalysis = () => {
                         </div>
                       </div>
                       {/* Takım B Analizi */}
-                      <div className="bg-gradient-to-br from-purple-900/60 to-purple-700/40 rounded-3xl shadow-2xl p-8 border border-purple-400/30 backdrop-blur-md hover:shadow-purple-400/30 transition-all">
+                      <div className="modern-card animate-border-purple">
                         <h3 className="text-2xl font-extrabold text-center text-purple-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
                           <span className="text-2xl">🟪</span>
                           {analysisResults.teams.team_b.name} Analizi
@@ -635,7 +635,7 @@ const handleAnalysis = () => {
                         </div>
                       </div>
                       {/* Aralarındaki Maçlar Analizi */}
-                      <div className="bg-gradient-to-br from-yellow-900/60 to-yellow-700/40 rounded-3xl shadow-2xl p-8 border border-yellow-400/30 backdrop-blur-md hover:shadow-yellow-400/30 transition-all">
+                      <div className="modern-card animate-border-amber">
                         <h3 className="text-2xl font-extrabold text-center text-yellow-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
                           <span className="text-2xl">⚔️</span>
                           Aralarındaki Maçlar Analizi
@@ -656,7 +656,7 @@ const handleAnalysis = () => {
                         </div>
                       </div>
                       {/* Hakem Analizi */}
-                      <div className="bg-gradient-to-br from-green-900/60 to-green-700/40 rounded-3xl shadow-2xl p-8 border border-green-400/30 backdrop-blur-md hover:shadow-green-400/30 transition-all">
+                      <div className="modern-card animate-border-green">
                         <h3 className="text-2xl font-extrabold text-center text-green-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
                           <span className="text-2xl">🧑‍⚖️</span>
                           Hakem Analizi
@@ -681,6 +681,56 @@ const handleAnalysis = () => {
         @keyframes gridMove {
           0% { transform: translate(0, 0); }
           100% { transform: translate(50px, 50px); }
+        }
+      `}</style>
+      <style jsx>{`
+        .modern-card {
+          border-radius: 1.5rem;
+          box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
+          padding: 2rem;
+          backdrop-filter: blur(8px);
+          transition: all 0.3s;
+          border-width: 4px;
+          background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.12) 100%);
+          position: relative;
+          overflow: hidden;
+        }
+        .modern-card:hover {
+          transform: scale(1.04);
+          box-shadow: 0 8px 32px 0 rgba(0,0,0,0.35), 0 0 0 4px var(--tw-border-opacity,1);
+          z-index: 2;
+        }
+        .animate-border-cyan {
+          border-image: linear-gradient(90deg, #06b6d4, #3b82f6, #06b6d4) 1;
+          animation: borderMoveCyan 3s linear infinite;
+        }
+        .animate-border-purple {
+          border-image: linear-gradient(90deg, #a21caf, #6366f1, #a21caf) 1;
+          animation: borderMovePurple 3s linear infinite;
+        }
+        .animate-border-amber {
+          border-image: linear-gradient(90deg, #f59e42, #fbbf24, #f59e42) 1;
+          animation: borderMoveAmber 3s linear infinite;
+        }
+        .animate-border-green {
+          border-image: linear-gradient(90deg, #22c55e, #10b981, #22c55e) 1;
+          animation: borderMoveGreen 3s linear infinite;
+        }
+        @keyframes borderMoveCyan {
+          0% { border-image-source: linear-gradient(90deg, #06b6d4, #3b82f6, #06b6d4);}
+          100% { border-image-source: linear-gradient(270deg, #06b6d4, #3b82f6, #06b6d4);}
+        }
+        @keyframes borderMovePurple {
+          0% { border-image-source: linear-gradient(90deg, #a21caf, #6366f1, #a21caf);}
+          100% { border-image-source: linear-gradient(270deg, #a21caf, #6366f1, #a21caf);}
+        }
+        @keyframes borderMoveAmber {
+          0% { border-image-source: linear-gradient(90deg, #f59e42, #fbbf24, #f59e42);}
+          100% { border-image-source: linear-gradient(270deg, #f59e42, #fbbf24, #f59e42);}
+        }
+        @keyframes borderMoveGreen {
+          0% { border-image-source: linear-gradient(90deg, #22c55e, #10b981, #22c55e);}
+          100% { border-image-source: linear-gradient(270deg, #22c55e, #10b981, #22c55e);}
         }
       `}</style>
     </div>

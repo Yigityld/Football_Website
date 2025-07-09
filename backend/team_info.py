@@ -130,15 +130,18 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str,
                 parts = sc.split(":")
                 opp = cols[6].get_text(strip=True)
                 em = ""
-                if temizle_takim_adi(opp) == team_name_Temizle(team_name):
-                    opp = cols[4].get_text(strip=True)
-                    if len(parts)==2:
-                        og, tg = map(int, parts)
-                        em = get_match_result_emoji(tg, og)
-                else:
-                    if len(parts)==2:
-                        tg, og = map(int, parts)
-                        em = get_match_result_emoji(tg, og)
+                try:
+                    if temizle_takim_adi(opp) == team_name_Temizle(team_name):
+                        opp = cols[4].get_text(strip=True)
+                        if len(parts) == 2:
+                            og, tg = map(int, parts)
+                            em = get_match_result_emoji(tg, og)
+                    else:
+                        if len(parts) == 2:
+                            tg, og = map(int, parts)
+                            em = get_match_result_emoji(tg, og)
+                except Exception:
+                    continue 
                 df = cols[-4].get_text(strip=True) or "Yok"
                 if re.match(r"\d+:\d+", sc):
                     out.append({"tarih": t, "rakip": opp, "sonuc": sc, "dizilis": df, "emoji": em})

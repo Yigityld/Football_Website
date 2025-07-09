@@ -4,14 +4,28 @@ from bs4.element import Tag
 import re
 from datetime import datetime
 from typing import List, Dict, Tuple, Optional
+import time
 
 # --- Takım URL ve ID çekme fonksiyonları ---
+def safe_get(url, headers=None, timeout=30, retries=3, wait=2):
+    for attempt in range(retries):
+        try:
+            return requests.get(url, headers=headers, timeout=timeout)
+        except requests.exceptions.Timeout:
+            print(f"[WARN] Timeout, retrying {attempt+1}/{retries}... {url}")
+            time.sleep(wait)
+        except Exception as e:
+            print(f"[ERROR] safe_get error: {e} {url}")
+            break
+    return None
+
+
 def search_team_url(team_name: str) -> Optional[str]:
     query = team_name.replace(" ", "+")
     search_url = f"https://www.transfermarkt.com.tr/schnellsuche/ergebnis/schnellsuche?query={query}"
     headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(search_url, headers=headers, timeout=30)
-    if response.status_code != 200:
+    response = safe_get(search_url, headers=headers, timeout=30)
+    if response is None or response.status_code != 200:
         return None
     soup = BeautifulSoup(response.text, "html.parser")
     results = [r for r in soup.select("a[href*='/startseite/verein/']") if isinstance(r, Tag)]
@@ -74,8 +88,8 @@ def team_name_Temizle(team_name: str) -> str:
 def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], int, int, int]:
     def fetch_matches_from_url(url: str) -> List[Dict]:
         headers = {"User-Agent": "Mozilla/5.0"}
-        response = requests.get(url, headers=headers, timeout=30)
-        if response.status_code != 200:
+        response = safe_get(url, headers=headers, timeout=30)
+        if response is None or response.status_code != 200:
             return []
 
         soup = BeautifulSoup(response.text, "html.parser")
@@ -153,8 +167,8 @@ def get_last_matches(team_a: str, team_b: str) -> List[Dict]:
 
     url = f"https://www.transfermarkt.com.tr/vergleich/bilanzdetail/verein/{team_a_id}/gegner_id/{team_b_id}"
     headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(url, headers=headers, timeout=30)
-    if response.status_code != 200:
+    response = safe_get(url, headers=headers, timeout=30)
+    if response is None or response.status_code != 200:
         return []
 
     soup = BeautifulSoup(response.text, "html.parser")

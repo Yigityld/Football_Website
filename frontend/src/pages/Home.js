@@ -425,7 +425,7 @@ const Home = () => {
 
                   <div className="bg-gradient-to-br from-cyan-800/60 to-cyan-600/40 rounded-2xl shadow-lg p-6 backdrop-blur-md border border-cyan-400/20">
                     <h4 className="text-cyan-200 text-xl font-extrabold mb-4 flex items-center gap-2">
-                      <span className="material-icons text-2xl">sports_soccer</span>
+                      <span className="material-icons text-2xl"></span>
                       Son 5 Maç
                     </h4>
                     <div className="space-y-3">

@@ -9,6 +9,7 @@ import os
 
 # Ortam değişkeninden Hugging Face token’ını al
 HF_TOKEN = os.getenv("HF_TOKEN")
+HF_SPACE_API_URL = "https://husodu73-my-ollama-space.hf.space/api/predict"
 MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
 API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
 HF_HEADERS = {
@@ -38,7 +39,7 @@ print(f"Kullanılan HF_TOKEN: {'*' * len(HF_TOKEN) if HF_TOKEN else 'Yok'}") # G
 HF_TOKEN = os.getenv("HF_TOKEN")
 MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
 API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
-HF_HEADERS = {
+HF_SPACE_HEADERS = {
     "Authorization": f"Bearer {HF_TOKEN}",
     "Content-Type": "application/json"
 }
@@ -355,7 +356,7 @@ def sor_hf(prompt: str) -> str:
             "do_sample": False
         }
     }
-    r = requests.post(API_URL, headers=HF_HEADERS, json=payload, timeout=30)
+    r = requests.post(HF_SPACE_API_URL, headers=HF_SPACE_HEADERS, json=payload, timeout=30)
 
     if r.status_code == 404:
         # Muhtemelen lisans kabul edilmedi veya MODEL yanlış

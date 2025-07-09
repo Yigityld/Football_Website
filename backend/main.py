@@ -253,7 +253,7 @@ async def predict_match_endpoint(team_a: str = Form(...), team_b: str = Form(...
 
 @app.get("/team-info/{team_name}")
 async def team_info_endpoint(team_name: str) -> Any:
-    maclar, w, d, l = get_team_last_5_matches_with_tactics(team_name)
+    maclar, w, d, l, performance = get_team_last_5_matches_with_tactics(team_name)
     return {"team_name": team_name, "last_5": maclar, "stats": {"w": w, "d": d, "l": l}}
 
 if __name__ == "__main__":

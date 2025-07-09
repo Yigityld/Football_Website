@@ -18,6 +18,8 @@ const Home = () => {
   const [prediction, setPrediction] = useState('');         
   const [predicting, setPredicting] = useState(false);
   const [testResult, setTestResult] = useState('');
+  const [showGoalAnalysis, setShowGoalAnalysis] = useState(false);
+  const [goalStats, setGoalStats] = useState(null);
 
 
   // Backend URL'ini ayarla - production'da Render URL'ini kullan
@@ -149,6 +151,24 @@ const Home = () => {
     }
   };
 
+
+  const handleGoalAnalysis = () => {
+  if (!analysisResults) return;
+  const teamAMatches = analysisResults.teams.team_a.last_matches || [];
+  const teamBMatches = analysisResults.teams.team_b.last_matches || [];
+  const headToHead = analysisResults.head_to_head || [];
+  const sumGoals = matches =>
+    matches.reduce((sum, m) => {
+      const parts = (m.sonuc || m.result || '').split(':');
+      return sum + (parseInt(parts[0]) || 0) + (parseInt(parts[1]) || 0);
+    }, 0);
+  setGoalStats({
+    teamA: sumGoals(teamAMatches),
+    teamB: sumGoals(teamBMatches),
+    headToHead: sumGoals(headToHead)
+  });
+  setShowGoalAnalysis(true);
+};
 
 
   return (
@@ -436,6 +456,7 @@ const Home = () => {
                         >
                           <span className="font-semibold text-cyan-100">{match.rakip}</span>
                           <span className="font-mono text-lg font-bold text-cyan-200">{match.sonuc}</span>
+                          <span className="text-xs text-cyan-300 ml-2">{match.dizilis || ''}</span>
                           <span className="text-2xl">
                             {match.emoji === '✅' ? '✔️' : match.emoji === '❌' ? '❌' : '➖'}
                           </span>
@@ -483,6 +504,7 @@ const Home = () => {
                         >
                           <span className="font-semibold text-purple-100">{match.rakip}</span>
                           <span className="font-mono text-lg font-bold text-purple-200">{match.sonuc}</span>
+                          <span className="text-xs text-purple-300 ml-2">{match.dizilis || ''}</span>
                           <span className="text-2xl">
                             {match.emoji === '✅' ? '✔️' : match.emoji === '❌' ? '❌' : '➖'}
                           </span>
@@ -567,6 +589,26 @@ const Home = () => {
                       : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
                     }
                   </div>
+                  <div className="flex justify-center mt-4">
+                    <button
+                      onClick={handleGoalAnalysis}
+                      className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-lg shadow"
+                    >
+                      Gol analizi yap
+                    </button>
+                  </div>
+                  {showGoalAnalysis && goalStats && (
+                    <div className="mt-6 p-4 bg-white/10 rounded-xl border border-white/20">
+                      <h3 className="text-xl font-bold text-center text-emerald-300 mb-2 font-sans">
+                        ⚽ Gol Analizi
+                      </h3>
+                      <div className="text-white text-lg font-mono space-y-2 text-center">
+                        <div>Takım A Son 5 Maç Toplam Gol: <span className="font-bold">{goalStats.teamA}</span></div>
+                        <div>Takım B Son 5 Maç Toplam Gol: <span className="font-bold">{goalStats.teamB}</span></div>
+                        <div>Head-to-Head Son 5 Maç Toplam Gol: <span className="font-bold">{goalStats.headToHead}</span></div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -421,16 +421,16 @@ const handleAnalysis = () => {
               {/* Teams Section */}
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 {/* Team A */}
-                <div className="bg-gradient-to-br from-cyan-900/60 to-cyan-700/40 rounded-2xl shadow-xl p-8 backdrop-blur-md border border-cyan-400/30">
+                <div className="bg-gradient-to-br from-orange-500/80 to-red-500/80 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white">
                   <div className="flex items-center mb-6">
                     {analysisResults.teams.team_a.logo && (
                       <img
                         src={`data:image/png;base64,${analysisResults.teams.team_a.logo}`}
                         alt="Team A Logo"
-                        className="w-16 h-16 rounded-full mr-4 border-4 border-cyan-300 shadow-lg"
+                        className="w-16 h-16 rounded-full mr-4 border-4 border-white shadow-lg"
                       />
                     )}
-                    <h3 className="text-3xl font-extrabold text-cyan-200 tracking-tight drop-shadow-lg">{analysisResults.teams.team_a.name}</h3>
+                    <h3 className="text-3xl font-extrabold tracking-tight drop-shadow-lg">{analysisResults.teams.team_a.name}</h3>
                   </div>
 
                   <div className="space-y-2 text-base text-cyan-100 mb-6">

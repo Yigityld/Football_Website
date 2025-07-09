@@ -291,64 +291,81 @@ def get_last_matches(team_a: str, team_b: str) -> List[Dict]:
             continue
     return matches[:5]
 
-# --- Prompt hazırlama ---
-def hazirla_prompt_string(
-    matches: List[Dict], team_a: str, maclar_a: List[Dict], wins_a: int, draws_a: int, losses_a: int,
-    team_b: str, maclar_b: List[Dict], wins_b: int, draws_b: int, losses_b: int
+def prepare_the_prompt(
+    matches: List[Dict],
+    team_a: str,
+    maclar_a: List[Dict],
+    wins_a: int,
+    draws_a: int,
+    losses_a: int,
+    team_b: str,
+    maclar_b: List[Dict],
+    wins_b: int,
+    draws_b: int,
+    losses_b: int
 ) -> str:
-    prompt = f"Sen bir futbol yorumcusun.\n\n"
-    prompt += f"{team_a} takımının son 5 maçı:\n"
-    for m in maclar_a:
-        prompt += f"{m['tarih']} vs {m['rakip']} | Sonuç: {m['sonuc']} | Diziliş: {m['dizilis']}\n"
-    prompt += f"Son 5 maçta: {wins_a} galibiyet ✅, {draws_a} beraberlik 🤝, {losses_a} mağlubiyet ❌\n\n"
-    prompt += f"{team_b} takımının son 5 maçı:\n"
-    for m in maclar_b:
-        prompt += f"{m['tarih']} vs {m['rakip']} | Sonuç: {m['sonuc']} | Diziliş: {m['dizilis']}\n"
-    prompt += f"Son 5 maçta: {wins_b} galibiyet ✅, {draws_b} beraberlik 🤝, {losses_b} mağlubiyet ❌\n\n"
-    prompt += f"{team_a} ve {team_b} arasındaki son 5 maç:\n"
-    for m in matches:
-        prompt += f"{m['date']} - {m['guest_team']} {m['result']} {m['home_team']}\n"
-    prompt += (
-        "\nLütfen sadece bir sonraki maçın tahmini skorunu şu formatta yaz:\n" +
-        f"Tahmin: {team_a} X - Y {team_b} (Burada X ve Y yerine kendi rakam tercihlerini yaz (0,1,2,3,4,5 gibi))\n" +
-        "Başka hiçbir şey yazma."
+    # Son 5 maçları satır satır hazırla
+    last5_a = "\n".join(
+        f"{m['tarih']} vs {m['rakip']} | Result: {m['sonuc']} | Formation: {m['dizilis']}"
+        for m in maclar_a
     )
-    return prompt
+    last5_b = "\n".join(
+        f"{m['tarih']} vs {m['rakip']} | Result: {m['sonuc']} | Formation: {m['dizilis']}"
+        for m in maclar_b
+    )
+    # Head-to-head
+    h2h = "\n".join(
+        f"{m['date']} - {m['guest_team']} {m['result']} {m['home_team']}"
+        for m in matches
+    )
 
-# --- LLM'ye sorgu gönderme ---
+    return f"""You are a football analyst.
+
+Team A (“{team_a}”) – last 5 matches:
+{last5_a}
+Record: {wins_a} wins, {draws_a} draws, {losses_a} losses.
+
+Team B (“{team_b}”) – last 5 matches:
+{last5_b}
+Record: {wins_b} wins, {draws_b} draws, {losses_b} losses.
+
+Head-to-head (last 5 meetings):
+{h2h}
+
+Based on ONLY the data above, predict the score of the next match between {team_a} and {team_b}.
+Answer only in this exact format:
+Prediction: {team_a} X – Y {team_b}
+
+Do not add any extra commentary, explanation, or text.
+"""
+
+# --- Güncellenmiş HF Inference API çağrısı ---
 def sor_hf(prompt: str) -> str:
     payload = {
         "inputs": prompt,
-        "options": {"use_cache": False}
+        "options": {"use_cache": False},
+        "parameters": {
+            "max_new_tokens": 20,
+            "return_full_text": False,
+            "do_sample": False
+        }
     }
     r = requests.post(API_URL, headers=HF_HEADERS, json=payload, timeout=30)
     data = r.json()
-    # Eğer hata döndüyse dönen mesajı ver
     if isinstance(data, dict) and data.get("error"):
         return f"HF Hata: {data['error']}"
-    # Aksi halde üretilen metni al
+    # API, list içindeki tek elemanı döner
     return data[0].get("generated_text", "Cevap alınamadı.")
 
-def sor_hf_space(prompt: str) -> str:
-    HF_SPACE_API_URL = "https://husodu73-my-ollama-space.hf.space/api/predict"
-    payload = {
-        "data": [prompt]
-    }
-    try:
-        response = requests.post(HF_SPACE_API_URL, json=payload, timeout=60)
-        response.raise_for_status()
-        data = response.json()
-        # Gradio API response formatı: {"data": ["cevap"]}
-        if "data" in data and isinstance(data["data"], list):
-            return data["data"][0]
-        return "Cevap alınamadı."
-    except Exception as e:
-        return f"HF Space API Hatası: {e}"
-
-# --- Dışa açılan fonksiyon ---
+# --- predict_match fonksiyonunu sor_hf ile güncelle ---
 def predict_match(team_a: str, team_b: str) -> str:
-    maclar_a, wins_a, draws_a, losses_a, performance_a = get_team_last_5_matches_with_tactics(team_a)
-    maclar_b, wins_b, draws_b, losses_b, performance_b = get_team_last_5_matches_with_tactics(team_b)
+    maclar_a, wins_a, draws_a, losses_a, _ = get_team_last_5_matches_with_tactics(team_a)
+    maclar_b, wins_b, draws_b, losses_b, _ = get_team_last_5_matches_with_tactics(team_b)
     ikili = get_last_matches(team_a, team_b)
-    prompt = hazirla_prompt_string(ikili, team_a, maclar_a, wins_a, draws_a, losses_a, team_b, maclar_b, wins_b, draws_b, losses_b)
-    return sor_hf_space(prompt)
+
+    prompt = prepare_the_prompt(
+        ikili,
+        team_a, maclar_a, wins_a, draws_a, losses_a,
+        team_b, maclar_b, wins_b, draws_b, losses_b
+    )
+    return sor_hf(prompt)

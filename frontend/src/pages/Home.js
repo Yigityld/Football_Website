@@ -272,7 +272,7 @@ const handleAnalysis = () => {
                     </div>
 
                     <div className="space-y-4">
-                      <label className="block text-sm font-medium text-orange-200 mb-2">Takım Adı</label>
+                      <label className="block text-sm font-medium text-orange-200 mb-2"></label>
                       <input
                         type="text"
                         name="teamA"
@@ -297,7 +297,7 @@ const handleAnalysis = () => {
                     </div>
 
                     <div className="space-y-4">
-                      <label className="block text-sm font-medium text-orange-200 mb-2">Takım Adı</label>
+                      <label className="block text-sm font-medium text-orange-200 mb-2"></label>
                       <input
                         type="text"
                         name="teamB"

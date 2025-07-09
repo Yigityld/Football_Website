@@ -655,18 +655,40 @@ const handleAnalysis = () => {
                           } / {(analysisResults.head_to_head || []).length}</span></div>
                         </div>
                       </div>
-                      {/* Hakem Analizi */}
-                      <div className="modern-card animate-border-green bg-green-900/70 bg-green-gradient">
-                        <h3 className="text-2xl font-extrabold text-center text-green-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
-                          <span className="text-2xl">🧑‍⚖️</span>
-                          Hakem Analizi
-                        </h3>
-                        <div className="text-green-100 text-base font-mono space-y-3 text-center">
-                          <div><span className="font-bold text-green-300">Maç Başı Sarı Kart:</span> <span className="bg-green-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_yellow ?? '-'}</span></div>
-                          <div><span className="font-bold text-green-300">Maç Başı Penaltı:</span> <span className="bg-green-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_penalty ?? '-'}</span></div>
-                          <div><span className="font-bold text-green-300">Maç Başı Kırmızı Kart:</span> <span className="bg-green-800/40 px-2 py-1 rounded-lg font-bold">{analysisResults.referees.main?.referee_analysis?.avg_red ?? '-'}</span></div>
+                        {/* Hakem Analizi */}
+                        <div className="modern-card animate-border-green bg-green-900/70 bg-green-gradient p-6 rounded-xl">
+                          <h3 className="text-2xl font-extrabold text-center text-green-200 mb-6 flex items-center justify-center gap-2 drop-shadow-lg">
+                            <span className="text-2xl"></span>
+                            Hakem Analizi
+                          </h3>
+                          
+                          <div className="text-green-100 text-base font-mono space-y-6 text-center">
+                            {/* Sarı Kart */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-green-300">Maç Başı Sarı Kart</span>
+                              <span className="bg-green-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.referees.main?.referee_analysis?.avg_yellow ?? '-'}
+                              </span>
+                            </div>
+
+                            {/* Penaltı */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-green-300">Maç Başı Penaltı</span>
+                              <span className="bg-green-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.referees.main?.referee_analysis?.avg_penalty ?? '-'}
+                              </span>
+                            </div>
+
+                            {/* Kırmızı Kart */}
+                            <div className="flex flex-col items-center">
+                              <span className="font-bold text-green-300">Maç Başı Kırmızı Kart</span>
+                              <span className="bg-green-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                                {analysisResults.referees.main?.referee_analysis?.avg_red ?? '-'}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+
                     </div>
                   )}
                 </div>

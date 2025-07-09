@@ -262,58 +262,50 @@ const handleAnalysis = () => {
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Team A Card */}
                 <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-cyan-500/30 hover:border-cyan-400/50 transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/50 hover:border-orange-400/70 transition-all duration-300">
                     <div className="flex items-center mb-4">
-                      <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mr-3">
+                      <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mr-3">
                         <span className="text-white font-bold">A</span>
                       </div>
-                      <h3 className="text-xl font-bold text-cyan-300">Takım A</h3>
+                      <h3 className="text-xl font-bold text-orange-300">Takım A</h3>
                     </div>
 
                     <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-cyan-200 mb-2">
-                          Takım Adı
-                        </label>
-                        <input
-                          type="text"
-                          name="teamA"
-                          value={formData.teamA}
-                          onChange={handleInputChange}
-                          placeholder="Takım A adını girin..."
-                          className="w-full px-4 py-3 bg-black/50 border border-cyan-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all duration-300"
-                        />
-                      </div>
+                      <label className="block text-sm font-medium text-orange-200 mb-2">Takım Adı</label>
+                      <input
+                        type="text"
+                        name="teamA"
+                        value={formData.teamA}
+                        onChange={handleInputChange}
+                        placeholder="Takım A adını girin..."
+                        className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
+                      />
                     </div>
                   </div>
                 </div>
 
                 {/* Team B Card */}
                 <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/50 hover:border-orange-400/70 transition-all duration-300">
                     <div className="flex items-center mb-4">
-                      <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mr-3">
+                      <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mr-3">
                         <span className="text-white font-bold">B</span>
                       </div>
-                      <h3 className="text-xl font-bold text-purple-300">Takım B</h3>
+                      <h3 className="text-xl font-bold text-orange-300">Takım B</h3>
                     </div>
 
                     <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-purple-200 mb-2">
-                          Takım Adı
-                        </label>
-                        <input
-                          type="text"
-                          name="teamB"
-                          value={formData.teamB}
-                          onChange={handleInputChange}
-                          placeholder="Takım B adını girin..."
-                          className="w-full px-4 py-3 bg-black/50 border border-purple-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 transition-all duration-300"
-                        />
-                      </div>
+                      <label className="block text-sm font-medium text-orange-200 mb-2">Takım Adı</label>
+                      <input
+                        type="text"
+                        name="teamB"
+                        value={formData.teamB}
+                        onChange={handleInputChange}
+                        placeholder="Takım B adını girin..."
+                        className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
+                      />
                     </div>
                   </div>
                 </div>
@@ -323,13 +315,13 @@ const handleAnalysis = () => {
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Main Referee Card */}
                 <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/50 hover:border-orange-400/70 transition-all duration-300">
                     <div className="flex items-center mb-4">
-                      <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mr-3">
+                      <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mr-3">
                         <span className="text-white font-bold">👨‍⚖</span>
                       </div>
-                      <h3 className="text-xl font-bold text-yellow-300">Ana Hakem</h3>
+                      <h3 className="text-xl font-bold text-orange-300">Ana Hakem</h3>
                     </div>
 
                     <input
@@ -338,7 +330,7 @@ const handleAnalysis = () => {
                       value={formData.mainRef}
                       onChange={handleInputChange}
                       placeholder="Ana hakem adını girin..."
-                      className="w-full px-4 py-3 bg-black/50 border border-yellow-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/30 transition-all duration-300"
+                      className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
                     />
                   </div>
                 </div>

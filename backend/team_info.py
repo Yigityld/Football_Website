@@ -104,7 +104,7 @@ def team_name_Temizle(team_name: str) -> str:
     return result
 
 # --- Takımın son 5 maçını getir ---
-def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str, Any]], int, int, int]:
+def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str, Any]], int, int, int, int , int]:
     print(f"[DEBUG] get_team_last_5_matches_with_tactics çağrıldı: {team_name}")
     def fetch_matches(url: str) -> List[Dict[str, Any]]:
         print(f"[DEBUG] fetch_matches çağrıldı: {url}")
@@ -183,12 +183,59 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str,
         m = fetch_matches(url2)
     last5 = m[-5:][::-1]
     w = sum(1 for x in last5 if x["emoji"]=="✅")
+    wh = 0
+    for match in last5:
+        if match["emoji"] == "✅":
+            try:
+                g1, g2 = map(int, match["sonuc"].split(":"))
+                fark = abs(g1 - g2)
+                if fark >= 2:
+                    wh += 1
+            except:
+                continue
     d = sum(1 for x in last5 if x["emoji"]=="🤝")
     l = sum(1 for x in last5 if x["emoji"]=="❌")
-    print(f"[DEBUG] get_team_last_5_matches_with_tactics last5: {last5}")
-    return last5,w,d,l
+    kg = 0
+    for match in last5:
+        try:
+            g1, g2 = map(int, match["sonuc"].split(":"))
+            if g1 != 0 and g2 != 0:
+                kg += 1
+        except:
+            continue
 
-# İki takım arası son 5 maç
+    #print(f"[DEBUG] get_team_last_5_matches_with_tactics last5: {last5}")
+    return last5, w, d, l, wh, kg
+
+def analyze_referee_stats(ref_stats: dict) -> None:
+    sari_kart = ref_stats.get('Sarı Kart', 0) / ref_stats.get('Maç', 1)
+    kirmizi_kart = (ref_stats.get('2. Sarıdan Kırmızı', 0) + ref_stats.get('Direkt Kırmızı', 0)) / ref_stats.get('Maç', 1)
+    penalti = ref_stats.get('Penaltı', 0) / ref_stats.get('Maç', 1)
+
+    print(f"🟡 Hakemin  Maç başı Sarı Kart Sayısı: {sari_kart:.2f}")
+    print(f"🟥 Hakemin Maç başı Kırmızı Kart Ortalaması: {kirmizi_kart:.2f}")
+    print(f"🟡 Hakemin  Maç başı Penaltı Sayısı: {penalti:.2f}")
+
+def analyze_team_performance(team_name: str, matches: list[dict], w: int, d: int, l: int, handikap: int, karsilikli: int) -> None:
+    total_goals = 0
+    ust_olan_mac = 0
+    for match in matches:
+        if ':' in match['sonuc']:
+            g1, g2 = map(int, match['sonuc'].split(':'))
+            mac_gol = g1 + g2
+            if mac_gol > 2:
+                ust_olan_mac += 1
+            total_goals += mac_gol
+
+    ust_gol = total_goals / 5
+
+    print(f"Maç başı atılan gol sayısı = {ust_gol}")
+    print(f"2.5 Üst biten maç sayısı = {ust_olan_mac}")
+    print(f"{team_name} in son 5 macta kazandığı maç sayısı {w} ")
+    print(f"{team_name} in son 5 macta berabere maç sayısı {d} ")
+    print(f"{team_name} in son 5 macta kaybettiği maç sayısı {l} ")
+    print(f"{team_name} in son 5 macta handikapla kazandığı  maç sayısı {handikap} ")
+    print(f"{team_name} in son 5 macta karşılıklı gol olan maç sayısı {karsilikli} ")
 
 def get_last_matches(team_a: str, team_b: str) -> List[Dict[str, Any]]:
     print(f"[DEBUG] get_last_matches çağrıldı: {team_a} vs {team_b}")

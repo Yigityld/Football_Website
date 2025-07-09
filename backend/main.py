@@ -22,7 +22,9 @@ from gpt_area import (
     get_last_matches,
     hazirla_prompt_string,
     sor_hf,
-    predict_match
+    predict_match,
+    analyze_team_performance,
+    analyze_referee_stats
 )  # type: ignore
 
 # Takım ve hakem bilgileri için (alias to avoid naming conflict)
@@ -103,7 +105,6 @@ def main_analysis(
     youtube_url: Optional[str] = None
 ) -> Dict[str, Any]:
     global team_a_color, team_b_color
-
     print("[main_analysis] Başladı!")
     try:
         print(f"[main_analysis] fetch_team_info({team_a}) çağrılıyor...")
@@ -116,8 +117,8 @@ def main_analysis(
         main_ref_info, main_ref_img = get_referee_info(main_ref) if main_ref else ("", None)
         side_ref_info, side_ref_img = get_referee_info(side_ref) if side_ref else ("", None)
         print("[main_analysis] Son maçlar çekiliyor...")
-        team_a_matches, team_a_wins, team_a_draws, team_a_losses = get_team_last_5_matches_with_tactics(team_a)
-        team_b_matches, team_b_wins, team_b_draws, team_b_losses = get_team_last_5_matches_with_tactics(team_b)
+        team_a_matches, team_a_wins, team_a_draws, team_a_losses, team_a_performance = get_team_last_5_matches_with_tactics(team_a)
+        team_b_matches, team_b_wins, team_b_draws, team_b_losses, team_b_performance = get_team_last_5_matches_with_tactics(team_b)
         print("[main_analysis] Head-to-head maçlar çekiliyor...")
         head_to_head_matches = get_last_matches(team_a, team_b)
         print("[main_analysis] Logo ve fotoğraflar base64'e çevriliyor...")
@@ -127,6 +128,9 @@ def main_analysis(
         team_b_logo = get_image_as_base64(logo_url_b) if isinstance(logo_url_b, str) else None
         main_ref_photo = get_image_as_base64(main_ref_img) if main_ref_img else None
         side_ref_photo = get_image_as_base64(side_ref_img) if side_ref_img else None
+        print("[main_analysis] Hakem analizleri hazırlanıyor...")
+        main_ref_analysis = analyze_referee_stats(main_ref_info) if main_ref_info else None
+        side_ref_analysis = analyze_referee_stats(side_ref_info) if side_ref_info else None
         print("[main_analysis] summary_data hazırlanıyor...")
         summary_data = {
             "teams": {
@@ -135,19 +139,21 @@ def main_analysis(
                     "info": team_a_info,
                     "logo": team_a_logo,
                     "last_matches": team_a_matches,
-                    "stats": {"wins": team_a_wins, "draws": team_a_draws, "losses": team_a_losses}
+                    "stats": {"wins": team_a_wins, "draws": team_a_draws, "losses": team_a_losses},
+                    "performance_analysis": team_a_performance
                 },
                 "team_b": {
                     "name": team_b,
                     "info": team_b_info,
                     "logo": team_b_logo,
                     "last_matches": team_b_matches,
-                    "stats": {"wins": team_b_wins, "draws": team_b_draws, "losses": team_b_losses}
+                    "stats": {"wins": team_b_wins, "draws": team_b_draws, "losses": team_b_losses},
+                    "performance_analysis": team_b_performance
                 }
             },
             "referees": {
-                "main": {"name": main_ref, "info": main_ref_info, "photo": main_ref_photo} if main_ref else None,
-                "side": {"name": side_ref, "info": side_ref_info, "photo": side_ref_photo} if side_ref else None
+                "main": {"name": main_ref, "info": main_ref_info, "photo": main_ref_photo, "referee_analysis": main_ref_analysis} if main_ref else None,
+                "side": {"name": side_ref, "info": side_ref_info, "photo": side_ref_photo, "referee_analysis": side_ref_analysis} if side_ref else None
             },
             "head_to_head": head_to_head_matches
         }

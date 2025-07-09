@@ -20,6 +20,7 @@ const Home = () => {
   const [testResult, setTestResult] = useState('');
   const [showGoalAnalysis, setShowGoalAnalysis] = useState(false);
   const [goalStats, setGoalStats] = useState(null);
+  const [showAnalysis, setShowAnalysis] = useState(false);
 
 
   // Backend URL'ini ayarla - production'da Render URL'ini kullan
@@ -168,6 +169,10 @@ const Home = () => {
     headToHead: sumGoals(headToHead)
   });
   setShowGoalAnalysis(true);
+};
+
+const handleAnalysis = () => {
+  setShowAnalysis(true);
 };
 
 
@@ -591,21 +596,48 @@ const Home = () => {
                   </div>
                   <div className="flex justify-center mt-4">
                     <button
-                      onClick={handleGoalAnalysis}
+                      onClick={handleAnalysis}
                       className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-lg shadow"
                     >
-                      Gol analizi yap
+                      Analiz yap
                     </button>
                   </div>
-                  {showGoalAnalysis && goalStats && (
-                    <div className="mt-6 p-4 bg-white/10 rounded-xl border border-white/20">
-                      <h3 className="text-xl font-bold text-center text-emerald-300 mb-2 font-sans">
-                        ⚽ Gol Analizi
-                      </h3>
-                      <div className="text-white text-lg font-mono space-y-2 text-center">
-                        <div>Takım A Son 5 Maç Toplam Gol: <span className="font-bold">{goalStats.teamA}</span></div>
-                        <div>Takım B Son 5 Maç Toplam Gol: <span className="font-bold">{goalStats.teamB}</span></div>
-                        <div>Head-to-Head Son 5 Maç Toplam Gol: <span className="font-bold">{goalStats.headToHead}</span></div>
+                  {showAnalysis && analysisResults && (
+                    <div className="grid md:grid-cols-3 gap-6 mt-6">
+                      {/* Team A Analizi */}
+                      <div className="p-4 bg-white/10 rounded-xl border border-white/20">
+                        <h3 className="text-xl font-bold text-center text-cyan-300 mb-2 font-sans">
+                          {analysisResults.teams.team_a.name} Analizi
+                        </h3>
+                        <div className="text-white text-base font-mono space-y-2 text-center">
+                          <div>2.5 Üst: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5</span></div>
+                          <div>Tümünü Kazandı: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.all_win ? 'Evet' : 'Hayır'}</span></div>
+                          <div>Handikaplı Galibiyet: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5</span></div>
+                          <div>Karşılıklı Gol Var: <span className="font-bold">{analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5</span></div>
+                        </div>
+                      </div>
+                      {/* Team B Analizi */}
+                      <div className="p-4 bg-white/10 rounded-xl border border-white/20">
+                        <h3 className="text-xl font-bold text-center text-purple-300 mb-2 font-sans">
+                          {analysisResults.teams.team_b.name} Analizi
+                        </h3>
+                        <div className="text-white text-base font-mono space-y-2 text-center">
+                          <div>2.5 Üst: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5</span></div>
+                          <div>Tümünü Kazandı: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.all_win ? 'Evet' : 'Hayır'}</span></div>
+                          <div>Handikaplı Galibiyet: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5</span></div>
+                          <div>Karşılıklı Gol Var: <span className="font-bold">{analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5</span></div>
+                        </div>
+                      </div>
+                      {/* Hakem Analizi */}
+                      <div className="p-4 bg-white/10 rounded-xl border border-white/20">
+                        <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
+                          Hakem Analizi
+                        </h3>
+                        <div className="text-white text-base font-mono space-y-2 text-center">
+                          <div>Maç Başı Sarı Kart: <span className="font-bold">{analysisResults.referees.main?.referee_analysis?.avg_yellow ?? '-'}</span></div>
+                          <div>Maç Başı Penaltı: <span className="font-bold">{analysisResults.referees.main?.referee_analysis?.avg_penalty ?? '-'}</span></div>
+                          <div>Maç Başı Kırmızı Kart: <span className="font-bold">{analysisResults.referees.main?.referee_analysis?.avg_red ?? '-'}</span></div>
+                        </div>
                       </div>
                     </div>
                   )}

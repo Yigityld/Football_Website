@@ -115,8 +115,62 @@ def team_name_Temizle(team_name: str) -> str:
     name = re.sub(r'\bfc\b', '', name)
     return name.strip()
 
+def analyze_team_performance(matches):
+    # 2.5 üst, handikap, karşılıklı gol, galibiyet analizleri
+    over_2_5_count = 0
+    all_win = True
+    handicap_win_count = 0
+    both_teams_scored_count = 0
+    for m in matches:
+        try:
+            parts = (m.get('sonuc') or '').split(':')
+            g1, g2 = int(parts[0]), int(parts[1])
+            if g1 + g2 > 2:
+                over_2_5_count += 1
+            if g1 - g2 > 1:
+                handicap_win_count += 1
+            if g1 == g2 or g1 == 0 or g2 == 0:
+                pass
+            else:
+                both_teams_scored_count += 1
+            if m.get('emoji') != '✅':
+                all_win = False
+        except:
+            all_win = False
+    return {
+        'over_2_5_count': over_2_5_count,
+        'all_win': all_win,
+        'handicap_win_count': handicap_win_count,
+        'both_teams_scored_count': both_teams_scored_count
+    }
+
+def analyze_referee_stats(ref_info_html):
+    import re
+    stats = {'avg_yellow': '-', 'avg_penalty': '-', 'avg_red': '-'}
+    if not ref_info_html:
+        return stats
+    try:
+        mac_match = re.search(r'Maç: (\d+)', ref_info_html)
+        sari_match = re.search(r'Sarı Kart: (\d+)', ref_info_html)
+        iki_sari_match = re.search(r'2\. Sarıdan Kırmızı: (\d+)', ref_info_html)
+        direkt_kirmizi_match = re.search(r'Direkt Kırmızı: (\d+)', ref_info_html)
+        pen_match = re.search(r'Penaltı: (\d+)', ref_info_html)
+        if not (mac_match and sari_match and iki_sari_match and direkt_kirmizi_match and pen_match):
+            return stats
+        mac = int(mac_match.group(1))
+        sari = int(sari_match.group(1))
+        iki_sari = int(iki_sari_match.group(1))
+        direkt_kirmizi = int(direkt_kirmizi_match.group(1))
+        pen = int(pen_match.group(1))
+        stats['avg_yellow'] = str(round(sari / mac, 2)) if mac else '-'
+        stats['avg_penalty'] = str(round(pen / mac, 2)) if mac else '-'
+        stats['avg_red'] = str(round((iki_sari + direkt_kirmizi) / mac, 2)) if mac else '-'
+    except:
+        pass
+    return stats
+
 # --- Takımın son 5 maçını (diziliş + skor) getir ---
-def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], int, int, int]:
+def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], int, int, int, dict]:
     def fetch_matches_from_url(url: str) -> List[Dict]:
         headers = {"User-Agent": "Mozilla/5.0"}
         response = safe_get(url, headers=headers, timeout=30)
@@ -174,7 +228,7 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], in
     team_url = search_team_url(team_name)
     team_id = get_team_id_from_url(team_url) if team_url else None
     if not team_id:
-        return [], 0, 0, 0
+        return [], 0, 0, 0, {}
 
     slug = team_name.lower().replace(" ", "-")
     base_url = f"https://www.transfermarkt.com.tr/{slug}/spielplandatum/verein/{team_id}/plus/1"
@@ -187,7 +241,8 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], in
     wins = sum(1 for m in last_5 if m.get("emoji") == "✅")
     draws = sum(1 for m in last_5 if m.get("emoji") == "🤝")
     losses = sum(1 for m in last_5 if m.get("emoji") == "❌")
-    return last_5, wins, draws, losses
+    performance = analyze_team_performance(last_5)
+    return last_5, wins, draws, losses, performance
 
 # --- İki takım arası son 5 maç ---
 def get_last_matches(team_a: str, team_b: str) -> List[Dict]:
@@ -292,8 +347,8 @@ def sor_hf_space(prompt: str) -> str:
 
 # --- Dışa açılan fonksiyon ---
 def predict_match(team_a: str, team_b: str) -> str:
-    maclar_a, wins_a, draws_a, losses_a = get_team_last_5_matches_with_tactics(team_a)
-    maclar_b, wins_b, draws_b, losses_b = get_team_last_5_matches_with_tactics(team_b)
+    maclar_a, wins_a, draws_a, losses_a, performance_a = get_team_last_5_matches_with_tactics(team_a)
+    maclar_b, wins_b, draws_b, losses_b, performance_b = get_team_last_5_matches_with_tactics(team_b)
     ikili = get_last_matches(team_a, team_b)
     prompt = hazirla_prompt_string(ikili, team_a, maclar_a, wins_a, draws_a, losses_a, team_b, maclar_b, wins_b, draws_b, losses_b)
     return sor_hf_space(prompt)

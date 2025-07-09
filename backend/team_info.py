@@ -5,7 +5,6 @@ import re
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Tuple, Coroutine
 import base64
-import httpx
 import asyncio
 from functools import lru_cache
 import time

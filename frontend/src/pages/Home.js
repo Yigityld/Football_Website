@@ -260,18 +260,6 @@ const Home = () => {
                           className="w-full px-4 py-3 bg-black/50 border border-cyan-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all duration-300"
                         />
                       </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-cyan-200 mb-2">
-                          Forma Görseli
-                        </label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleFileChange(e, 'A')}
-                          className="w-full px-4 py-3 bg-black/50 border border-cyan-500/50 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-cyan-500/30 file:text-cyan-300 hover:file:bg-cyan-500/50 transition-all duration-300"
-                        />
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -299,18 +287,6 @@ const Home = () => {
                           onChange={handleInputChange}
                           placeholder="Takım B adını girin..."
                           className="w-full px-4 py-3 bg-black/50 border border-purple-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 transition-all duration-300"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-purple-200 mb-2">
-                          Forma Görseli
-                        </label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleFileChange(e, 'B')}
-                          className="w-full px-4 py-3 bg-black/50 border border-purple-500/50 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-500/30 file:text-purple-300 hover:file:bg-purple-500/50 transition-all duration-300"
                         />
                       </div>
                     </div>
@@ -362,29 +338,6 @@ const Home = () => {
                       className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
                     />
                   </div>
-                </div>
-              </div>
-
-              {/* YouTube URL Section */}
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-red-500/30 hover:border-red-400/50 transition-all duration-300">
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-r from-red-400 to-pink-500 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-white font-bold">🎥</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-red-300">YouTube Maç Linki</h3>
-                    <span className="ml-2 px-2 py-1 bg-red-500/20 text-red-300 rounded-full text-xs border border-red-500/30">Opsiyonel</span>
-                  </div>
-
-                  <input
-                    type="url"
-                    name="youtubeUrl"
-                    value={formData.youtubeUrl}
-                    onChange={handleInputChange}
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    className="w-full px-4 py-3 bg-black/50 border border-red-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-400/30 transition-all duration-300"
-                  />
                 </div>
               </div>
 

@@ -127,6 +127,7 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str,
                 print(f"[DEBUG] fetch_matches tbody yok!")
                 return []
             out = []
+            toplam_gol = 0
             for row in body.find_all("tr") if isinstance(body, Tag) else []:
                 cols = row.find_all("td") if isinstance(row, Tag) else []
                 if len(cols) < 10:
@@ -141,14 +142,18 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str,
                         opp = cols[4].get_text(strip=True)
                         if len(parts) == 2:
                             og, tg = map(int, parts)
+                            toplam_gol += tg + og
                             em = get_match_result_emoji(tg, og)
                     else:
                         if len(parts) == 2:
                             tg, og = map(int, parts)
+                            toplam_gol += tg + og
                             em = get_match_result_emoji(tg, og)
                 except Exception:
                     continue 
                 df = cols[-4].get_text(strip=True) or "Yok"
+                print(f"[DEBUG] dizilis: {df}")
+                print(f"[DEBUG] toplam_gol: {toplam_gol}")
                 if re.match(r"\d+:\d+", sc):
                     out.append({"tarih": t, "rakip": opp, "sonuc": sc, "dizilis": df, "emoji": em})
                 if len(out)>=500:

@@ -5,6 +5,7 @@ import re
 from datetime import datetime
 from typing import List, Dict, Tuple, Optional
 import time
+import os
 
 # --- Takım URL ve ID çekme fonksiyonları ---
 def safe_get(url, headers=None, timeout=30, retries=3, wait=2):
@@ -232,7 +233,7 @@ def hazirla_prompt_string(
 # --- LLM'ye sorgu gönderme ---
 def sor_local_llm(prompt: str, model: str = "mistral") -> str:
     try:
-        url = "http://localhost:11434/api/generate"
+        url = os.environ.get("LLM_API_URL", "http://localhost:11434/api/generate")
         headers = {"Content-Type": "application/json"}
         data = {
             "model": model,

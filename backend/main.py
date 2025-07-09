@@ -21,7 +21,7 @@ from gpt_area import (
     get_team_last_5_matches_with_tactics,
     get_last_matches,
     hazirla_prompt_string,
-    sor_local_llm,
+    sor_hf,
     predict_match
 )  # type: ignore
 

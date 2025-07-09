@@ -605,7 +605,7 @@ const handleAnalysis = () => {
                   {showAnalysis && analysisResults && (
                     <div className="grid md:grid-cols-4 gap-8 mt-8">
                       {/* Takım A Analizi */}
-                      <div className="modern-card animate-border-cyan">
+                      <div className="modern-card animate-border-cyan bg-cyan-900/70 bg-cyan-gradient">
                         <h3 className="text-2xl font-extrabold text-center text-cyan-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
                           <span className="text-2xl">🟦</span>
                           {analysisResults.teams.team_a.name} Analizi
@@ -620,7 +620,7 @@ const handleAnalysis = () => {
                         </div>
                       </div>
                       {/* Takım B Analizi */}
-                      <div className="modern-card animate-border-purple">
+                      <div className="modern-card animate-border-purple bg-purple-900/70 bg-purple-gradient">
                         <h3 className="text-2xl font-extrabold text-center text-purple-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
                           <span className="text-2xl">🟪</span>
                           {analysisResults.teams.team_b.name} Analizi
@@ -635,7 +635,7 @@ const handleAnalysis = () => {
                         </div>
                       </div>
                       {/* Aralarındaki Maçlar Analizi */}
-                      <div className="modern-card animate-border-amber">
+                      <div className="modern-card animate-border-amber bg-amber-900/70 bg-amber-gradient">
                         <h3 className="text-2xl font-extrabold text-center text-yellow-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
                           <span className="text-2xl">⚔️</span>
                           Aralarındaki Maçlar Analizi
@@ -656,7 +656,7 @@ const handleAnalysis = () => {
                         </div>
                       </div>
                       {/* Hakem Analizi */}
-                      <div className="modern-card animate-border-green">
+                      <div className="modern-card animate-border-green bg-green-900/70 bg-green-gradient">
                         <h3 className="text-2xl font-extrabold text-center text-green-200 mb-4 flex items-center justify-center gap-2 drop-shadow-lg">
                           <span className="text-2xl">🧑‍⚖️</span>
                           Hakem Analizi
@@ -691,9 +691,20 @@ const handleAnalysis = () => {
           backdrop-filter: blur(8px);
           transition: all 0.3s;
           border-width: 4px;
-          background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.12) 100%);
           position: relative;
           overflow: hidden;
+        }
+        .bg-cyan-gradient {
+          background: linear-gradient(135deg, #164e63 0%, #0891b2 100%) !important;
+        }
+        .bg-purple-gradient {
+          background: linear-gradient(135deg, #581c87 0%, #a21caf 100%) !important;
+        }
+        .bg-amber-gradient {
+          background: linear-gradient(135deg, #78350f 0%, #f59e42 100%) !important;
+        }
+        .bg-green-gradient {
+          background: linear-gradient(135deg, #14532d 0%, #22c55e 100%) !important;
         }
         .modern-card:hover {
           transform: scale(1.04);

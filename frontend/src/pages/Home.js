@@ -404,8 +404,8 @@ const Home = () => {
                       </div>
                     ) : (
                       <div className="flex items-center space-x-3">
-                        <span className="text-3xl">🎬</span>
-                        <span>Özeti Başlat</span>
+                        <span className="text-3xl">🔍</span>
+                        <span>Analizi Başlat</span>
                       </div>
                     )}
                   </button>

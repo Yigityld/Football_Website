@@ -15,6 +15,7 @@ import requests
 from bs4.element import Tag  # type: ignore
 from datetime import datetime
 import traceback
+import asyncio
 
 # İçerik Getirici Fonksiyonlar GPT Alanı için
 from gpt_area import (
@@ -29,7 +30,12 @@ from gpt_area import (
 from team_info import (
     get_team_info as fetch_team_info,
     get_referee_info,
-    get_image_as_base64
+    get_image_as_base64,
+    async_get_team_info,
+    async_get_team_last_5_matches_with_tactics,
+    async_get_last_matches,
+    async_get_referee_info,
+    async_get_image_as_base64
 )
 
 app = FastAPI(title="Futbol Analiz API")  # type: ignore
@@ -93,7 +99,7 @@ def classify_player(hsv_value: np.ndarray, team_a_color: np.ndarray, team_b_colo
 
 # Video ve analiz fonksiyonu
 
-def main_analysis(
+async def main_analysis_async(
     team_a: str,
     team_b: str,
     main_ref: Optional[str],
@@ -104,30 +110,53 @@ def main_analysis(
 ) -> Dict[str, Any]:
     global team_a_color, team_b_color
 
-    print("[main_analysis] Başladı!")
+    print("[main_analysis_async] Başladı!")
     try:
-        print(f"[main_analysis] fetch_team_info({team_a}) çağrılıyor...")
-        team_a_info = fetch_team_info(team_a)
-        print(f"[main_analysis] team_a_info: {team_a_info}")
-        print(f"[main_analysis] fetch_team_info({team_b}) çağrılıyor...")
-        team_b_info = fetch_team_info(team_b)
-        print(f"[main_analysis] team_b_info: {team_b_info}")
-        print("[main_analysis] Hakem bilgisi çekiliyor...")
-        main_ref_info, main_ref_img = get_referee_info(main_ref) if main_ref else ("", None)
-        side_ref_info, side_ref_img = get_referee_info(side_ref) if side_ref else ("", None)
-        print("[main_analysis] Son maçlar çekiliyor...")
-        team_a_matches, team_a_wins, team_a_draws, team_a_losses = get_team_last_5_matches_with_tactics(team_a)
-        team_b_matches, team_b_wins, team_b_draws, team_b_losses = get_team_last_5_matches_with_tactics(team_b)
-        print("[main_analysis] Head-to-head maçlar çekiliyor...")
-        head_to_head_matches = get_last_matches(team_a, team_b)
-        print("[main_analysis] Logo ve fotoğraflar base64'e çevriliyor...")
-        logo_url_a = team_a_info.get("Logo URL")
-        team_a_logo = get_image_as_base64(logo_url_a) if isinstance(logo_url_a, str) else None
-        logo_url_b = team_b_info.get("Logo URL")
-        team_b_logo = get_image_as_base64(logo_url_b) if isinstance(logo_url_b, str) else None
-        main_ref_photo = get_image_as_base64(main_ref_img) if main_ref_img else None
-        side_ref_photo = get_image_as_base64(side_ref_img) if side_ref_img else None
-        print("[main_analysis] summary_data hazırlanıyor...")
+        # Takım ve hakem bilgilerini paralel çek
+        (
+            team_a_info_raw,
+            team_b_info_raw,
+            main_ref_result,
+            side_ref_result,
+            team_a_matches_result,
+            team_b_matches_result,
+            head_to_head_matches,
+        ) = await asyncio.gather(
+            async_get_team_info(team_a),
+            async_get_team_info(team_b),
+            async_get_referee_info(main_ref) if main_ref else asyncio.sleep(0, result=("", None)),
+            async_get_referee_info(side_ref) if side_ref else asyncio.sleep(0, result=("", None)),
+            async_get_team_last_5_matches_with_tactics(team_a),
+            async_get_team_last_5_matches_with_tactics(team_b),
+            async_get_last_matches(team_a, team_b),
+        )
+        team_a_info = team_a_info_raw if isinstance(team_a_info_raw, dict) else {}
+        team_b_info = team_b_info_raw if isinstance(team_b_info_raw, dict) else {}
+        main_ref_info, main_ref_img = main_ref_result if main_ref else ("", None)
+        side_ref_info, side_ref_img = side_ref_result if side_ref else ("", None)
+        # Logo ve fotoğrafları paralel çek
+        logo_url_a = team_a_info.get("Logo URL") if team_a_info else None
+        logo_url_b = team_b_info.get("Logo URL") if team_b_info else None
+        (
+            team_a_logo,
+            team_b_logo,
+            main_ref_photo,
+            side_ref_photo
+        ) = await asyncio.gather(
+            async_get_image_as_base64(str(logo_url_a)) if logo_url_a else asyncio.sleep(0, result=None),
+            async_get_image_as_base64(str(logo_url_b)) if logo_url_b else asyncio.sleep(0, result=None),
+            async_get_image_as_base64(str(main_ref_img)) if main_ref_img else asyncio.sleep(0, result=None),
+            async_get_image_as_base64(str(side_ref_img)) if side_ref_img else asyncio.sleep(0, result=None),
+        )
+        # Unpack team matches results safely
+        if isinstance(team_a_matches_result, tuple) and len(team_a_matches_result) == 4:
+            team_a_matches, team_a_wins, team_a_draws, team_a_losses = team_a_matches_result
+        else:
+            team_a_matches, team_a_wins, team_a_draws, team_a_losses = [], 0, 0, 0
+        if isinstance(team_b_matches_result, tuple) and len(team_b_matches_result) == 4:
+            team_b_matches, team_b_wins, team_b_draws, team_b_losses = team_b_matches_result
+        else:
+            team_b_matches, team_b_wins, team_b_draws, team_b_losses = [], 0, 0, 0
         summary_data = {
             "teams": {
                 "team_a": {
@@ -151,10 +180,10 @@ def main_analysis(
             },
             "head_to_head": head_to_head_matches
         }
-        print("[main_analysis] Bitti, summary_data dönüyor!")
+        print("[main_analysis_async] Bitti, summary_data dönüyor!")
         return summary_data
     except Exception as e:
-        print(f"[main_analysis] HATA: {e}")
+        print(f"[main_analysis_async] HATA: {e}")
         traceback.print_exc()
         raise
 
@@ -200,7 +229,6 @@ async def start_analysis(
     tmp = tempfile.gettempdir()
     ta_path = tb_path = None
     if team_a_jersey:
-        # filename kesin str olacak
         filename_a: str = str(team_a_jersey.filename)
         ta_path = os.path.join(tmp, filename_a)
         with open(ta_path, 'wb') as f:
@@ -213,11 +241,11 @@ async def start_analysis(
     analysis_running = True
     analysis_results = None
 
-    def run():
+    async def run():
         global analysis_results, analysis_running
         try:
-            print("[THREAD] Analiz thread'i başlatıldı!")
-            analysis_results = main_analysis(team_a, team_b, main_ref, side_ref, ta_path, tb_path, youtube_url)
+            print("[THREAD] Analiz async task başlatıldı!")
+            analysis_results = await main_analysis_async(team_a, team_b, main_ref, side_ref, ta_path, tb_path, youtube_url)
             print(f"[THREAD] analysis_results set edildi: {analysis_results is not None}")
         except Exception as e:
             print(f"ANALYSIS THREAD ERROR: {e}")
@@ -225,8 +253,8 @@ async def start_analysis(
         finally:
             analysis_running = False
 
-    analysis_thread = threading.Thread(target=run, daemon=True)
-    analysis_thread.start()
+    # Artık thread yerine asyncio.create_task kullanıyoruz
+    asyncio.create_task(run())
     return {"status": "started"}
 
 @app.get("/analysis-status")

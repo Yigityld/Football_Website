@@ -3,8 +3,12 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 import re
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional, Tuple, Coroutine
 import base64
+import httpx
+import asyncio
+from functools import lru_cache
+import time
 
 # --- Takım URL ve ID çekme fonksiyonları ---
 def search_team_url(team_name: str) -> Optional[str]:
@@ -13,7 +17,10 @@ def search_team_url(team_name: str) -> Optional[str]:
     search_url = f"https://www.transfermarkt.com.tr/schnellsuche/ergebnis/schnellsuche?query={query}"
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
-        resp = requests.get(search_url, headers=headers, timeout=30)
+        resp = safe_get(search_url, headers=headers, timeout=30)
+        if resp is None:
+            print(f"[DEBUG] search_team_url başarısız! (timeout/retry)")
+            return None
         print(f"[DEBUG] search_team_url status: {resp.status_code}")
         if resp.status_code != 200:
             print(f"[DEBUG] search_team_url başarısız!")
@@ -103,7 +110,10 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str,
     def fetch_matches(url: str) -> List[Dict[str, Any]]:
         print(f"[DEBUG] fetch_matches çağrıldı: {url}")
         try:
-            r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+            r = safe_get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+            if r is None:
+                print(f"[DEBUG] fetch_matches başarısız! (timeout/retry)")
+                return []
             print(f"[DEBUG] fetch_matches status: {r.status_code}")
             if r.status_code != 200:
                 print(f"[DEBUG] fetch_matches başarısız!")
@@ -127,15 +137,18 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str,
                 parts = sc.split(":")
                 opp = cols[6].get_text(strip=True)
                 em = ""
-                if temizle_takim_adi(opp) == team_name_Temizle(team_name):
-                    opp = cols[4].get_text(strip=True)
-                    if len(parts)==2:
-                        og, tg = map(int, parts)
-                        em = get_match_result_emoji(tg, og)
-                else:
-                    if len(parts)==2:
-                        tg, og = map(int, parts)
-                        em = get_match_result_emoji(tg, og)
+                try:
+                    if temizle_takim_adi(opp) == team_name_Temizle(team_name):
+                        opp = cols[4].get_text(strip=True)
+                        if len(parts) == 2:
+                            og, tg = map(int, parts)
+                            em = get_match_result_emoji(tg, og)
+                    else:
+                        if len(parts) == 2:
+                            tg, og = map(int, parts)
+                            em = get_match_result_emoji(tg, og)
+                except Exception:
+                    continue 
                 df = cols[-4].get_text(strip=True) or "Yok"
                 if re.match(r"\d+:\d+", sc):
                     out.append({"tarih": t, "rakip": opp, "sonuc": sc, "dizilis": df, "emoji": em})
@@ -183,7 +196,10 @@ def get_last_matches(team_a: str, team_b: str) -> List[Dict[str, Any]]:
         return []
     url = f"https://www.transfermarkt.com.tr/vergleich/bilanzdetail/verein/{a_id}/gegner_id/{b_id}"
     try:
-        r = requests.get(url, headers={"User-Agent":"Mozilla/5.0"}, timeout=30)
+        r = safe_get(url, headers={"User-Agent":"Mozilla/5.0"}, timeout=30)
+        if r is None:
+            print(f"[DEBUG] get_last_matches başarısız! (timeout/retry)")
+            return []
         print(f"[DEBUG] get_last_matches status: {r.status_code}")
         if r.status_code!=200:
             print(f"[DEBUG] get_last_matches başarısız!")
@@ -224,8 +240,8 @@ def search_referee(name: str) -> Optional[str]:
     q=name.replace(" ","+")
     u=f"https://www.transfermarkt.com.tr/schnellsuche/ergebnis/schnellsuche?query={q}"
     try:
-        r=requests.get(u,headers={"User-Agent":"Mozilla/5.0"}, timeout=30)
-        if r.status_code!=200: return None
+        r = safe_get(u, headers={"User-Agent":"Mozilla/5.0"}, timeout=30)
+        if r is None or r.status_code!=200: return None
         s=BeautifulSoup(r.text,"html.parser")
         l=s.find("a",href=re.compile(r"/profil/schiedsrichter/"))
         if isinstance(l,Tag):
@@ -243,8 +259,8 @@ def get_referee_info(name: str, season:str="2024") -> Tuple[str,Optional[str]]:
     if not u.endswith("/"): u+="/"
     u+=f"saison/{season}"
     try:
-        r=requests.get(u,headers={"User-Agent":"Mozilla/5.0"}, timeout=30)
-        if r.status_code!=200: return f"<b>❌ Hata:{r.status_code}</b>",None
+        r = safe_get(u, headers={"User-Agent":"Mozilla/5.0"}, timeout=30)
+        if r is None or r.status_code!=200: return f"<b>❌ Hata:{r.status_code if r else 'timeout'}</b>",None
         s=BeautifulSoup(r.text,"html.parser")
         img_tag = s.find("img", class_="data-header__profile-image")
         img_url: Optional[str] = None
@@ -368,9 +384,83 @@ def get_team_info(name: str) -> Dict[str, Any]:
 def get_image_as_base64(url: str) -> Optional[str]:
     if not url: return None
     try:
-        r=requests.get(url,headers={"User-Agent":"Mozilla/5.0"}, timeout=30)
-        if r.status_code==200:
+        r = safe_get(url, headers={"User-Agent":"Mozilla/5.0"}, timeout=30)
+        if r is not None and r.status_code==200:
             return base64.b64encode(r.content).decode()
     except Exception as e:
         print(f"get_image_as_base64 error:{e}")
+    return None
+
+# --- Takım URL ve ID çekme fonksiyonları ---
+@lru_cache(maxsize=128)
+def search_team_url_cached(team_name: str) -> Optional[str]:
+    return search_team_url(team_name)
+
+async def async_search_team_url(team_name: str) -> Optional[str]:
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, search_team_url_cached, team_name)
+
+async def async_get_team_id_from_url(team_url: Optional[str]) -> Optional[str]:
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_team_id_from_url, team_url)
+
+@lru_cache(maxsize=128)
+def find_team_id_cached(team_name: str) -> Optional[str]:
+    return find_team_id(team_name)
+
+async def async_find_team_id(team_name: str) -> Optional[str]:
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, find_team_id_cached, team_name)
+
+# --- Takımın son 5 maçını getir ---
+@lru_cache(maxsize=128)
+def get_team_last_5_matches_with_tactics_cached(team_name: str):
+    return get_team_last_5_matches_with_tactics(team_name)
+
+async def async_get_team_last_5_matches_with_tactics(team_name: str):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_team_last_5_matches_with_tactics_cached, team_name)
+
+@lru_cache(maxsize=128)
+def get_last_matches_cached(team_a: str, team_b: str):
+    return get_last_matches(team_a, team_b)
+
+async def async_get_last_matches(team_a: str, team_b: str):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_last_matches_cached, team_a, team_b)
+
+@lru_cache(maxsize=128)
+def get_team_info_cached(name: str):
+    return get_team_info(name)
+
+async def async_get_team_info(name: str):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_team_info_cached, name)
+
+@lru_cache(maxsize=128)
+def get_referee_info_cached(name: str, season: str = "2024"):
+    return get_referee_info(name, season)
+
+async def async_get_referee_info(name: str, season: str = "2024"):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_referee_info_cached, name, season)
+
+@lru_cache(maxsize=128)
+def get_image_as_base64_cached(url: str):
+    return get_image_as_base64(url)
+
+async def async_get_image_as_base64(url: str):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, get_image_as_base64_cached, url)
+
+def safe_get(url, headers=None, timeout=30, retries=3, wait=2):
+    for attempt in range(retries):
+        try:
+            return requests.get(url, headers=headers, timeout=timeout)
+        except requests.exceptions.Timeout:
+            print(f"[WARN] Timeout, retrying {attempt+1}/{retries}... {url}")
+            time.sleep(wait)
+        except Exception as e:
+            print(f"[ERROR] safe_get error: {e} {url}")
+            break
     return None

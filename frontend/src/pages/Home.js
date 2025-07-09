@@ -282,7 +282,7 @@ const handleAnalysis = () => {
                           value={formData.teamA}
                           onChange={handleInputChange}
                           placeholder="Takım A adını girin..."
-                          className="w-full px-4 py-3 bg-black/50 border border-neutral-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all duration-300"
+                          className="w-full px-4 py-3 bg-black/50 border border-cyan-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all duration-300"
                         />
                       </div>
                     </div>
@@ -311,7 +311,7 @@ const handleAnalysis = () => {
                           value={formData.teamB}
                           onChange={handleInputChange}
                           placeholder="Takım B adını girin..."
-                          className="w-full px-4 py-3 bg-black/50 border border-neutral-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all duration-300"
+                          className="w-full px-4 py-3 bg-black/50 border border-purple-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 transition-all duration-300"
                         />
                       </div>
                     </div>
@@ -338,7 +338,7 @@ const handleAnalysis = () => {
                       value={formData.mainRef}
                       onChange={handleInputChange}
                       placeholder="Ana hakem adını girin..."
-                      className="w-full px-4 py-3 bg-black/50 border border-neutral-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all duration-300"
+                      className="w-full px-4 py-3 bg-black/50 border border-yellow-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/30 transition-all duration-300"
                     />
                   </div>
                 </div>
@@ -360,7 +360,7 @@ const handleAnalysis = () => {
                       value={formData.sideRef}
                       onChange={handleInputChange}
                       placeholder="Yan hakem adını girin..."
-                      className="w-full px-4 py-3 bg-black/50 border border-neutral-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all duration-300"
+                      className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
                     />
                   </div>
                 </div>
@@ -605,13 +605,9 @@ const handleAnalysis = () => {
                   {showAnalysis && analysisResults && (
                     <div className="grid md:grid-cols-4 gap-8 mt-8">
                         {/* Takım A Analizi */}
-                        <div className="modern-card animate-border-cyan bg-cyan-900/70 bg-cyan-gradient p-6 rounded-xl">
-                          <h3 className="text-2xl font-extrabold text-center text-cyan-200 mb-6 flex items-center justify-center gap-2 drop-shadow-lg">
-                            <span className="text-2xl"></span>
-                            {analysisResults.teams.team_a.name} Analizi
-                          </h3>
-
-                          <div className="text-cyan-100 text-base font-mono space-y-6 text-center">
+                        <div className="bg-neutral-800 rounded-xl border-2 border-orange-400 shadow-md p-6 flex flex-col justify-between min-h-[420px]">
+                          <h3 className="text-2xl font-bold text-center text-orange-400 mb-6">{analysisResults.teams.team_a.name} Analizi</h3>
+                          <div className="text-neutral-200 text-base font-mono space-y-6 text-center">
                             <div className="flex flex-col items-center">
                               <span className="font-bold text-cyan-300">Kaybettiği Maç</span>
                               <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
@@ -652,13 +648,9 @@ const handleAnalysis = () => {
                         </div>
 
                         {/* Takım B Analizi */}
-                        <div className="modern-card animate-border-purple bg-purple-900/70 bg-purple-gradient p-6 rounded-xl">
-                          <h3 className="text-2xl font-extrabold text-center text-purple-200 mb-6 flex items-center justify-center gap-2 drop-shadow-lg">
-                            <span className="text-2xl"></span>
-                            {analysisResults.teams.team_b.name} Analizi
-                          </h3>
-
-                          <div className="text-purple-100 text-base font-mono space-y-6 text-center">
+                        <div className="bg-neutral-800 rounded-xl border-2 border-orange-400 shadow-md p-6 flex flex-col justify-between min-h-[420px]">
+                          <h3 className="text-2xl font-bold text-center text-orange-400 mb-6">{analysisResults.teams.team_b.name} Analizi</h3>
+                          <div className="text-neutral-200 text-base font-mono space-y-6 text-center">
                             {/* Kaybettiği Maç */}
                             <div className="flex flex-col items-center">
                               <span className="font-bold text-purple-300">Kaybettiği Maç</span>
@@ -710,13 +702,9 @@ const handleAnalysis = () => {
                         </div>
 
                         {/* Aralarındaki Maçlar Analizi */}
-                        <div className="modern-card animate-border-amber bg-amber-900/70 bg-amber-gradient p-6 rounded-xl">
-                          <h3 className="text-2xl font-extrabold text-center text-yellow-200 mb-6 flex items-center justify-center gap-2 drop-shadow-lg">
-                            <span className="text-2xl"></span>
-                            Aralarındaki Maçlar Analizi
-                          </h3>
-
-                          <div className="text-yellow-100 text-base font-mono space-y-6 text-center">
+                        <div className="bg-neutral-800 rounded-xl border-2 border-orange-400 shadow-md p-6 flex flex-col justify-between min-h-[420px]">
+                          <h3 className="text-2xl font-bold text-center text-orange-400 mb-6">Aralarındaki Maçlar Analizi</h3>
+                          <div className="text-neutral-200 text-base font-mono space-y-6 text-center">
                             {/* Karşılıklı Gol */}
                             <div className="flex flex-col items-center">
                               <span className="font-bold text-yellow-300">Karşılıklı Gol</span>
@@ -746,13 +734,9 @@ const handleAnalysis = () => {
                         </div>
 
                         {/* Hakem Analizi */}
-                        <div className="modern-card animate-border-green bg-green-900/70 bg-green-gradient p-6 rounded-xl">
-                          <h3 className="text-2xl font-extrabold text-center text-green-200 mb-6 flex items-center justify-center gap-2 drop-shadow-lg">
-                            <span className="text-2xl"></span>
-                            Hakem Analizi
-                          </h3>
-                          
-                          <div className="text-green-100 text-base font-mono space-y-6 text-center">
+                        <div className="bg-neutral-800 rounded-xl border-2 border-orange-400 shadow-md p-6 flex flex-col justify-between min-h-[420px]">
+                          <h3 className="text-2xl font-bold text-center text-orange-400 mb-6">Hakem Analizi</h3>
+                          <div className="text-neutral-200 text-base font-mono space-y-6 text-center">
                             {/* Sarı Kart */}
                             <div className="flex flex-col items-center">
                               <span className="font-bold text-green-300">Maç Başı Sarı Kart</span>

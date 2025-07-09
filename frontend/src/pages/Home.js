@@ -532,25 +532,31 @@ const handleAnalysis = () => {
                   <div className="grid md:grid-cols-2 gap-8">
                     {/* Ana Hakem */}
                     {analysisResults.referees.main && (
-                      <div className="bg-gradient-to-br from-green-900/60 to-green-700/40 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-green-400/30">
-                        {analysisResults.referees.main.photo && (
-                          <img src={`data:image/png;base64,${analysisResults.referees.main.photo}`} alt="Ana Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-green-300 shadow-lg" />
-                        )}
-                        <h3 className="text-2xl font-extrabold text-green-200 mb-2 font-sans tracking-tight">{analysisResults.referees.main.name || "Ana Hakem"}</h3>
-                        <div className="text-base text-green-100 space-y-1 text-center font-mono">
-                          <div dangerouslySetInnerHTML={{ __html: analysisResults.referees.main.info }} />
+                      <div className="bg-gradient-to-br from-orange-500/80 to-red-500/80 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white relative overflow-hidden flex flex-col items-center">
+                        <div className="absolute inset-0 bg-black/30 rounded-2xl pointer-events-none"></div>
+                        <div className="relative z-10 flex flex-col items-center w-full">
+                          {analysisResults.referees.main.photo && (
+                            <img src={`data:image/png;base64,${analysisResults.referees.main.photo}`} alt="Ana Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-white shadow-lg" />
+                          )}
+                          <h3 className="text-2xl font-extrabold mb-2 font-sans tracking-tight drop-shadow-lg">{analysisResults.referees.main.name || "Ana Hakem"}</h3>
+                          <div className="text-base text-cyan-100 space-y-1 text-center font-mono w-full">
+                            <div dangerouslySetInnerHTML={{ __html: analysisResults.referees.main.info }} />
+                          </div>
                         </div>
                       </div>
                     )}
                     {/* Yan Hakem */}
                     {analysisResults.referees.side && (
-                      <div className="bg-gradient-to-br from-yellow-900/60 to-yellow-700/40 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-yellow-400/30">
-                        {analysisResults.referees.side.photo && (
-                          <img src={`data:image/png;base64,${analysisResults.referees.side.photo}`} alt="Yan Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-yellow-300 shadow-lg" />
-                        )}
-                        <h3 className="text-2xl font-extrabold text-yellow-200 mb-2 font-sans tracking-tight">{analysisResults.referees.side.name || "Yan Hakem"}</h3>
-                        <div className="text-base text-yellow-100 space-y-1 text-center font-mono">
-                          <div dangerouslySetInnerHTML={{ __html: analysisResults.referees.side.info }} />
+                      <div className="bg-gradient-to-br from-orange-500/80 to-red-500/80 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white relative overflow-hidden flex flex-col items-center">
+                        <div className="absolute inset-0 bg-black/30 rounded-2xl pointer-events-none"></div>
+                        <div className="relative z-10 flex flex-col items-center w-full">
+                          {analysisResults.referees.side.photo && (
+                            <img src={`data:image/png;base64,${analysisResults.referees.side.photo}`} alt="Yan Hakem" className="w-20 h-20 rounded-full mb-4 border-4 border-white shadow-lg" />
+                          )}
+                          <h3 className="text-2xl font-extrabold mb-2 font-sans tracking-tight drop-shadow-lg">{analysisResults.referees.side.name || "Yan Hakem"}</h3>
+                          <div className="text-base text-cyan-100 space-y-1 text-center font-mono w-full">
+                            <div dangerouslySetInnerHTML={{ __html: analysisResults.referees.side.info }} />
+                          </div>
                         </div>
                       </div>
                     )}

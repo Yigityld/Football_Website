@@ -259,10 +259,26 @@ def sor_hf(prompt: str) -> str:
     # Aksi halde üretilen metni al
     return data[0].get("generated_text", "Cevap alınamadı.")
 
+def sor_hf_space(prompt: str) -> str:
+    HF_SPACE_API_URL = "https://husodu73-my-ollama-space.hf.space/api/predict"
+    payload = {
+        "data": [prompt]
+    }
+    try:
+        response = requests.post(HF_SPACE_API_URL, json=payload, timeout=60)
+        response.raise_for_status()
+        data = response.json()
+        # Gradio API response formatı: {"data": ["cevap"]}
+        if "data" in data and isinstance(data["data"], list):
+            return data["data"][0]
+        return "Cevap alınamadı."
+    except Exception as e:
+        return f"HF Space API Hatası: {e}"
+
 # --- Dışa açılan fonksiyon ---
 def predict_match(team_a: str, team_b: str) -> str:
     maclar_a, wins_a, draws_a, losses_a = get_team_last_5_matches_with_tactics(team_a)
     maclar_b, wins_b, draws_b, losses_b = get_team_last_5_matches_with_tactics(team_b)
     ikili = get_last_matches(team_a, team_b)
     prompt = hazirla_prompt_string(ikili, team_a, maclar_a, wins_a, draws_a, losses_a, team_b, maclar_b, wins_b, draws_b, losses_b)
-    return sor_hf(prompt)
+    return sor_hf_space(prompt)

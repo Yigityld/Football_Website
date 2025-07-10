@@ -24,7 +24,9 @@ const Home = () => {
 
 
   // Backend URL'ini ayarla - production'da Render URL'ini kullan
-  const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
+   const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
+  
+   const BASE_URL1 = "https://husodu73-my-ollama-space.hf.space";
 
   // Test backend bağlantısı
   const testBackendConnection = async () => {
@@ -129,29 +131,40 @@ const Home = () => {
 
 
     // — Tahmin butonuna tıklanınca çalışacak
-  const handlePredict = async () => {
-    if (!formData.teamA || !formData.teamB) return;
-    setPredicting(true);
-    setPrediction('');
-    try {
-        const res = await fetch(`${BASE_URL}/predict-match`, {
-
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          team_a: formData.teamA,
-          team_b: formData.teamB
-        })
-      });
-      const data = await res.json();
-      setPrediction(data.prediction || 'Tahmin alınamadı');
-    } catch {
-      setPrediction('Tahmin hatası');
-    } finally {
-      setPredicting(false);
-    }
-  };
-
+    const handlePredict = async () => {
+      if (!formData.teamA || !formData.teamB) return;
+      setPredicting(true);
+      setPrediction('');
+  
+      try {
+        const res = await fetch(`${BASE_URL1}/api/predict`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            data: [
+              // Gradio REST API’leri data: [prompt] bekler
+              `Predict the next match score between ${formData.teamA} and ${formData.teamB} in the format: Prediction: ${formData.teamA} X – Y ${formData.teamB}`
+            ]
+          })
+        });
+  
+        if (!res.ok) {
+          throw new Error(`Server responded ${res.status}`);
+        }
+  
+        const json = await res.json();
+        // Gradio API: { data: ["Prediction: A X – Y B"] }
+        setPrediction(json.data?.[0] ?? 'Tahmin alınamadı');
+      } catch (err) {
+        console.error('Predict error:', err);
+        setPrediction('Tahmin hatası');
+      } finally {
+        setPredicting(false);
+      }
+    };
+  
 
   const handleGoalAnalysis = () => {
   if (!analysisResults) return;

@@ -71,3 +71,8 @@ youtube-dl==2021.12.17
 yt-dlp==2025.6.30
 fastapi
 python-multipart
+transformers>=4.32.0
+accelerate
+sentencepiece
+gradio
+torch   

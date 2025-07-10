@@ -351,28 +351,56 @@ def prepare_the_prompt(
     print(f"[LOG] prepare_the_prompt: prompt=\n{prompt}")
     return prompt
 
-# --- Gradio Space API'ye uygun yeni inference fonksiyonu ---
+# --- Gradio Space API'ye uygun yeni queue tabanlı inference fonksiyonu ---
 def sor_hf(prompt: str) -> str:
-    # Gradio'nun REST API'si data: [prompt] formatında POST bekler
-    payload = {"data": [prompt]}
+    import uuid
+    import json
+    session_hash = f"sess-{uuid.uuid4().hex[:8]}"
+    fn_index = 0  # app.py'de tek bir fonksiyon var, genellikle 0 olur
+    trigger_id = 0  # zorunlu değil ama örnekte 12 idi, burada 0 kullanıyoruz
+    join_url = "https://husodu73-llmff.hf.space/gradio_api/queue/join"
+    data_url = "https://husodu73-llmff.hf.space/gradio_api/queue/data"
+    headers = {"Content-Type": "application/json"}
+    join_payload = {
+        "data": [prompt],
+        "event_data": None,
+        "fn_index": fn_index,
+        "trigger_id": trigger_id,
+        "session_hash": session_hash
+    }
     try:
-        r = requests.post(HF_SPACE_API_URL, json=payload, timeout=60)
-        print(f"[LOG] sor_hf: response status={r.status_code}")
-        print(f"[LOG] sor_hf: response text={r.text[:500]}")
+        join_resp = requests.post(join_url, headers=headers, data=json.dumps(join_payload), timeout=30)
+        if join_resp.status_code != 200:
+            return f"[ERROR] queue/join failed: {join_resp.status_code} {join_resp.text}"
+        join_json = join_resp.json()
+        event_id = join_json.get("event_id") or join_json.get("event_id", None)
+        if not event_id:
+            return f"[ERROR] queue/join: event_id alınamadı: {join_json}"
     except Exception as e:
-        print(f"[ERROR] sor_hf: Exception during POST: {e}")
-        return f"[ERROR] sor_hf: Exception during POST: {e}"
-    if r.status_code != 200:
-        return f"HF API Hatası {r.status_code}: {r.text.strip() or '<empty>'}"
-    try:
-        data = r.json()
-        print(f"[LOG] sor_hf: response json={data}")
-    except Exception as e:
-        return f"HF API non-JSON yanıt: {r.text[:200]}"
-    # Gradio API yanıtı: {'data': ['tahmin']} formatında döner
-    if isinstance(data, dict) and "data" in data and isinstance(data["data"], list):
-        return data["data"][0]
-    return f"HF API’den beklenmeyen format: {data}"
+        return f"[ERROR] queue/join exception: {e}"
+
+    # Sonucu polling ile al
+    import time
+    for _ in range(60):  # 60 sn boyunca dene (her 1 sn'de bir)
+        try:
+            poll_url = f"{data_url}?session_hash={session_hash}&event_id={event_id}"
+            poll_resp = requests.get(poll_url, timeout=10)
+            if poll_resp.status_code != 200:
+                time.sleep(1)
+                continue
+            poll_json = poll_resp.json()
+            # Gradio queue/data yanıtı: {'data': ['cevap']} veya {'status': 'generating'}
+            if isinstance(poll_json, dict) and "data" in poll_json and isinstance(poll_json["data"], list):
+                return poll_json["data"][0]
+            if poll_json.get("status") == "generating":
+                time.sleep(1)
+                continue
+            # Diğer durumlarda hata mesajı döndür
+            return f"[ERROR] queue/data: {poll_json}"
+        except Exception as e:
+            time.sleep(1)
+            continue
+    return "[ERROR] queue/data: 60 sn içinde sonuç alınamadı."
 
 # --- predict_match fonksiyonu (değişmedi) ---
 def predict_match(team_a: str, team_b: str) -> str:

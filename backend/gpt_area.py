@@ -177,89 +177,89 @@ def analyze_referee_stats(ref_info_html):
 # --- Takımın son 5 maçını (diziliş + skor) getir ---
 def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], int, int, int, dict]:
     print(f"[LOG] get_team_last_5_matches_with_tactics: team_name={team_name}")
-    def fetch_matches_from_url(url: str) -> List[Dict]:
-        print(f"[LOG] fetch_matches_from_url: url={url}")
-        headers = {"User-Agent": "Mozilla/5.0"}
-        response = safe_get(url, headers=headers, timeout=30)
-        if response is None or response.status_code != 200:
-            print(f"[ERROR] fetch_matches_from_url: No response or bad status for {url}")
+    def fetch_matches(url: str) -> List[Dict[str, Any]]:
+        print(f"[DEBUG] fetch_matches çağrıldı: {url}")
+        try:
+            r = safe_get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+            if r is None:
+                print(f"[DEBUG] fetch_matches başarısız! (timeout/retry)")
+                return []
+            print(f"[DEBUG] fetch_matches status: {r.status_code}")
+            if r.status_code != 200:
+                print(f"[DEBUG] fetch_matches başarısız!")
+                return []
+            s = BeautifulSoup(r.text, "html.parser")
+            div = s.find("div", class_="responsive-table")
+            if not isinstance(div, Tag):
+                print(f"[DEBUG] fetch_matches responsive-table yok!")
+                return []
+            body = div.find("tbody")
+            if not isinstance(body, Tag):
+                print(f"[DEBUG] fetch_matches tbody yok!")
+                return []
+            out = []
+            toplam_gol = 0
+            for row in body.find_all("tr") if isinstance(body, Tag) else []:
+                cols = row.find_all("td") if isinstance(row, Tag) else []
+                if len(cols) < 10:
+                    continue
+                t = cols[1].get_text(strip=True)
+                sc = cols[-1].get_text(strip=True)
+                parts = sc.split(":")
+                opp = cols[6].get_text(strip=True)
+                em = ""
+                try:
+                    if temizle_takim_adi(opp) == team_name_Temizle(team_name):
+                        opp = cols[4].get_text(strip=True)
+                        if len(parts) == 2:
+                            og, tg = map(int, parts)
+                            toplam_gol += tg + og
+                            em = get_match_result_emoji(tg, og)
+                    else:
+                        if len(parts) == 2:
+                            tg, og = map(int, parts)
+                            toplam_gol += tg + og
+                            em = get_match_result_emoji(tg, og)
+                except Exception:
+                    continue 
+                df = cols[-4].get_text(strip=True) or "Yok"
+                print(f"[DEBUG] dizilis: {df}")
+                print(f"[DEBUG] toplam_gol: {toplam_gol}")
+                if re.match(r"\d+:\d+", sc):
+                    out.append({"tarih": t, "rakip": opp, "sonuc": sc, "dizilis": df, "emoji": em})
+                if len(out)>=500:
+                    break
+            print(f"[DEBUG] fetch_matches dönen maç sayısı: {len(out)}")
+            return out
+        except Exception as e:
+            print(f"[DEBUG] fetch_matches HATA: {e}")
+            import traceback; traceback.print_exc()
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
-        div_responsive = soup.find("div", class_="responsive-table")
-        if not isinstance(div_responsive, Tag):
-            print(f"[ERROR] fetch_matches_from_url: No responsive-table div")
-            return []
+    url1 = None
+    tid = None
+    u = search_team_url(team_name)
+    print(f"[DEBUG] get_team_last_5_matches_with_tactics search_team_url: {u}")
+    if u:
+        tid = get_team_id_from_url(u)
+        print(f"[DEBUG] get_team_last_5_matches_with_tactics team_id: {tid}")
+    if not tid:
+        print(f"[DEBUG] get_team_last_5_matches_with_tactics team_id yok!")
+        return [],0,0,0,0,0
+    slug = team_name.lower().replace(" ","-")
+    url1 = f"https://www.transfermarkt.com.tr/{slug}/spielplandatum/verein/{tid}/plus/1"
+    m = fetch_matches(url1)
+    if len(m)<5:
+        url2 = f"https://www.transfermarkt.com.tr/{slug}/spielplandatum/verein/{tid}/saison_id/2024/plus/1"
+        m = fetch_matches(url2)
+    last5 = m[-5:][::-1]
+    w = sum(1 for x in last5 if x["emoji"]=="✅")
+    d = sum(1 for x in last5 if x["emoji"]=="🤝")
+    l = sum(1 for x in last5 if x["emoji"]=="❌")
+    performance = analyze_team_performance(last5)
 
-        tbody = div_responsive.find("tbody")
-        if not isinstance(tbody, Tag):
-            print(f"[ERROR] fetch_matches_from_url: No tbody")
-            return []
-
-        matches: List[Dict] = []
-        for row in tbody.find_all("tr"):
-            cols = row.find_all("td")
-            if len(cols) < 10:
-                continue
-            try:
-                tarih = cols[1].get_text(strip=True)
-                skor = cols[-1].get_text(strip=True)
-                parts = skor.split(":")
-                rakip = cols[6].get_text(strip=True)
-                emoji = ""
-
-                if temizle_takim_adi(rakip) == team_name_Temizle(team_name):
-                    rakip = cols[4].get_text(strip=True)
-                    if len(parts) == 2:
-                        rakip_gol, takim_gol = int(parts[0]), int(parts[1])
-                        emoji = get_match_result_emoji(takim_gol, rakip_gol)
-                else:
-                    if len(parts) == 2:
-                        takim_gol, rakip_gol = int(parts[0]), int(parts[1])
-                        emoji = get_match_result_emoji(takim_gol, rakip_gol)
-
-                dizilis = cols[-4].get_text(strip=True)
-                if re.match(r"\d+:\d+", skor):
-                    matches.append({
-                        "tarih": tarih,
-                        "rakip": rakip,
-                        "sonuc": skor,
-                        "dizilis": dizilis or "Yok",
-                        "emoji": emoji
-                    })
-            except (ValueError, IndexError) as e:
-                print(f"[ERROR] fetch_matches_from_url: {e}")
-                continue
-
-            if len(matches) >= 500:
-                break
-
-        print(f"[LOG] fetch_matches_from_url: matches found={len(matches)}")
-        return matches
-
-    team_url = search_team_url(team_name)
-    if not team_url:
-        print(f"[ERROR] get_team_last_5_matches_with_tactics: No team_url for {team_name}")
-        return [], 0, 0, 0, {}
-    team_id = get_team_id_from_url(team_url)
-    if not team_id:
-        print(f"[ERROR] get_team_last_5_matches_with_tactics: No team_id for {team_name}")
-        return [], 0, 0, 0, {}
-
-    slug = team_name.lower().replace(" ", "-")
-    base_url = f"https://www.transfermarkt.com.tr/{slug}/spielplandatum/verein/{team_id}/plus/1"
-    matches = fetch_matches_from_url(base_url)
-    if len(matches) < 5:
-        alt_url = f"https://www.transfermarkt.com.tr/{slug}/spielplandatum/verein/{team_id}/saison_id/2024/plus/1"
-        matches = fetch_matches_from_url(alt_url)
-
-    last_5 = matches[-5:][::-1] if matches else []
-    wins = sum(1 for m in last_5 if m.get("emoji") == "✅")
-    draws = sum(1 for m in last_5 if m.get("emoji") == "🤝")
-    losses = sum(1 for m in last_5 if m.get("emoji") == "❌")
-    performance = analyze_team_performance(last_5)
-    print(f"[LOG] get_team_last_5_matches_with_tactics: last_5={last_5}")
-    return last_5, wins, draws, losses, performance
+    #print(f"[DEBUG] get_team_last_5_matches_with_tactics last5: {last5}")
+    return last5, w, d, l, performance
 
 # --- İki takım arası son 5 maç ---
 def get_last_matches(team_a: str, team_b: str) -> List[Dict]:

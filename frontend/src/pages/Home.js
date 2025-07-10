@@ -26,8 +26,6 @@ const Home = () => {
   // Backend URL'ini ayarla - production'da Render URL'ini kullan
    const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
   
-   const BASE_URL1 = "https://husodu73-my-ollama-space.hf.space";
-
   // Test backend bağlantısı
   const testBackendConnection = async () => {
     try {
@@ -135,27 +133,31 @@ const Home = () => {
       if (!formData.teamA || !formData.teamB) return;
       setPredicting(true);
       setPrediction('');
-  
+    
       try {
-        const res = await fetch(`${BASE_URL1}/api/predict`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            data: [
-              // Gradio REST API’leri data: [prompt] bekler
-              `Predict the next match score between ${formData.teamA} and ${formData.teamB} in the format: Prediction: ${formData.teamA} X – Y ${formData.teamB}`
-            ]
-          })
-        });
-  
+        const res = await fetch(
+          'https://husodu73-my-ollama-space.hf.space/api/predict',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              // eğer gated modele istek yapıyorsanız:
+              // 'Authorization': `Bearer ${process.env.REACT_APP_HF_TOKEN}`
+            },
+            body: JSON.stringify({
+              data: [
+                `Predict the next match score between ${formData.teamA} and ${formData.teamB} in the format: Prediction: ${formData.teamA} X–Y ${formData.teamB}`
+              ]
+            })
+          }
+        );
+    
         if (!res.ok) {
           throw new Error(`Server responded ${res.status}`);
         }
-  
+    
         const json = await res.json();
-        // Gradio API: { data: ["Prediction: A X – Y B"] }
+        // Gradio API döner: { data: [ "Prediction: A X–Y B" ] }
         setPrediction(json.data?.[0] ?? 'Tahmin alınamadı');
       } catch (err) {
         console.error('Predict error:', err);
@@ -164,6 +166,7 @@ const Home = () => {
         setPredicting(false);
       }
     };
+    
   
 
   const handleGoalAnalysis = () => {

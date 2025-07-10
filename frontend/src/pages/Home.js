@@ -128,37 +128,54 @@ const Home = () => {
 
 
 
-    // — Tahmin butonuna tıklanınca çalışacak
+    // — Tahmin butonuna tıklanınca çalışacak (QUEUE API)
     const handlePredict = async () => {
       if (!formData.teamA || !formData.teamB) return;
       setPredicting(true);
       setPrediction('');
-    
       try {
-        const res = await fetch(
-          'https://husodu73-my-ollama-space.hf.space/predict',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              // eğer gated modele istek yapıyorsanız:
-              // 'Authorization': `Bearer ${process.env.REACT_APP_HF_TOKEN}`
-            },
-            body: JSON.stringify({
-              data: [
-                `Predict the next match score between ${formData.teamA} and ${formData.teamB} in the format: Prediction: ${formData.teamA} X–Y ${formData.teamB}`
-              ]
-            })
+        // Benzersiz session hash üret
+        const session_hash = 'sess-' + Math.random().toString(36).substring(2, 10);
+        const fn_index = 0; // app.py'de tek fonksiyon var, genellikle 0 olur
+        const trigger_id = 0;
+        const join_url = 'https://husodu73-llmff.hf.space/gradio_api/queue/join';
+        const data_url = 'https://husodu73-llmff.hf.space/gradio_api/queue/data';
+        const prompt = `Predict the next match score between ${formData.teamA} and ${formData.teamB} in the format: Prediction: ${formData.teamA} X–Y ${formData.teamB}`;
+        // 1. queue/join'a POST at
+        const joinRes = await fetch(join_url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            data: [prompt],
+            event_data: null,
+            fn_index,
+            trigger_id,
+            session_hash
+          })
+        });
+        if (!joinRes.ok) throw new Error('queue/join failed: ' + joinRes.status);
+        const joinJson = await joinRes.json();
+        const event_id = joinJson.event_id;
+        if (!event_id) throw new Error('event_id alınamadı: ' + JSON.stringify(joinJson));
+        // 2. queue/data'ya polling ile GET at
+        let result = null;
+        for (let i = 0; i < 60; i++) { // 60 sn boyunca dene
+          await new Promise(res => setTimeout(res, 1000));
+          const pollUrl = `${data_url}?session_hash=${session_hash}&event_id=${event_id}`;
+          const pollRes = await fetch(pollUrl);
+          if (!pollRes.ok) continue;
+          const pollJson = await pollRes.json();
+          if (pollJson && Array.isArray(pollJson.data)) {
+            result = pollJson.data[0];
+            break;
           }
-        );
-    
-        if (!res.ok) {
-          throw new Error(`Server responded ${res.status}`);
+          if (pollJson.status === 'generating') continue;
+          if (pollJson.status === 'error') {
+            result = '[ERROR] ' + (pollJson.message || 'queue/data error');
+            break;
+          }
         }
-    
-        const json = await res.json();
-        // Gradio API döner: { data: [ "Prediction: A X–Y B" ] }
-        setPrediction(json.data?.[0] ?? 'Tahmin alınamadı');
+        setPrediction(result ?? 'Tahmin alınamadı');
       } catch (err) {
         console.error('Predict error:', err);
         setPrediction('Tahmin hatası');

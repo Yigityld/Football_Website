@@ -75,32 +75,13 @@ def search_team_url(team_name: str) -> Optional[str]:
     soup = BeautifulSoup(response.text, "html.parser")
     results = [r for r in soup.select("a[href*='/startseite/verein/']") if isinstance(r, Tag)]
     for a in results:
-        img = a.find("img")
-        if isinstance(img, Tag) and img.has_attr("alt"):
-            alt = img.get("alt")
-            alt_str = ""
-            if isinstance(alt, list):
-                alt_str = " ".join(alt)
-            elif isinstance(alt, str):
-                alt_str = alt
-            alt_text = alt_str.strip().lower()
-            if team_name.lower() in alt_text:
-                href = a.get("href")
-                if isinstance(href, str):
-                    print(f"[LOG] search_team_url: Found url={href}")
-                    return f"https://www.transfermarkt.com.tr{href}"
-        text = a.get_text(strip=True)
-        if text.lower() == team_name.lower():
+        text = a.get_text(strip=True).lower()
+        if team_name.lower() in text:
             href = a.get("href")
             if isinstance(href, str):
                 print(f"[LOG] search_team_url: Found url={href}")
                 return f"https://www.transfermarkt.com.tr{href}"
-    if results:
-        href = results[0].get("href")
-        if isinstance(href, str):
-            print(f"[LOG] search_team_url: Fallback url={href}")
-            return f"https://www.transfermarkt.com.tr{href}"
-    print(f"[ERROR] search_team_url: No results for {team_name}")
+    print(f"[ERROR] search_team_url: No matching result for {team_name}")
     return None
 
 
@@ -257,7 +238,10 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], in
         return matches
 
     team_url = search_team_url(team_name)
-    team_id = get_team_id_from_url(team_url) if team_url else None
+    if not team_url:
+        print(f"[ERROR] get_team_last_5_matches_with_tactics: No team_url for {team_name}")
+        return [], 0, 0, 0, {}
+    team_id = get_team_id_from_url(team_url)
     if not team_id:
         print(f"[ERROR] get_team_last_5_matches_with_tactics: No team_id for {team_name}")
         return [], 0, 0, 0, {}

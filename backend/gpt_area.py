@@ -9,10 +9,10 @@ import os
 
 # Ortam değişkeninden Hugging Face token’ını al
 HF_TOKEN = os.getenv("HF_TOKEN")
-HF_SPACE_API_URL = "https://husodu73-my-ollama-space.hf.space/api/predict"
+# Sadece Space API kullanılacak, model adı ve endpoint güncel
 MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
-HF_HEADERS = {
+HF_SPACE_API_URL = "https://husodu73-my-ollama-space.hf.space/api/predict"
+HF_SPACE_HEADERS = {
     "Authorization": f"Bearer {HF_TOKEN}",
     "Content-Type": "application/json"
 }
@@ -36,13 +36,14 @@ if not HF_TOKEN:
 print(f"Kullanılan HF_TOKEN: {'*' * len(HF_TOKEN) if HF_TOKEN else 'Yok'}") # Güvenlik için token'ın kendisini yazdırma
 
 
-HF_TOKEN = os.getenv("HF_TOKEN")
-MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
-API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
-HF_SPACE_HEADERS = {
-    "Authorization": f"Bearer {HF_TOKEN}",
-    "Content-Type": "application/json"
-}
+# Eski MODEL ve API_URL tanımlarını kaldırdım
+# HF_TOKEN = os.getenv("HF_TOKEN")
+# MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
+# API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
+# HF_SPACE_HEADERS = {
+#     "Authorization": f"Bearer {HF_TOKEN}",
+#     "Content-Type": "application/json"
+# }
 
 # --- Takım URL ve ID çekme fonksiyonları ---
 def safe_get(url, headers=None, timeout=30, retries=3, wait=2):

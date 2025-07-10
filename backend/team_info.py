@@ -174,7 +174,7 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict[str,
         print(f"[DEBUG] get_team_last_5_matches_with_tactics team_id: {tid}")
     if not tid:
         print(f"[DEBUG] get_team_last_5_matches_with_tactics team_id yok!")
-        return [],0,0,0
+        return [],0,0,0,0,0
     slug = team_name.lower().replace(" ","-")
     url1 = f"https://www.transfermarkt.com.tr/{slug}/spielplandatum/verein/{tid}/plus/1"
     m = fetch_matches(url1)

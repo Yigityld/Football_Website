@@ -7,11 +7,13 @@ from typing import List, Dict, Tuple, Optional
 import time
 import os
 
+# Hugging Face Space Gradio API endpointi
+HF_SPACE_API_URL = "https://husodu73-my-ollama-space.hf.space/predict"
+
 # Ortam değişkeninden Hugging Face token’ını al
 HF_TOKEN = os.getenv("HF_TOKEN")
 # Sadece Space API kullanılacak, model adı ve endpoint güncel
 MODEL = "openai-community/gpt2"
-HF_SPACE_API_URL = "https://husodu73-my-ollama-space.hf.space/api/predict"
 HF_SPACE_HEADERS = {
     "Authorization": f"Bearer {HF_TOKEN}",
     "Content-Type": "application/json"
@@ -361,57 +363,35 @@ def prepare_the_prompt(
     print(f"[LOG] prepare_the_prompt: prompt=\n{prompt}")
     return prompt
 
-# --- Geliştirilmiş HF Inference API çağrısı ---
+# --- Gradio Space API'ye uygun yeni inference fonksiyonu ---
 def sor_hf(prompt: str) -> str:
-    print(f"[LOG] sor_hf: prompt=\n{prompt}")
-    payload = {
-        "inputs": prompt,
-        "options": {"use_cache": False},
-        "parameters": {
-            "max_new_tokens": 20,
-            "return_full_text": False,
-            "do_sample": False
-        }
-    }
-    print(f"[LOG] sor_hf: POST URL={HF_SPACE_API_URL}")
-    print(f"[LOG] sor_hf: payload={payload}")
+    # Gradio'nun REST API'si data: [prompt] formatında POST bekler
+    payload = {"data": [prompt]}
     try:
-        r = requests.post(HF_SPACE_API_URL, headers=HF_SPACE_HEADERS, json=payload, timeout=30)
+        r = requests.post(HF_SPACE_API_URL, json=payload, timeout=60)
         print(f"[LOG] sor_hf: response status={r.status_code}")
         print(f"[LOG] sor_hf: response text={r.text[:500]}")
     except Exception as e:
         print(f"[ERROR] sor_hf: Exception during POST: {e}")
         return f"[ERROR] sor_hf: Exception during POST: {e}"
-    if r.status_code == 404:
-        print(f"[ERROR] sor_hf: 404 Not Found")
-        return ("HF API Hatası 404: Model bulunamadı. "
-                "Lütfen Hugging Face'de “mistralai/Mistral-7B-Instruct-v0.2” sayfasına gidip "
-                "lisansı kabul ettiğinizden emin olun ve MODEL değişkeninizi kontrol edin.")
-    if not r.ok:
-        print(f"[ERROR] sor_hf: API error {r.status_code}")
+    if r.status_code != 200:
         return f"HF API Hatası {r.status_code}: {r.text.strip() or '<empty>'}"
     try:
         data = r.json()
         print(f"[LOG] sor_hf: response json={data}")
-    except ValueError:
-        print(f"[ERROR] sor_hf: Non-JSON response")
+    except Exception as e:
         return f"HF API non-JSON yanıt: {r.text[:200]}"
-    if isinstance(data, dict) and data.get("error"):
-        print(f"[ERROR] sor_hf: API error in response: {data['error']}")
-        return f"HF Hata: {data['error']}"
-    if isinstance(data, list) and data:
-        print(f"[LOG] sor_hf: generated_text={data[0].get('generated_text', 'Cevap alınamadı.')}")
-        return data[0].get("generated_text", "Cevap alınamadı.")
-    print(f"[ERROR] sor_hf: Unexpected response format: {data}")
+    # Gradio API yanıtı: {'data': ['tahmin']} formatında döner
+    if isinstance(data, dict) and "data" in data and isinstance(data["data"], list):
+        return data["data"][0]
     return f"HF API’den beklenmeyen format: {data}"
 
-# --- predict_match fonksiyonu ---
+# --- predict_match fonksiyonu (değişmedi) ---
 def predict_match(team_a: str, team_b: str) -> str:
     print(f"[LOG] predict_match: team_a={team_a}, team_b={team_b}")
     maclar_a, wins_a, draws_a, losses_a, _ = get_team_last_5_matches_with_tactics(team_a)
     maclar_b, wins_b, draws_b, losses_b, _ = get_team_last_5_matches_with_tactics(team_b)
     ikili = get_last_matches(team_a, team_b)
-
     prompt = prepare_the_prompt(
         ikili,
         team_a, maclar_a, wins_a, draws_a, losses_a,

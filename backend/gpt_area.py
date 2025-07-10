@@ -223,8 +223,8 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], in
                 except Exception:
                     continue 
                 df = cols[-4].get_text(strip=True) or "Yok"
-                print(f"[DEBUG] dizilis: {df}")
-                print(f"[DEBUG] toplam_gol: {toplam_gol}")
+                #print(f"[DEBUG] dizilis: {df}")
+                #print(f"[DEBUG] toplam_gol: {toplam_gol}")
                 if re.match(r"\d+:\d+", sc):
                     out.append({"tarih": t, "rakip": opp, "sonuc": sc, "dizilis": df, "emoji": em})
                 if len(out)>=500:
@@ -245,7 +245,7 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], in
         print(f"[DEBUG] get_team_last_5_matches_with_tactics team_id: {tid}")
     if not tid:
         print(f"[DEBUG] get_team_last_5_matches_with_tactics team_id yok!")
-        return [],0,0,0,0,0
+        return [],0,0,0,{}
     slug = team_name.lower().replace(" ","-")
     url1 = f"https://www.transfermarkt.com.tr/{slug}/spielplandatum/verein/{tid}/plus/1"
     m = fetch_matches(url1)
@@ -343,7 +343,11 @@ def prepare_the_prompt(
         for m in matches
     )
 
-    prompt = f"""You are a football analyst.\n\nTeam A (“{team_a}”) – last 5 matches:\n{last5_a}\nRecord: {wins_a} wins, {draws_a} draws, {losses_a} losses.\n\nTeam B (“{team_b}”) – last 5 matches:\n{last5_b}\nRecord: {wins_b} wins, {draws_b} draws, {losses_b} losses.\n\nHead-to-head (last 5 meetings):\n{h2h}\n\nBased on ONLY the data above, predict the score of the next match between {team_a} and {team_b}.\nAnswer only in this exact format:\nPrediction: {team_a} X – Y {team_b}\n\nDo not add any extra commentary, explanation, or text.\n"""
+    prompt = f"""You are a football analyst.\n\nTeam A (“{team_a}”) – last 5 matches:\n{last5_a}\nRecord: {wins_a} wins, {draws_a} draws, {losses_a} losses.\n\nTeam B (“{team_b}”) –
+    last 5 matches:\n{last5_b}\nRecord: {wins_b} wins, {draws_b} draws, {losses_b} losses.\n\nHead-to-head (last 5 meetings):\n{h2h}\n\n
+    Based on ONLY the data above, predict the score of the next match between {team_a} and {team_b}.\nAnswer only in this exact format:\nPrediction:
+    {team_a} X – Y {team_b}\n\nDo not add any extra commentary, explanation, or text.\n"""
+
     print(f"[LOG] prepare_the_prompt: prompt=\n{prompt}")
     return prompt
 

@@ -136,7 +136,7 @@ const Home = () => {
     
       try {
         const res = await fetch(
-          'https://husodu73-my-ollama-space.hf.space/api/predict',
+          'https://husodu73-my-ollama-space.hf.space/predict',
           {
             method: 'POST',
             headers: {

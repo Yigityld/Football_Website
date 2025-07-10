@@ -177,7 +177,7 @@ def analyze_referee_stats(ref_info_html):
 # --- Takımın son 5 maçını (diziliş + skor) getir ---
 def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], int, int, int, dict]:
     print(f"[LOG] get_team_last_5_matches_with_tactics: team_name={team_name}")
-    def fetch_matches(url: str) -> List[Dict[str, Any]]:
+    def fetch_matches(url: str) -> List[Dict]:
         print(f"[DEBUG] fetch_matches çağrıldı: {url}")
         try:
             r = safe_get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)

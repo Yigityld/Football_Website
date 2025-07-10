@@ -368,38 +368,52 @@ def sor_hf(prompt: str) -> str:
         "trigger_id": trigger_id,
         "session_hash": session_hash
     }
+    print(f"[sor_hf] Prompt gönderiliyor: {prompt[:100]}...")
     try:
+        print(f"[sor_hf] queue/join endpointine istek atılıyor...")
         join_resp = requests.post(join_url, headers=headers, data=json.dumps(join_payload), timeout=30)
+        print(f"[sor_hf] queue/join status: {join_resp.status_code}")
         if join_resp.status_code != 200:
+            print(f"[sor_hf] queue/join başarısız: {join_resp.text}")
             return f"[ERROR] queue/join failed: {join_resp.status_code} {join_resp.text}"
         join_json = join_resp.json()
         event_id = join_json.get("event_id") or join_json.get("event_id", None)
+        print(f"[sor_hf] event_id: {event_id}")
         if not event_id:
+            print(f"[sor_hf] event_id alınamadı: {join_json}")
             return f"[ERROR] queue/join: event_id alınamadı: {join_json}"
     except Exception as e:
+        print(f"[sor_hf] queue/join exception: {e}")
         return f"[ERROR] queue/join exception: {e}"
 
     # Sonucu polling ile al
     import time
-    for _ in range(60):  # 60 sn boyunca dene (her 1 sn'de bir)
+    print(f"[sor_hf] queue/data polling başlıyor...")
+    for i in range(60):  # 60 sn boyunca dene (her 1 sn'de bir)
         try:
             poll_url = f"{data_url}?session_hash={session_hash}&event_id={event_id}"
+            print(f"[sor_hf] ({i+1}. deneme) queue/data: {poll_url}")
             poll_resp = requests.get(poll_url, timeout=10)
-            if poll_resp.status_code != 200:
+            print(f"[sor_hf] queue/data status: {poll_resp.status_code}")
+            if not poll_resp.ok:
+                print(f"[sor_hf] queue/data başarısız: {poll_resp.text}")
                 time.sleep(1)
                 continue
             poll_json = poll_resp.json()
-            # Gradio queue/data yanıtı: {'data': ['cevap']} veya {'status': 'generating'}
             if isinstance(poll_json, dict) and "data" in poll_json and isinstance(poll_json["data"], list):
+                print(f"[sor_hf] Tahmin alındı: {poll_json['data'][0][:100]}...")
                 return poll_json["data"][0]
             if poll_json.get("status") == "generating":
+                print(f"[sor_hf] Hala üretiliyor...")
                 time.sleep(1)
                 continue
-            # Diğer durumlarda hata mesajı döndür
+            print(f"[sor_hf] queue/data beklenmeyen yanıt: {poll_json}")
             return f"[ERROR] queue/data: {poll_json}"
         except Exception as e:
+            print(f"[sor_hf] queue/data exception: {e}")
             time.sleep(1)
             continue
+    print(f"[sor_hf] 60 sn içinde sonuç alınamadı.")
     return "[ERROR] queue/data: 60 sn içinde sonuç alınamadı."
 
 # --- predict_match fonksiyonu (değişmedi) ---

@@ -10,7 +10,7 @@ import os
 # Ortam değişkeninden Hugging Face token’ını al
 HF_TOKEN = os.getenv("HF_TOKEN")
 # Sadece Space API kullanılacak, model adı ve endpoint güncel
-MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+MODEL = "openai-community/gpt2"
 HF_SPACE_API_URL = "https://husodu73-my-ollama-space.hf.space/api/predict"
 HF_SPACE_HEADERS = {
     "Authorization": f"Bearer {HF_TOKEN}",

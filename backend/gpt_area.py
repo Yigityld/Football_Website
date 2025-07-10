@@ -10,7 +10,7 @@ import os
 # Ortam değişkeninden Hugging Face token’ını al
 HF_TOKEN = os.getenv("HF_TOKEN")
 HF_SPACE_API_URL = "https://husodu73-my-ollama-space.hf.space/api/predict"
-MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
+MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
 API_URL = f"https://api-inference.huggingface.co/models/{MODEL}"
 HF_HEADERS = {
     "Authorization": f"Bearer {HF_TOKEN}",

@@ -390,7 +390,7 @@ def sor_hf(prompt: str) -> str:
     # Sonucu polling ile al
     import time
     print(f"[GPT_TAHMIN] [sor_hf] queue/data polling başlıyor... (event_id={event_id})", flush=True)
-    for i in range(60):  # 60 sn boyunca dene (her 1 sn'de bir)
+    for i in range(120):  # 60 sn boyunca dene (her 1 sn'de bir)
         try:
             poll_url = f"{data_url}?session_hash={session_hash}&event_id={event_id}"
             print(f"[GPT_TAHMIN] [sor_hf] ({i+1}. deneme) queue/data: {poll_url}", flush=True)

@@ -343,7 +343,7 @@ def prepare_the_prompt(
         f"{m['home_team']} {m['result']} {m['guest_team']}" for m in matches
     )
 
-    prompt = f"""Predict football match score.\n\n{team_a} recent form:\n{last5_a}\n\n{team_b} recent form:\n{last5_b}\n\nRecent meetings:\n{h2h}"""
+    prompt = f"""Predict football match score.\n{team_a} recent form:\n{last5_a}\n{team_b} recent form:\n{last5_b}\nRecent meetings:\n{h2h}"""
     print(f"[LOG] prepare_the_prompt: prompt=\n{prompt}")
     return prompt
 
@@ -364,7 +364,7 @@ def sor_hf(prompt: str) -> str:
         "trigger_id": trigger_id,
         "session_hash": session_hash
     }
-    print(f"[GPT_TAHMIN] [sor_hf] Prompt hazırlanıyor: {prompt[:1200]}...", flush=True)
+    print(f"[GPT_TAHMIN] [sor_hf] Prompt hazırlanıyor: {prompt[:1500]}...", flush=True)
     try:
         print(f"[GPT_TAHMIN] [sor_hf] queue/join endpointine istek atılıyor... (session_hash={session_hash})", flush=True)
         join_resp = requests.post(join_url, headers=headers, data=json.dumps(join_payload), timeout=30)

@@ -494,7 +494,7 @@ const handleAnalysis = () => {
 
                     <div className="bg-gradient-to-br from-cyan-800/60 to-cyan-600/40 rounded-2xl shadow-lg p-6 backdrop-blur-md border border-cyan-400/20">
                       <h4 className="text-cyan-200 text-xl font-extrabold mb-4 flex items-center gap-2">
-                        <span className="material-icons text-2xl">sports_soccer</span>
+                        <span className="material-icons text-2xl"></span>
                         Son 5 Maç
                       </h4>
                       <div className="space-y-3">
@@ -583,39 +583,27 @@ const handleAnalysis = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="w-full flex justify-center mb-4">
-                    <button
-                      onClick={handlePredict}
-                      disabled={predicting || analysisStatus !== 'completed'}
-                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
-                    >
-                      {predicting ? 'Tahmin Yapılıyor…' : 'Gpt ile Tahmin Et'}
-                    </button>
-                  </div>
                 </>
               )}
 
-              {/* Prediction Section */}
-              <div className="mt-6 p-4 bg-white/10 rounded-xl border border-white/20">
-                <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
-                  🤖 Maç Sonucu Tahmini
-                </h3>
-                {prediction
-                  ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
-                  : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
-                }
-              </div>
-
-              {/* Analysis Button */}
-              <div className="flex justify-center mt-4">
+              {/* --- BUTTON ORDER CHANGED: ANALİZ YAP FIRST, THEN GPT --- */}
+              <div className="w-full flex justify-center mb-4">
                 <button
                   onClick={handleAnalysis}
-                  className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-lg shadow"
+                  className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-lg shadow mr-2"
                 >
                   Analiz yap
                 </button>
+                <button
+                  onClick={handlePredict}
+                  disabled={predicting || analysisStatus !== 'completed'}
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
+                >
+                  {predicting ? 'Tahmin Yapılıyor…' : 'Gpt ile Tahmin Et'}
+                </button>
               </div>
 
+              {/* --- ORDER OF BELOW SECTIONS CHANGED: ANALYSIS FIRST, THEN PREDICTION --- */}
               {showAnalysis && analysisResults && (
                 <div className="grid md:grid-cols-4 gap-8 mt-8">
                     {/* Takım A Analizi */}
@@ -624,40 +612,46 @@ const handleAnalysis = () => {
                       <div className="relative z-10 flex flex-col h-full">
                         <h3 className="text-2xl font-bold text-center text-orange-400 mb-6">{analysisResults.teams.team_a.name} Analizi</h3>
                         <div className="text-neutral-200 text-base font-mono space-y-6 text-center flex-1 flex flex-col justify-center">
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-cyan-300">Kaybettiği Maç</span>
-                            <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
-                              {analysisResults.teams.team_a.stats.losses} / 5
-                            </span>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-cyan-300">Berabere</span>
-                            <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
-                              {analysisResults.teams.team_a.stats.draws} / 5
-                            </span>
-                          </div>
+                          {/* Kazandığı Maç */}
                           <div className="flex flex-col items-center">
                             <span className="font-bold text-cyan-300">Kazandığı Maç</span>
                             <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
                               {analysisResults.teams.team_a.stats.wins} / 5
                             </span>
                           </div>
+                          {/* Berabere Kaldığı Maç */}
                           <div className="flex flex-col items-center">
-                            <span className="font-bold text-cyan-300">2.5 Üst</span>
+                            <span className="font-bold text-cyan-300">Berabere</span>
                             <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
-                              {analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5
+                              {analysisResults.teams.team_a.stats.draws} / 5
                             </span>
                           </div>
+                          {/* Kaybettiği Maç */}
+                          <div className="flex flex-col items-center">
+                            <span className="font-bold text-cyan-300">Kaybettiği Maç</span>
+                            <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                              {analysisResults.teams.team_a.stats.losses} / 5
+                            </span>
+                          </div>
+                          {/* Handikaplı Kazandığı Maç */}
                           <div className="flex flex-col items-center">
                             <span className="font-bold text-cyan-300">Handikaplı Galibiyet</span>
                             <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
                               {analysisResults.teams.team_a.performance_analysis.handicap_win_count} / 5
                             </span>
                           </div>
+                          {/* Karşılıklı Gol Olan Maç */}
                           <div className="flex flex-col items-center">
                             <span className="font-bold text-cyan-300">Karşılıklı Gol</span>
                             <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
                               {analysisResults.teams.team_a.performance_analysis.both_teams_scored_count} / 5
+                            </span>
+                          </div>
+                          {/* Toplam Skor 2.5 Üst Biten Maç */}
+                          <div className="flex flex-col items-center">
+                            <span className="font-bold text-cyan-300">2.5 Üst</span>
+                            <span className="bg-cyan-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                              {analysisResults.teams.team_a.performance_analysis.over_2_5_count} / 5
                             </span>
                           </div>
                         </div>
@@ -670,22 +664,6 @@ const handleAnalysis = () => {
                       <div className="relative z-10 flex flex-col h-full">
                         <h3 className="text-2xl font-bold text-center text-orange-400 mb-6">{analysisResults.teams.team_b.name} Analizi</h3>
                         <div className="text-neutral-200 text-base font-mono space-y-6 text-center flex-1 flex flex-col justify-center">
-                          {/* Kaybettiği Maç */}
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-purple-300">Kaybettiği Maç</span>
-                            <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
-                              {analysisResults.teams.team_b.stats.losses} / 5
-                            </span>
-                          </div>
-
-                          {/* Berabere */}
-                          <div className="flex flex-col items-center">
-                            <span className="font-bold text-purple-300">Berabere</span>
-                            <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
-                              {analysisResults.teams.team_b.stats.draws} / 5
-                            </span>
-                          </div>
-
                           {/* Kazandığı Maç */}
                           <div className="flex flex-col items-center">
                             <span className="font-bold text-purple-300">Kazandığı Maç</span>
@@ -693,28 +671,39 @@ const handleAnalysis = () => {
                               {analysisResults.teams.team_b.stats.wins} / 5
                             </span>
                           </div>
-
-                          {/* 2.5 Üst */}
+                          {/* Berabere Kaldığı Maç */}
                           <div className="flex flex-col items-center">
-                            <span className="font-bold text-purple-300">2.5 Üst</span>
+                            <span className="font-bold text-purple-300">Berabere</span>
                             <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
-                              {analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5
+                              {analysisResults.teams.team_b.stats.draws} / 5
                             </span>
                           </div>
-
-                          {/* Handikaplı Galibiyet */}
+                          {/* Kaybettiği Maç */}
+                          <div className="flex flex-col items-center">
+                            <span className="font-bold text-purple-300">Kaybettiği Maç</span>
+                            <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                              {analysisResults.teams.team_b.stats.losses} / 5
+                            </span>
+                          </div>
+                          {/* Handikaplı Kazandığı Maç */}
                           <div className="flex flex-col items-center">
                             <span className="font-bold text-purple-300">Handikaplı Galibiyet</span>
                             <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
                               {analysisResults.teams.team_b.performance_analysis.handicap_win_count} / 5
                             </span>
                           </div>
-
-                          {/* Karşılıklı Gol */}
+                          {/* Karşılıklı Gol Olan Maç */}
                           <div className="flex flex-col items-center">
                             <span className="font-bold text-purple-300">Karşılıklı Gol</span>
                             <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
                               {analysisResults.teams.team_b.performance_analysis.both_teams_scored_count} / 5
+                            </span>
+                          </div>
+                          {/* Toplam Skor 2.5 Üst Biten Maç */}
+                          <div className="flex flex-col items-center">
+                            <span className="font-bold text-purple-300">2.5 Üst</span>
+                            <span className="bg-purple-800/40 px-3 py-1 mt-1 rounded-lg font-bold">
+                              {analysisResults.teams.team_b.performance_analysis.over_2_5_count} / 5
                             </span>
                           </div>
                         </div>

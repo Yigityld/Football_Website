@@ -364,7 +364,7 @@ def sor_hf(prompt: str) -> str:
         "trigger_id": trigger_id,
         "session_hash": session_hash
     }
-    print(f"[GPT_TAHMIN] [sor_hf] Prompt hazırlanıyor: {prompt[:200]}...", flush=True)
+    print(f"[GPT_TAHMIN] [sor_hf] Prompt hazırlanıyor: {prompt[:1200]}...", flush=True)
     try:
         print(f"[GPT_TAHMIN] [sor_hf] queue/join endpointine istek atılıyor... (session_hash={session_hash})", flush=True)
         join_resp = requests.post(join_url, headers=headers, data=json.dumps(join_payload), timeout=30)

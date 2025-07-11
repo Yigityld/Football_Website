@@ -330,13 +330,15 @@ def prepare_the_prompt(
     losses_b: int
 ) -> str:
     print(f"[LOG] prepare_the_prompt: team_a={team_a}, team_b={team_b}")
-    # Takım A son 5 maç (sadece skor)
+    # Takım A son 5 maç
     last5_a = "\n".join(
-        f"{m['tarih']} vs {m['rakip']}: {m['sonuc']}" for m in maclar_a
+        f"{m['tarih']} vs {m['rakip']}: {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'} {m['sonuc']}"
+        for m in maclar_a
     )
-    # Takım B son 5 maç (sadece skor)
+    # Takım B son 5 maç
     last5_b = "\n".join(
-        f"{m['tarih']} vs {m['rakip']}: {m['sonuc']}" for m in maclar_b
+        f"{m['tarih']} vs {m['rakip']}: {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'} {m['sonuc']}"
+        for m in maclar_b
     )
     # Head-to-head son 5 maç
     h2h = "\n".join(

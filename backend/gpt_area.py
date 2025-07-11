@@ -412,7 +412,7 @@ def sor_hf(prompt: str) -> str:
             print(f"[GPT_TAHMIN] [sor_hf] queue/data beklenmeyen yanıt: {poll_json}", flush=True)
             return f"[ERROR] queue/data: {poll_json}"
         except Exception as e:
-            # print(f"[GPT_TAHMIN] [sor_hf] queue/data exception: {e}", flush=True)
+            print(f"[GPT_TAHMIN] [sor_hf] queue/data exception: {e}", flush=True)
             time.sleep(1)
             continue
     print(f"[GPT_TAHMIN] [sor_hf] 60 sn içinde sonuç alınamadı.", flush=True)

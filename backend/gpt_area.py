@@ -176,9 +176,9 @@ def analyze_referee_stats(ref_info_html):
 
 # --- Takımın son 5 maçını (diziliş + skor) getir ---
 def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], int, int, int, dict]:
-    print(f"[LOG] get_team_last_5_matches_with_tactics: team_name={team_name}")
+    # print(f"[LOG] get_team_last_5_matches_with_tactics: team_name={team_name}")
     def fetch_matches(url: str) -> List[Dict]:
-        print(f"[DEBUG] fetch_matches çağrıldı: {url}")
+        # print(f"[DEBUG] fetch_matches çağrıldı: {url}")
         try:
             r = safe_get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
             if r is None:
@@ -229,7 +229,7 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], in
                     out.append({"tarih": t, "rakip": opp, "sonuc": sc, "dizilis": df, "emoji": em})
                 if len(out)>=500:
                     break
-            print(f"[DEBUG] fetch_matches dönen maç sayısı: {len(out)}")
+            # print(f"[DEBUG] fetch_matches dönen maç sayısı: {len(out)}")
             return out
         except Exception as e:
             print(f"[DEBUG] fetch_matches HATA: {e}")
@@ -239,10 +239,10 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], in
     url1 = None
     tid = None
     u = search_team_url(team_name)
-    print(f"[DEBUG] get_team_last_5_matches_with_tactics search_team_url: {u}")
+    # print(f"[DEBUG] get_team_last_5_matches_with_tactics search_team_url: {u}")
     if u:
         tid = get_team_id_from_url(u)
-        print(f"[DEBUG] get_team_last_5_matches_with_tactics team_id: {tid}")
+        # print(f"[DEBUG] get_team_last_5_matches_with_tactics team_id: {tid}")
     if not tid:
         print(f"[DEBUG] get_team_last_5_matches_with_tactics team_id yok!")
         return [],0,0,0,{}
@@ -263,7 +263,7 @@ def get_team_last_5_matches_with_tactics(team_name: str) -> Tuple[List[Dict], in
 
 # --- İki takım arası son 5 maç ---
 def get_last_matches(team_a: str, team_b: str) -> List[Dict]:
-    print(f"[LOG] get_last_matches: team_a={team_a}, team_b={team_b}")
+    # print(f"[LOG] get_last_matches: team_a={team_a}, team_b={team_b}")
     team_a_id = find_team_id(team_a)
     team_b_id = find_team_id(team_b)
     if not team_a_id or not team_b_id:
@@ -312,7 +312,7 @@ def get_last_matches(team_a: str, team_b: str) -> List[Dict]:
         except (ValueError, IndexError) as e:
             print(f"[ERROR] get_last_matches: {e}")
             continue
-    print(f"[LOG] get_last_matches: matches found={len(matches)}")
+    # print(f"[LOG] get_last_matches: matches found={len(matches)}")
     return matches[:5]
 
 # --- Prompt hazırlama (aynı kalıyor) ---
@@ -329,16 +329,14 @@ def prepare_the_prompt(
     draws_b: int,
     losses_b: int
 ) -> str:
-    print(f"[LOG] prepare_the_prompt: team_a={team_a}, team_b={team_b}")
-    # Takım A son 5 maç
+    #print(f"[LOG] prepare_the_prompt: team_a={team_a}, team_b={team_b}")
+    # Takım A son 5 maç (sadece skor)
     last5_a = "\n".join(
-        f"{m['tarih']} vs {m['rakip']}: {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'} {m['sonuc']}"
-        for m in maclar_a
+        f"{m['tarih']} vs {m['rakip']}: {m['sonuc']} {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'}" for m in maclar_a
     )
-    # Takım B son 5 maç
+    # Takım B son 5 maç (sadece skor)
     last5_b = "\n".join(
-        f"{m['tarih']} vs {m['rakip']}: {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'} {m['sonuc']}"
-        for m in maclar_b
+        f"{m['tarih']} vs {m['rakip']}: {m['sonuc']} {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'}" for m in maclar_b
     )
     # Head-to-head son 5 maç
     h2h = "\n".join(
@@ -346,7 +344,7 @@ def prepare_the_prompt(
     )
 
     prompt = f"""Predict football match score.\n\n{team_a} recent form:\n{last5_a}\n\n{team_b} recent form:\n{last5_b}\n\nRecent meetings:\n{h2h}"""
-    print(f"[LOG] prepare_the_prompt: prompt=\n{prompt}")
+    # print(f"[LOG] prepare_the_prompt: prompt=\n{prompt}")
     return prompt
 
 # --- Gradio Space API'ye uygun yeni queue tabanlı inference fonksiyonu ---
@@ -366,7 +364,7 @@ def sor_hf(prompt: str) -> str:
         "trigger_id": trigger_id,
         "session_hash": session_hash
     }
-    print(f"[GPT_TAHMIN] [sor_hf] Prompt hazırlanıyor: {prompt[:200]}...", flush=True)
+    print(f"[GPT_TAHMIN] [sor_hf] Prompt hazırlanıyor: {prompt[:1800]}...", flush=True)
     try:
         print(f"[GPT_TAHMIN] [sor_hf] queue/join endpointine istek atılıyor... (session_hash={session_hash})", flush=True)
         join_resp = requests.post(join_url, headers=headers, data=json.dumps(join_payload), timeout=30)
@@ -420,11 +418,11 @@ def sor_hf(prompt: str) -> str:
 def predict_match(team_a: str, team_b: str) -> str:
     print(f"[GPT_TAHMIN] [predict_match] Butona basıldı! team_a={team_a}, team_b={team_b}", flush=True)
     maclar_a, wins_a, draws_a, losses_a, _ = get_team_last_5_matches_with_tactics(team_a)
-    print(f"[GPT_TAHMIN] [predict_match] {team_a} son 5 maç: {maclar_a}", flush=True)
+    # print(f"[GPT_TAHMIN] [predict_match] {team_a} son 5 maç: {maclar_a}", flush=True)
     maclar_b, wins_b, draws_b, losses_b, _ = get_team_last_5_matches_with_tactics(team_b)
-    print(f"[GPT_TAHMIN] [predict_match] {team_b} son 5 maç: {maclar_b}", flush=True)
+    # print(f"[GPT_TAHMIN] [predict_match] {team_b} son 5 maç: {maclar_b}", flush=True)
     ikili = get_last_matches(team_a, team_b)
-    print(f"[GPT_TAHMIN] [predict_match] Head-to-head maçlar: {ikili}", flush=True)
+    # print(f"[GPT_TAHMIN] [predict_match] Head-to-head maçlar: {ikili}", flush=True)
     prompt = prepare_the_prompt(
         ikili,
         team_a, maclar_a, wins_a, draws_a, losses_a,

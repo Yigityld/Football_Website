@@ -390,10 +390,10 @@ def sor_hf(prompt: str) -> str:
     # Sonucu polling ile al
     import time
     print(f"[GPT_TAHMIN] [sor_hf] queue/data polling başlıyor... (event_id={event_id})", flush=True)
-    for i in range(120):  # 60 sn boyunca dene (her 1 sn'de bir)
+    for i in range(1200):  # 60 sn boyunca dene (her 1 sn'de bir)
         try:
             poll_url = f"{data_url}?session_hash={session_hash}&event_id={event_id}"
-            print(f"[GPT_TAHMIN] [sor_hf] ({i+1}. deneme) queue/data: {poll_url}", flush=True)
+            #print(f"[GPT_TAHMIN] [sor_hf] ({i+1}. deneme) queue/data: {poll_url}", flush=True)
             poll_resp = requests.get(poll_url, timeout=10)
             print(f"[GPT_TAHMIN] [sor_hf] queue/data status: {poll_resp.status_code}", flush=True)
             if not poll_resp.ok:
@@ -412,7 +412,7 @@ def sor_hf(prompt: str) -> str:
             print(f"[GPT_TAHMIN] [sor_hf] queue/data beklenmeyen yanıt: {poll_json}", flush=True)
             return f"[ERROR] queue/data: {poll_json}"
         except Exception as e:
-            print(f"[GPT_TAHMIN] [sor_hf] queue/data exception: {e}", flush=True)
+            # print(f"[GPT_TAHMIN] [sor_hf] queue/data exception: {e}", flush=True)
             time.sleep(1)
             continue
     print(f"[GPT_TAHMIN] [sor_hf] 60 sn içinde sonuç alınamadı.", flush=True)

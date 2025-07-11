@@ -134,50 +134,16 @@ const Home = () => {
       setPredicting(true);
       setPrediction('');
       try {
-        // Benzersiz session hash üret
-        const session_hash = 'sess-' + Math.random().toString(36).substring(2, 10);
-        const fn_index = 0; // app.py'de tek fonksiyon var, genellikle 0 olur
-        const trigger_id = 0;
-        const join_url = 'https://husodu73-llmff.hf.space/gradio_api/queue/join';
-        const data_url = 'https://husodu73-llmff.hf.space/gradio_api/queue/data';
-        const prompt = `Predict the next match score between ${formData.teamA} and ${formData.teamB} in the format: Prediction: ${formData.teamA} X–Y ${formData.teamB}`;
-        // 1. queue/join'a POST at
-        const joinRes = await fetch(join_url, {
+        const formDataToSend = new FormData();
+        formDataToSend.append('team_a', formData.teamA);
+        formDataToSend.append('team_b', formData.teamB);
+        const response = await fetch(`${BASE_URL}/predict-match`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            data: [prompt],
-            event_data: null,
-            fn_index,
-            trigger_id,
-            session_hash
-          })
+          body: formDataToSend
         });
-        if (!joinRes.ok) throw new Error('queue/join failed: ' + joinRes.status);
-        const joinJson = await joinRes.json();
-        const event_id = joinJson.event_id;
-        if (!event_id) throw new Error('event_id alınamadı: ' + JSON.stringify(joinJson));
-        // 2. queue/data'ya polling ile GET at
-        let result = null;
-        for (let i = 0; i < 60; i++) { // 60 sn boyunca dene
-          await new Promise(res => setTimeout(res, 1000));
-          const pollUrl = `${data_url}?session_hash=${session_hash}&event_id=${event_id}`;
-          const pollRes = await fetch(pollUrl);
-          if (!pollRes.ok) continue;
-          const pollJson = await pollRes.json();
-          if (pollJson && Array.isArray(pollJson.data)) {
-            result = pollJson.data[0];
-            break;
-          }
-          if (pollJson.status === 'generating') continue;
-          if (pollJson.status === 'error') {
-            result = '[ERROR] ' + (pollJson.message || 'queue/data error');
-            break;
-          }
-        }
-        setPrediction(result ?? 'Tahmin alınamadı');
+        const data = await response.json();
+        setPrediction(data.prediction ?? 'Tahmin alınamadı');
       } catch (err) {
-        console.error('Predict error:', err);
         setPrediction('Tahmin hatası');
       } finally {
         setPredicting(false);

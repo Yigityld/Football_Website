@@ -356,13 +356,13 @@ def sor_hf(prompt: str) -> str:
     import uuid
     import json
     session_hash = f"sess-{uuid.uuid4().hex[:8]}"
-    fn_index = 0  # app.py'de tek bir fonksiyon var, genellikle 0 olur
-    trigger_id = 12  # zorunlu değil ama örnekte 12 idi, burada 0 kullanıyoruz
+    fn_index = 2  # app.py'de fonksiyon indexi 2 olmalı
+    trigger_id = 12
     join_url = "https://husodu73-llmff.hf.space/gradio_api/queue/join"
     data_url = "https://husodu73-llmff.hf.space/gradio_api/queue/data"
     headers = {"Content-Type": "application/json"}
     join_payload = {
-        "data": [[prompt]],
+        "data": [prompt],
         "event_data": None,
         "fn_index": fn_index,
         "trigger_id": trigger_id,

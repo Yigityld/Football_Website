@@ -387,36 +387,36 @@ def sor_hf(prompt: str) -> str:
         print(f"[GPT_TAHMIN] [sor_hf] queue/join exception: {e}", flush=True)
         return f"[ERROR] queue/join exception: {e}"
 
-    # Sonucu polling ile al
+    # SSE polling ile sonucu al
     import time
-    print(f"[GPT_TAHMIN] [sor_hf] queue/data polling başlıyor... (event_id={event_id})", flush=True)
-    for i in range(1200):  # 60 sn boyunca dene (her 1 sn'de bir)
-        try:
-            poll_url = f"{data_url}?session_hash={session_hash}&event_id={event_id}"
-            #print(f"[GPT_TAHMIN] [sor_hf] ({i+1}. deneme) queue/data: {poll_url}", flush=True)
-            poll_resp = requests.get(poll_url, timeout=10)
-            print(f"[GPT_TAHMIN] [sor_hf] queue/data status: {poll_resp.status_code}", flush=True)
-            if not poll_resp.ok:
-                print(f"[GPT_TAHMIN] [sor_hf] queue/data başarısız: {poll_resp.text}", flush=True)
-                time.sleep(1)
-                continue
-            poll_json = poll_resp.json()
-            print(f"[GPT_TAHMIN] [sor_hf] queue/data yanıtı: {poll_json}", flush=True)
-            if isinstance(poll_json, dict) and "data" in poll_json and isinstance(poll_json["data"], list):
-                print(f"[GPT_TAHMIN] [sor_hf] Tahmin alındı: {poll_json['data'][0][:200]}...", flush=True)
-                return poll_json["data"][0]
-            if poll_json.get("status") == "generating":
-                print(f"[GPT_TAHMIN] [sor_hf] Hala üretiliyor...", flush=True)
-                time.sleep(1)
-                continue
-            print(f"[GPT_TAHMIN] [sor_hf] queue/data beklenmeyen yanıt: {poll_json}", flush=True)
-            return f"[ERROR] queue/data: {poll_json}"
-        except Exception as e:
-            print(f"[GPT_TAHMIN] [sor_hf] queue/data exception: {e}", flush=True)
-            time.sleep(1)
-            continue
-    print(f"[GPT_TAHMIN] [sor_hf] 60 sn içinde sonuç alınamadı.", flush=True)
-    return "[ERROR] queue/data: 60 sn içinde sonuç alınamadı."
+    poll_url = f"{data_url}?session_hash={session_hash}&event_id={event_id}"
+    print(f"[GPT_TAHMIN] [sor_hf] queue/data SSE polling başlıyor... (event_id={event_id})", flush=True)
+    try:
+        with requests.get(poll_url, stream=True, timeout=120) as resp:
+            for line in resp.iter_lines(decode_unicode=True):
+                if line and line.startswith("data: "):
+                    data_json = line[6:]
+                    print(f"[GPT_TAHMIN] [sor_hf] SSE satırı: {data_json}", flush=True)
+                    try:
+                        data = json.loads(data_json)
+                        print(f"[GPT_TAHMIN] [sor_hf] SSE JSON: {data}", flush=True)
+                        if data.get("msg") == "process_completed":
+                            output = data.get("output", {})
+                            if output.get("data"):
+                                # output["data"] genellikle bir liste, ilk elemanı döndür
+                                return output["data"][0]
+                            elif output.get("error"):
+                                return f"[ERROR] {output['error']}"
+                        elif data.get("msg") == "process_completed" and data.get("success") is False:
+                            return f"[ERROR] process not successful"
+                    except Exception as e:
+                        print(f"[GPT_TAHMIN] [sor_hf] SSE JSON parse hatası: {e}", flush=True)
+                time.sleep(0.1)
+        print(f"[GPT_TAHMIN] [sor_hf] SSE polling tamamlandı, sonuç alınamadı.", flush=True)
+        return "[ERROR] SSE'den sonuç alınamadı"
+    except Exception as e:
+        print(f"[GPT_TAHMIN] [sor_hf] SSE polling exception: {e}", flush=True)
+        return f"[ERROR] SSE polling exception: {e}"
 
 
 def predict_match(team_a: str, team_b: str) -> str:

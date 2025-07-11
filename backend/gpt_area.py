@@ -356,8 +356,8 @@ def sor_hf(prompt: str) -> str:
     import uuid
     import json
     session_hash = f"sess-{uuid.uuid4().hex[:8]}"
-    fn_index = 0  # app.py'de tek bir fonksiyon var, genellikle 0 olur
-    trigger_id = 0  # zorunlu değil ama örnekte 12 idi, burada 0 kullanıyoruz
+    fn_index = 2  # app.py'de tek bir fonksiyon var, genellikle 0 olur
+    trigger_id = 12  # zorunlu değil ama örnekte 12 idi, burada 0 kullanıyoruz
     join_url = "https://husodu73-llmff.hf.space/gradio_api/queue/join"
     data_url = "https://husodu73-llmff.hf.space/gradio_api/queue/data"
     headers = {"Content-Type": "application/json"}

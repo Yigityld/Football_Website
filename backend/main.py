@@ -105,33 +105,22 @@ def main_analysis(
     youtube_url: Optional[str] = None
 ) -> Dict[str, Any]:
     global team_a_color, team_b_color
-    print("[main_analysis] Başladı!")
     try:
-        print(f"[main_analysis] fetch_team_info({team_a}) çağrılıyor...")
         team_a_info = fetch_team_info(team_a)
-        print(f"[main_analysis] team_a_info: {team_a_info}")
-        print(f"[main_analysis] fetch_team_info({team_b}) çağrılıyor...")
         team_b_info = fetch_team_info(team_b)
-        print(f"[main_analysis] team_b_info: {team_b_info}")
-        print("[main_analysis] Hakem bilgisi çekiliyor...")
         main_ref_info, main_ref_img = get_referee_info(main_ref) if main_ref else ("", None)
         side_ref_info, side_ref_img = get_referee_info(side_ref) if side_ref else ("", None)
-        print("[main_analysis] Son maçlar çekiliyor...")
         team_a_matches, team_a_wins, team_a_draws, team_a_losses, team_a_performance = get_team_last_5_matches_with_tactics(team_a)
         team_b_matches, team_b_wins, team_b_draws, team_b_losses, team_b_performance = get_team_last_5_matches_with_tactics(team_b)
-        print("[main_analysis] Head-to-head maçlar çekiliyor...")
         head_to_head_matches = get_last_matches(team_a, team_b)
-        print("[main_analysis] Logo ve fotoğraflar base64'e çevriliyor...")
         logo_url_a = team_a_info.get("Logo URL")
         team_a_logo = get_image_as_base64(logo_url_a) if isinstance(logo_url_a, str) else None
         logo_url_b = team_b_info.get("Logo URL")
         team_b_logo = get_image_as_base64(logo_url_b) if isinstance(logo_url_b, str) else None
         main_ref_photo = get_image_as_base64(main_ref_img) if main_ref_img else None
         side_ref_photo = get_image_as_base64(side_ref_img) if side_ref_img else None
-        print("[main_analysis] Hakem analizleri hazırlanıyor...")
         main_ref_analysis = analyze_referee_stats(main_ref_info) if main_ref_info else None
         side_ref_analysis = analyze_referee_stats(side_ref_info) if side_ref_info else None
-        print("[main_analysis] summary_data hazırlanıyor...")
         summary_data = {
             "teams": {
                 "team_a": {
@@ -157,10 +146,8 @@ def main_analysis(
             },
             "head_to_head": head_to_head_matches
         }
-        print("[main_analysis] Bitti, summary_data dönüyor!")
         return summary_data
     except Exception as e:
-        print(f"[main_analysis] HATA: {e}")
         traceback.print_exc()
         raise
 
@@ -206,7 +193,6 @@ async def start_analysis(
     tmp = tempfile.gettempdir()
     ta_path = tb_path = None
     if team_a_jersey:
-        # filename kesin str olacak
         filename_a: str = str(team_a_jersey.filename)
         ta_path = os.path.join(tmp, filename_a)
         with open(ta_path, 'wb') as f:
@@ -222,11 +208,8 @@ async def start_analysis(
     def run():
         global analysis_results, analysis_running
         try:
-            print("[THREAD] Analiz thread'i başlatıldı!")
             analysis_results = main_analysis(team_a, team_b, main_ref, side_ref, ta_path, tb_path, youtube_url)
-            print(f"[THREAD] analysis_results set edildi: {analysis_results is not None}")
         except Exception as e:
-            print(f"ANALYSIS THREAD ERROR: {e}")
             traceback.print_exc()
         finally:
             analysis_running = False
@@ -237,13 +220,10 @@ async def start_analysis(
 
 @app.get("/analysis-status")
 async def analysis_status() -> Any:
-    print(f"[analysis_status] analysis_thread alive: {analysis_thread.is_alive() if analysis_thread else None}, analysis_results: {analysis_results is not None}")
     if analysis_thread and analysis_thread.is_alive():
         return {"status": "running"}
     if analysis_results is not None:
-        print(f"[analysis_status] Tamamlandı, sonuç dönülüyor!")
         return {"status": "completed", "results": analysis_results}
-    print(f"[analysis_status] Idle dönülüyor!")
     return {"status": "idle"}
 
 @app.post("/predict-match")

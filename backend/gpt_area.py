@@ -330,24 +330,22 @@ def prepare_the_prompt(
     losses_b: int
 ) -> str:
     print(f"[LOG] prepare_the_prompt: team_a={team_a}, team_b={team_b}")
+    # Takım A son 5 maç
     last5_a = "\n".join(
-        f"{m['tarih']} vs {m['rakip']} | Result: {m['sonuc']} | Formation: {m['dizilis']}"
+        f"{m['tarih']} vs {m['rakip']}: {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'} {m['sonuc']}"
         for m in maclar_a
     )
+    # Takım B son 5 maç
     last5_b = "\n".join(
-        f"{m['tarih']} vs {m['rakip']} | Result: {m['sonuc']} | Formation: {m['dizilis']}"
+        f"{m['tarih']} vs {m['rakip']}: {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'} {m['sonuc']}"
         for m in maclar_b
     )
+    # Head-to-head son 5 maç
     h2h = "\n".join(
-        f"{m['date']} - {m['guest_team']} {m['result']} {m['home_team']}"
-        for m in matches
+        f"{m['home_team']} {m['result']} {m['guest_team']}" for m in matches
     )
 
-    prompt = f"""You are a football analyst.\n\nTeam A (“{team_a}”) – last 5 matches:\n{last5_a}\nRecord: {wins_a} wins, {draws_a} draws, {losses_a} losses.\n\nTeam B (“{team_b}”) –
-    last 5 matches:\n{last5_b}\nRecord: {wins_b} wins, {draws_b} draws, {losses_b} losses.\n\nHead-to-head (last 5 meetings):\n{h2h}\n\n
-    Based on ONLY the data above, predict the score of the next match between {team_a} and {team_b}.\nAnswer only in this exact format:\nPrediction:
-    {team_a} X – Y {team_b}\n\nDo not add any extra commentary, explanation, or text.\n"""
-
+    prompt = f"""Predict football match score.\n\n{team_a} recent form:\n{last5_a}\n\n{team_b} recent form:\n{last5_b}\n\nRecent meetings:\n{h2h}\n\nBased only on the data above, predict the score of the next match between {team_a} and {team_b}.\nAnswer only in this exact format:\nPrediction: {team_a} X–Y {team_b}\n"""
     print(f"[LOG] prepare_the_prompt: prompt=\n{prompt}")
     return prompt
 

@@ -92,7 +92,7 @@ def get_team_id_from_url(team_url: str) -> Optional[str]:
         return None
     match = re.search(r"/verein/(\d+)", team_url)
     if match:
-        # print(f"[LOG] get_team_id_from_url: team_id={match.group(1)}")
+        print(f"[LOG] get_team_id_from_url: team_id={match.group(1)}")
     else:
         print(f"[ERROR] get_team_id_from_url: No match")
     return match.group(1) if match else None

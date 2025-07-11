@@ -330,22 +330,20 @@ def prepare_the_prompt(
     losses_b: int
 ) -> str:
     print(f"[LOG] prepare_the_prompt: team_a={team_a}, team_b={team_b}")
-    # Takım A son 5 maç
+    # Takım A son 5 maç (sadece skor)
     last5_a = "\n".join(
-        f"{m['tarih']} vs {m['rakip']}: {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'} {m['sonuc']}"
-        for m in maclar_a
+        f"{m['tarih']} vs {m['rakip']}: {m['sonuc']}" for m in maclar_a
     )
-    # Takım B son 5 maç
+    # Takım B son 5 maç (sadece skor)
     last5_b = "\n".join(
-        f"{m['tarih']} vs {m['rakip']}: {'Won' if m['emoji']=='✅' else 'Draw' if m['emoji']=='🤝' else 'Lost'} {m['sonuc']}"
-        for m in maclar_b
+        f"{m['tarih']} vs {m['rakip']}: {m['sonuc']}" for m in maclar_b
     )
     # Head-to-head son 5 maç
     h2h = "\n".join(
         f"{m['home_team']} {m['result']} {m['guest_team']}" for m in matches
     )
 
-    prompt = f"""Predict football match score.\n\n{team_a} recent form:\n{last5_a}\n\n{team_b} recent form:\n{last5_b}\n\nRecent meetings:\n{h2h}\n\nBased only on the data above, predict the score of the next match between {team_a} and {team_b}.\nAnswer only in this exact format:\nPrediction: {team_a} X–Y {team_b}\n"""
+    prompt = f"""Predict football match score.\n\n{team_a} recent form:\n{last5_a}\n\n{team_b} recent form:\n{last5_b}\n\nRecent meetings:\n{h2h}"""
     print(f"[LOG] prepare_the_prompt: prompt=\n{prompt}")
     return prompt
 

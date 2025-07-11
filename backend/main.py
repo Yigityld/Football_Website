@@ -15,6 +15,7 @@ import requests
 from bs4.element import Tag  # type: ignore
 from datetime import datetime
 import traceback
+from fastapi.concurrency import run_in_threadpool
 
 # İçerik Getirici Fonksiyonlar GPT Alanı için
 from gpt_area import (
@@ -228,7 +229,7 @@ async def analysis_status() -> Any:
 
 @app.post("/predict-match")
 async def predict_match_endpoint(team_a: str = Form(...), team_b: str = Form(...)) -> Dict[str, str]:
-    prediction = predict_match(team_a, team_b)
+    prediction = await run_in_threadpool(predict_match, team_a, team_b)
     return {"prediction": prediction}
 
 @app.get("/team-info/{team_name}")

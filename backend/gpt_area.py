@@ -368,71 +368,71 @@ def sor_hf(prompt: str) -> str:
         "trigger_id": trigger_id,
         "session_hash": session_hash
     }
-    print(f"[GPT_TAHMIN] [sor_hf] Prompt hazırlanıyor: {prompt[:200]}...")
+    print(f"[GPT_TAHMIN] [sor_hf] Prompt hazırlanıyor: {prompt[:200]}...", flush=True)
     try:
-        print(f"[GPT_TAHMIN] [sor_hf] queue/join endpointine istek atılıyor... (session_hash={session_hash})")
+        print(f"[GPT_TAHMIN] [sor_hf] queue/join endpointine istek atılıyor... (session_hash={session_hash})", flush=True)
         join_resp = requests.post(join_url, headers=headers, data=json.dumps(join_payload), timeout=30)
-        print(f"[GPT_TAHMIN] [sor_hf] queue/join status: {join_resp.status_code}")
+        print(f"[GPT_TAHMIN] [sor_hf] queue/join status: {join_resp.status_code}", flush=True)
         if join_resp.status_code != 200:
-            print(f"[GPT_TAHMIN] [sor_hf] queue/join başarısız: {join_resp.text}")
+            print(f"[GPT_TAHMIN] [sor_hf] queue/join başarısız: {join_resp.text}", flush=True)
             return f"[ERROR] queue/join failed: {join_resp.status_code} {join_resp.text}"
         join_json = join_resp.json()
-        print(f"[GPT_TAHMIN] [sor_hf] queue/join yanıtı: {join_json}")
+        print(f"[GPT_TAHMIN] [sor_hf] queue/join yanıtı: {join_json}", flush=True)
         event_id = join_json.get("event_id") or join_json.get("event_id", None)
-        print(f"[GPT_TAHMIN] [sor_hf] event_id: {event_id}")
+        print(f"[GPT_TAHMIN] [sor_hf] event_id: {event_id}", flush=True)
         if not event_id:
-            print(f"[GPT_TAHMIN] [sor_hf] event_id alınamadı: {join_json}")
+            print(f"[GPT_TAHMIN] [sor_hf] event_id alınamadı: {join_json}", flush=True)
             return f"[ERROR] queue/join: event_id alınamadı: {join_json}"
     except Exception as e:
-        print(f"[GPT_TAHMIN] [sor_hf] queue/join exception: {e}")
+        print(f"[GPT_TAHMIN] [sor_hf] queue/join exception: {e}", flush=True)
         return f"[ERROR] queue/join exception: {e}"
 
     # Sonucu polling ile al
     import time
-    print(f"[GPT_TAHMIN] [sor_hf] queue/data polling başlıyor... (event_id={event_id})")
+    print(f"[GPT_TAHMIN] [sor_hf] queue/data polling başlıyor... (event_id={event_id})", flush=True)
     for i in range(60):  # 60 sn boyunca dene (her 1 sn'de bir)
         try:
             poll_url = f"{data_url}?session_hash={session_hash}&event_id={event_id}"
-            print(f"[GPT_TAHMIN] [sor_hf] ({i+1}. deneme) queue/data: {poll_url}")
+            print(f"[GPT_TAHMIN] [sor_hf] ({i+1}. deneme) queue/data: {poll_url}", flush=True)
             poll_resp = requests.get(poll_url, timeout=10)
-            print(f"[GPT_TAHMIN] [sor_hf] queue/data status: {poll_resp.status_code}")
+            print(f"[GPT_TAHMIN] [sor_hf] queue/data status: {poll_resp.status_code}", flush=True)
             if not poll_resp.ok:
-                print(f"[GPT_TAHMIN] [sor_hf] queue/data başarısız: {poll_resp.text}")
+                print(f"[GPT_TAHMIN] [sor_hf] queue/data başarısız: {poll_resp.text}", flush=True)
                 time.sleep(1)
                 continue
             poll_json = poll_resp.json()
-            print(f"[GPT_TAHMIN] [sor_hf] queue/data yanıtı: {poll_json}")
+            print(f"[GPT_TAHMIN] [sor_hf] queue/data yanıtı: {poll_json}", flush=True)
             if isinstance(poll_json, dict) and "data" in poll_json and isinstance(poll_json["data"], list):
-                print(f"[GPT_TAHMIN] [sor_hf] Tahmin alındı: {poll_json['data'][0][:200]}...")
+                print(f"[GPT_TAHMIN] [sor_hf] Tahmin alındı: {poll_json['data'][0][:200]}...", flush=True)
                 return poll_json["data"][0]
             if poll_json.get("status") == "generating":
-                print(f"[GPT_TAHMIN] [sor_hf] Hala üretiliyor...")
+                print(f"[GPT_TAHMIN] [sor_hf] Hala üretiliyor...", flush=True)
                 time.sleep(1)
                 continue
-            print(f"[GPT_TAHMIN] [sor_hf] queue/data beklenmeyen yanıt: {poll_json}")
+            print(f"[GPT_TAHMIN] [sor_hf] queue/data beklenmeyen yanıt: {poll_json}", flush=True)
             return f"[ERROR] queue/data: {poll_json}"
         except Exception as e:
-            print(f"[GPT_TAHMIN] [sor_hf] queue/data exception: {e}")
+            print(f"[GPT_TAHMIN] [sor_hf] queue/data exception: {e}", flush=True)
             time.sleep(1)
             continue
-    print(f"[GPT_TAHMIN] [sor_hf] 60 sn içinde sonuç alınamadı.")
+    print(f"[GPT_TAHMIN] [sor_hf] 60 sn içinde sonuç alınamadı.", flush=True)
     return "[ERROR] queue/data: 60 sn içinde sonuç alınamadı."
 
 
 def predict_match(team_a: str, team_b: str) -> str:
-    print(f"[GPT_TAHMIN] [predict_match] Butona basıldı! team_a={team_a}, team_b={team_b}")
+    print(f"[GPT_TAHMIN] [predict_match] Butona basıldı! team_a={team_a}, team_b={team_b}", flush=True)
     maclar_a, wins_a, draws_a, losses_a, _ = get_team_last_5_matches_with_tactics(team_a)
-    print(f"[GPT_TAHMIN] [predict_match] {team_a} son 5 maç: {maclar_a}")
+    print(f"[GPT_TAHMIN] [predict_match] {team_a} son 5 maç: {maclar_a}", flush=True)
     maclar_b, wins_b, draws_b, losses_b, _ = get_team_last_5_matches_with_tactics(team_b)
-    print(f"[GPT_TAHMIN] [predict_match] {team_b} son 5 maç: {maclar_b}")
+    print(f"[GPT_TAHMIN] [predict_match] {team_b} son 5 maç: {maclar_b}", flush=True)
     ikili = get_last_matches(team_a, team_b)
-    print(f"[GPT_TAHMIN] [predict_match] Head-to-head maçlar: {ikili}")
+    print(f"[GPT_TAHMIN] [predict_match] Head-to-head maçlar: {ikili}", flush=True)
     prompt = prepare_the_prompt(
         ikili,
         team_a, maclar_a, wins_a, draws_a, losses_a,
         team_b, maclar_b, wins_b, draws_b, losses_b
     )
-    print(f"[GPT_TAHMIN] [predict_match] Hazırlanan prompt:\n{prompt}")
+    print(f"[GPT_TAHMIN] [predict_match] Hazırlanan prompt:\n{prompt}", flush=True)
     result = sor_hf(prompt)
-    print(f"[GPT_TAHMIN] [predict_match] Sonuç: {result}")
+    print(f"[GPT_TAHMIN] [predict_match] Sonuç: {result}", flush=True)
     return result

@@ -366,7 +366,8 @@ const Home = () => {
                         onBlur={() => {
                           setTimeout(() => setShowTeamASuggestions(false), 200);
                         }}
-                        placeholder="Takım A adını girin... (örn: Gala)"
+                        placeholder="Takım A adını girin... (örn: Galatasaray)"
+                        autoComplete="off"
                         className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
                       />
                       
@@ -418,7 +419,8 @@ const Home = () => {
                         onBlur={() => {
                           setTimeout(() => setShowTeamBSuggestions(false), 200);
                         }}
-                        placeholder="Takım B adını girin... (örn: Fener)"
+                        placeholder="Takım B adını girin... (örn: Fenerbahçe)"
+                        autoComplete="off"
                         className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
                       />
                       

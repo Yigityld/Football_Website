@@ -2,38 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const Home = () => {
   // Takım önerileri listesi
-  const teamSuggestions = [
-    'Galatasaray',
-    'Fenerbahçe',
-    'Beşiktaş',
-    'Trabzonspor',
-    'Başakşehir',
-    'Konyaspor',
-    'Sivasspor',
-    'Alanyaspor',
-    'Gaziantep FK',
-    'Kasımpaşa',
-    'Antalyaspor',
-    'Hatayspor',
-    'Kayserispor',
-    'Fatih Karagümrük',
-    'Giresunspor',
-    'Adana Demirspor',
-    'Ankaragücü',
-    'Real Madrid',
-    'Barcelona',
-    'Manchester United',
-    'Liverpool',
-    'Arsenal',
-    'Chelsea',
-    'Manchester City',
-    'Paris Saint-Germain',
-    'Bayern Munich',
-    'Juventus',
-    'AC Milan',
-    'Inter Milan',
-    'Borussia Dortmund'
-  ];
+  
 
   const [formData, setFormData] = useState({
     teamA: '',
@@ -57,6 +26,8 @@ const Home = () => {
   const [showAnalysis, setShowAnalysis] = useState(false);
 
   // Otomatik tamamlama state'leri
+  const [teamSuggestions, setTeamSuggestions] = useState([]);
+
   const [teamASuggestions, setTeamASuggestions] = useState([]);
   const [teamBSuggestions, setTeamBSuggestions] = useState([]);
   const [showTeamASuggestions, setShowTeamASuggestions] = useState(false);
@@ -75,7 +46,19 @@ const Home = () => {
       setTestResult(`❌ Backend hatası: ${error.message}`);
     }
   };
-
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await fetch('/takimlar.json');
+        const data = await response.json();
+        setTeamSuggestions(data);
+      } catch (error) {
+        console.error('Takımlar JSON yüklenemedi:', error);
+      }
+    };
+  
+    fetchTeams();
+  }, []);
   // Otomatik tamamlama fonksiyonu
   const handleTeamInputChange = (e, teamType) => {
     const { value } = e.target;

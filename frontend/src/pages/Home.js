@@ -18,8 +18,10 @@ const Home = () => {
   const [analysisStatus, setAnalysisStatus] = useState('idle');
   const [analysisMessage, setAnalysisMessage] = useState('');
   const [analysisResults, setAnalysisResults] = useState(null);
-  const [prediction, setPrediction] = useState('');         
-  const [predicting, setPredicting] = useState(false);
+  const [predictionDefault, setPrediction] = useState('');
+  const [predictionSirAlex, setPredictionSirAlex] = useState('');
+  const [predictingDefault, setPredicting] = useState(false);
+  const [predictingSirAlex, setPredictingSirAlex] = useState(false);
   const [testResult, setTestResult] = useState('');
   const [showGoalAnalysis, setShowGoalAnalysis] = useState(false);
   const [goalStats, setGoalStats] = useState(null);
@@ -272,8 +274,8 @@ const Home = () => {
   // Sir Alex modelinden tahmin almak için
   const handlePredictSirAlex = async () => {
     if (!formData.teamA || !formData.teamB) return;
-    setPredicting(true);
-    setPrediction('');
+    setPredictingSirAlex(true);
+    setPredictionSirAlex('');
 
     try {
       const formDataToSend = new FormData();
@@ -287,11 +289,11 @@ const Home = () => {
         body: formDataToSend
       });
       const data = await response.json();
-      setPrediction(data.prediction ?? 'Tahmin alınamadı');
+      setPredictionSirAlex(data.prediction ?? 'Tahmin alınamadı');
     } catch (err) {
-      setPrediction('Tahmin hatası');
+      setPredictionSirAlex('Tahmin hatası');
     } finally {
-      setPredicting(false);
+      setPredictingSirAlex(false);
     }
   };
 
@@ -1066,6 +1068,15 @@ const Home = () => {
                 >
                   {predicting ? 'Tahmin Yapılıyor…' : 'Sir Alex Ferguson Tahmini'}
                 </button>
+              </div>
+              <div className="mt-2 p-4 bg-white/10 rounded-xl border border-white/20">
+                <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
+                  🤖 Maç Sonucu Tahmini
+                </h3>
+                {prediction
+                  ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
+                  : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
+                }
               </div>
 
               

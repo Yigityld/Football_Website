@@ -1,6 +1,40 @@
 import React, { useState, useEffect } from 'react';
 
 const Home = () => {
+  // Takım önerileri listesi
+  const teamSuggestions = [
+    'Galatasaray',
+    'Fenerbahçe',
+    'Beşiktaş',
+    'Trabzonspor',
+    'Başakşehir',
+    'Konyaspor',
+    'Sivasspor',
+    'Alanyaspor',
+    'Gaziantep FK',
+    'Kasımpaşa',
+    'Antalyaspor',
+    'Hatayspor',
+    'Kayserispor',
+    'Fatih Karagümrük',
+    'Giresunspor',
+    'Adana Demirspor',
+    'Ankaragücü',
+    'Real Madrid',
+    'Barcelona',
+    'Manchester United',
+    'Liverpool',
+    'Arsenal',
+    'Chelsea',
+    'Manchester City',
+    'Paris Saint-Germain',
+    'Bayern Munich',
+    'Juventus',
+    'AC Milan',
+    'Inter Milan',
+    'Borussia Dortmund'
+  ];
+
   const [formData, setFormData] = useState({
     teamA: '',
     teamB: '',
@@ -22,9 +56,14 @@ const Home = () => {
   const [goalStats, setGoalStats] = useState(null);
   const [showAnalysis, setShowAnalysis] = useState(false);
 
+  // Otomatik tamamlama state'leri
+  const [teamASuggestions, setTeamASuggestions] = useState([]);
+  const [teamBSuggestions, setTeamBSuggestions] = useState([]);
+  const [showTeamASuggestions, setShowTeamASuggestions] = useState(false);
+  const [showTeamBSuggestions, setShowTeamBSuggestions] = useState(false);
 
   // Backend URL'ini ayarla - production'da Render URL'ini kullan
-   const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
+  const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
   
   // Test backend bağlantısı
   const testBackendConnection = async () => {
@@ -37,6 +76,53 @@ const Home = () => {
     }
   };
 
+  // Otomatik tamamlama fonksiyonu
+  const handleTeamInputChange = (e, teamType) => {
+    const { value } = e.target;
+    
+    // Form data'yı güncelle
+    setFormData(prev => ({
+      ...prev,
+      [teamType]: value
+    }));
+    
+    // Eğer input boşsa önerileri gizle
+    if (value.length === 0) {
+      if (teamType === 'teamA') {
+        setShowTeamASuggestions(false);
+      } else {
+        setShowTeamBSuggestions(false);
+      }
+      return;
+    }
+    
+    // Önerileri filtrele
+    const filtered = teamSuggestions.filter(team => 
+      team.toLowerCase().includes(value.toLowerCase())
+    );
+    
+    if (teamType === 'teamA') {
+      setTeamASuggestions(filtered);
+      setShowTeamASuggestions(filtered.length > 0);
+    } else {
+      setTeamBSuggestions(filtered);
+      setShowTeamBSuggestions(filtered.length > 0);
+    }
+  };
+
+  // Öneri seçme fonksiyonu
+  const selectTeamSuggestion = (team, teamType) => {
+    setFormData(prev => ({
+      ...prev,
+      [teamType]: team
+    }));
+    
+    if (teamType === 'teamA') {
+      setShowTeamASuggestions(false);
+    } else {
+      setShowTeamBSuggestions(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +131,6 @@ const Home = () => {
       [name]: value
     }));
   };
-
 
   const handleFileChange = (e, team) => {
     const file = e.target.files[0];
@@ -58,122 +143,114 @@ const Home = () => {
     }
   };
 
+  const handleStartAnalysis = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setAnalysisStatus('starting');
+    setAnalysisMessage('Analiz başlatılıyor...');
 
-    const handleStartAnalysis = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setAnalysisStatus('starting');
-  setAnalysisMessage('Analiz başlatılıyor...');
-
-  const formDataToSend = new FormData();
-  formDataToSend.append('team_a', formData.teamA || 'defaultTeamA');
-  formDataToSend.append('team_b', formData.teamB || 'defaultTeamB');
-  formDataToSend.append('main_ref', formData.mainRef || '');
-  formDataToSend.append('side_ref', formData.sideRef || '');
-  if (formData.youtubeUrl) {
-    formDataToSend.append('youtube_url', formData.youtubeUrl);
-  }
-  if (teamAJersey) {
-    formDataToSend.append('team_a_jersey', teamAJersey);
-  }
-  if (teamBJersey) {
-    formDataToSend.append('team_b_jersey', teamBJersey);
-  }
-
-  try {
-    const response = await fetch(`${BASE_URL}/start-analysis`, {
-
-      method: 'POST',
-      body: formDataToSend
-    });
-
-    const text = await response.text();
-    let result = null;
-    try {
-      result = text ? JSON.parse(text) : null;
-    } catch (parseErr) {
-      console.warn("Yanıt JSON değil:", parseErr);
+    const formDataToSend = new FormData();
+    formDataToSend.append('team_a', formData.teamA || 'defaultTeamA');
+    formDataToSend.append('team_b', formData.teamB || 'defaultTeamB');
+    formDataToSend.append('main_ref', formData.mainRef || '');
+    formDataToSend.append('side_ref', formData.sideRef || '');
+    if (formData.youtubeUrl) {
+      formDataToSend.append('youtube_url', formData.youtubeUrl);
+    }
+    if (teamAJersey) {
+      formDataToSend.append('team_a_jersey', teamAJersey);
+    }
+    if (teamBJersey) {
+      formDataToSend.append('team_b_jersey', teamBJersey);
     }
 
-    if (response.ok && result) {
-      setAnalysisStatus('running');
-      setAnalysisMessage('🔄 Analiz devam ediyor...');
+    try {
+      const response = await fetch(`${BASE_URL}/start-analysis`, {
+        method: 'POST',
+        body: formDataToSend
+      });
 
-      const interval = setInterval(async () => {
-      const statusResponse = await fetch(`${BASE_URL}/analysis-status`);
+      const text = await response.text();
+      let result = null;
+      try {
+        result = text ? JSON.parse(text) : null;
+      } catch (parseErr) {
+        console.warn("Yanıt JSON değil:", parseErr);
+      }
 
-        const statusResult = await statusResponse.json();
+      if (response.ok && result) {
+        setAnalysisStatus('running');
+        setAnalysisMessage('🔄 Analiz devam ediyor...');
 
-        if (statusResult.status === 'completed') {
-          clearInterval(interval);
-          setAnalysisStatus('completed');
-          setAnalysisMessage('✅ Analiz tamamlandı!');
-          setAnalysisResults(statusResult.results);
-          setLoading(false);
-        }
-      }, 5000);
-    } else {
+        const interval = setInterval(async () => {
+          const statusResponse = await fetch(`${BASE_URL}/analysis-status`);
+          const statusResult = await statusResponse.json();
+
+          if (statusResult.status === 'completed') {
+            clearInterval(interval);
+            setAnalysisStatus('completed');
+            setAnalysisMessage('✅ Analiz tamamlandı!');
+            setAnalysisResults(statusResult.results);
+            setLoading(false);
+          }
+        }, 5000);
+      } else {
+        setAnalysisStatus('error');
+        setAnalysisMessage('❌ Analiz başlatılamadı');
+        setLoading(false);
+      }
+
+    } catch (err) {
+      console.error("İstek hatası:", err);
       setAnalysisStatus('error');
-      setAnalysisMessage('❌ Analiz başlatılamadı');
+      setAnalysisMessage('❌ Bağlantı hatası');
       setLoading(false);
     }
+  };
 
-  } catch (err) {
-    console.error("İstek hatası:", err);
-    setAnalysisStatus('error');
-    setAnalysisMessage('❌ Bağlantı hatası');
-    setLoading(false);
-  }
-};
-
-
-
-    // — Tahmin butonuna tıklanınca çalışacak (QUEUE API)
-    const handlePredict = async () => {
-      if (!formData.teamA || !formData.teamB) return;
-      setPredicting(true);
-      setPrediction('');
-      try {
-        const formDataToSend = new FormData();
-        formDataToSend.append('team_a', formData.teamA);
-        formDataToSend.append('team_b', formData.teamB);
-        const response = await fetch(`${BASE_URL}/predict-match`, {
-          method: 'POST',
-          body: formDataToSend
-        });
-        const data = await response.json();
-        setPrediction(data.prediction ?? 'Tahmin alınamadı');
-      } catch (err) {
-        setPrediction('Tahmin hatası');
-      } finally {
-        setPredicting(false);
-      }
-    };
-    
-  
+  // Tahmin butonuna tıklanınca çalışacak (QUEUE API)
+  const handlePredict = async () => {
+    if (!formData.teamA || !formData.teamB) return;
+    setPredicting(true);
+    setPrediction('');
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('team_a', formData.teamA);
+      formDataToSend.append('team_b', formData.teamB);
+      const response = await fetch(`${BASE_URL}/predict-match`, {
+        method: 'POST',
+        body: formDataToSend
+      });
+      const data = await response.json();
+      setPrediction(data.prediction ?? 'Tahmin alınamadı');
+    } catch (err) {
+      setPrediction('Tahmin hatası');
+    } finally {
+      setPredicting(false);
+    }
+  };
 
   const handleGoalAnalysis = () => {
-  if (!analysisResults) return;
-  const teamAMatches = analysisResults.teams.team_a.last_matches || [];
-  const teamBMatches = analysisResults.teams.team_b.last_matches || [];
-  const headToHead = analysisResults.head_to_head || [];
-  const sumGoals = matches =>
-    matches.reduce((sum, m) => {
-      const parts = (m.sonuc || m.result || '').split(':');
-      return sum + (parseInt(parts[0]) || 0) + (parseInt(parts[1]) || 0);
-    }, 0);
-  setGoalStats({
-    teamA: sumGoals(teamAMatches),
-    teamB: sumGoals(teamBMatches),
-    headToHead: sumGoals(headToHead)
-  });
-  setShowGoalAnalysis(true);
-};
+    if (!analysisResults) return;
+    const teamAMatches = analysisResults.teams.team_a.last_matches || [];
+    const teamBMatches = analysisResults.teams.team_b.last_matches || [];
+    const headToHead = analysisResults.head_to_head || [];
+    const sumGoals = matches =>
+      matches.reduce((sum, m) => {
+        const parts = (m.sonuc || m.result || '').split(':');
+        return sum + (parseInt(parts[0]) || 0) + (parseInt(parts[1]) || 0);
+      }, 0);
+    setGoalStats({
+      teamA: sumGoals(teamAMatches),
+      teamB: sumGoals(teamBMatches),
+      headToHead: sumGoals(headToHead)
+    });
+    setShowGoalAnalysis(true);
+  };
 
-const handleAnalysis = () => {
-  setShowAnalysis(true);
-};
-
+  const handleAnalysis = () => {
+    setShowAnalysis(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
@@ -270,16 +347,43 @@ const handleAnalysis = () => {
                       <h3 className="text-xl font-bold text-orange-300">Takım A</h3>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-4 relative">
                       <label className="block text-sm font-medium text-orange-200 mb-2"></label>
                       <input
                         type="text"
                         name="teamA"
                         value={formData.teamA}
-                        onChange={handleInputChange}
-                        placeholder="Takım A adını girin..."
+                        onChange={(e) => handleTeamInputChange(e, 'teamA')}
+                        onFocus={() => {
+                          if (formData.teamA.length > 0) {
+                            const filtered = teamSuggestions.filter(team => 
+                              team.toLowerCase().includes(formData.teamA.toLowerCase())
+                            );
+                            setTeamASuggestions(filtered);
+                            setShowTeamASuggestions(filtered.length > 0);
+                          }
+                        }}
+                        onBlur={() => {
+                          setTimeout(() => setShowTeamASuggestions(false), 200);
+                        }}
+                        placeholder="Takım A adını girin... (örn: Gala)"
                         className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
                       />
+                      
+                      {/* Öneriler listesi */}
+                      {showTeamASuggestions && teamASuggestions.length > 0 && (
+                        <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-40 overflow-y-auto">
+                          {teamASuggestions.map((team, index) => (
+                            <div
+                              key={index}
+                              className="px-4 py-2 hover:bg-orange-500/20 cursor-pointer text-white border-b border-orange-500/20 last:border-b-0 transition-colors"
+                              onClick={() => selectTeamSuggestion(team, 'teamA')}
+                            >
+                              {team}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -295,16 +399,43 @@ const handleAnalysis = () => {
                       <h3 className="text-xl font-bold text-orange-300">Takım B</h3>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-4 relative">
                       <label className="block text-sm font-medium text-orange-200 mb-2"></label>
                       <input
                         type="text"
                         name="teamB"
                         value={formData.teamB}
-                        onChange={handleInputChange}
-                        placeholder="Takım B adını girin..."
+                        onChange={(e) => handleTeamInputChange(e, 'teamB')}
+                        onFocus={() => {
+                          if (formData.teamB.length > 0) {
+                            const filtered = teamSuggestions.filter(team => 
+                              team.toLowerCase().includes(formData.teamB.toLowerCase())
+                            );
+                            setTeamBSuggestions(filtered);
+                            setShowTeamBSuggestions(filtered.length > 0);
+                          }
+                        }}
+                        onBlur={() => {
+                          setTimeout(() => setShowTeamBSuggestions(false), 200);
+                        }}
+                        placeholder="Takım B adını girin... (örn: Fener)"
                         className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
                       />
+                      
+                      {/* Öneriler listesi */}
+                      {showTeamBSuggestions && teamBSuggestions.length > 0 && (
+                        <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-40 overflow-y-auto">
+                          {teamBSuggestions.map((team, index) => (
+                            <div
+                              key={index}
+                              className="px-4 py-2 hover:bg-orange-500/20 cursor-pointer text-white border-b border-orange-500/20 last:border-b-0 transition-colors"
+                              onClick={() => selectTeamSuggestion(team, 'teamB')}
+                            >
+                              {team}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

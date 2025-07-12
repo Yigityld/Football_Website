@@ -18,9 +18,9 @@ const Home = () => {
   const [analysisStatus, setAnalysisStatus] = useState('idle');
   const [analysisMessage, setAnalysisMessage] = useState('');
   const [analysisResults, setAnalysisResults] = useState(null);
-  const [predictionDefault, setPrediction] = useState('');
+  const [prediction, setPrediction] = useState('');
   const [predictionSirAlex, setPredictionSirAlex] = useState('');
-  const [predictingDefault, setPredicting] = useState(false);
+  const [predicting, setPredicting] = useState(false);
   const [predictingSirAlex, setPredictingSirAlex] = useState(false);
   const [testResult, setTestResult] = useState('');
   const [showGoalAnalysis, setShowGoalAnalysis] = useState(false);
@@ -1063,18 +1063,18 @@ const Home = () => {
               <div className="w-full flex justify-center mt-8 mb-4">
                 <button
                   onClick={handlePredictSirAlex}
-                  disabled={predicting || analysisStatus !== 'completed'}
+                  disabled={predictingSirAlex || analysisStatus !== 'completed'}
                   className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
                 >
-                  {predicting ? 'Tahmin Yapılıyor…' : 'Sir Alex Ferguson Tahmini'}
+                  {predictingSirAlex ? 'Tahmin Yapılıyor…' : 'Sir Alex Ferguson Tahmini'}
                 </button>
               </div>
               <div className="mt-2 p-4 bg-white/10 rounded-xl border border-white/20">
                 <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
                   🤖 Maç Sonucu Tahmini
                 </h3>
-                {prediction
-                  ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
+                {predictionSirAlex
+                  ? <p className="text-center text-white text-2xl font-mono">{predictionSirAlex}</p>
                   : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
                 }
               </div>

@@ -28,13 +28,6 @@ const Home = () => {
   // Otomatik tamamlama state'leri
   const [teamSuggestions, setTeamSuggestions] = useState([]);
 
-  // Hakem otomatik tamamlama state'leri
-  const [refSuggestions, setRefSuggestions] = useState([]);
-  const [mainRefSuggestions, setMainRefSuggestions] = useState([]);
-  const [sideRefSuggestions, setSideRefSuggestions] = useState([]);
-  const [showMainRefSuggestions, setShowMainRefSuggestions] = useState(false);
-  const [showSideRefSuggestions, setShowSideRefSuggestions] = useState(false);
-
   const [teamASuggestions, setTeamASuggestions] = useState([]);
   const [teamBSuggestions, setTeamBSuggestions] = useState([]);
   const [showTeamASuggestions, setShowTeamASuggestions] = useState(false);
@@ -63,17 +56,8 @@ const Home = () => {
         console.error('Takımlar JSON yüklenemedi:', error);
       }
     };
-    const fetchRefs = async () => {
-      try {
-        const response = await fetch('/hakemler.json');
-        const data = await response.json();
-        setRefSuggestions(data);
-      } catch (error) {
-        console.error('Hakemler JSON yüklenemedi:', error);
-      }
-    };
+  
     fetchTeams();
-    fetchRefs();
   }, []);
   // Otomatik tamamlama fonksiyonu
   const handleTeamInputChange = (e, teamType) => {
@@ -121,38 +105,6 @@ const Home = () => {
     } else {
       setShowTeamBSuggestions(false);
     }
-  };
-
-  // Hakem inputu değişince öneri göster
-  const handleRefInputChange = (e, refType) => {
-    const { value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [refType]: value
-    }));
-    if (value.length === 0) {
-      if (refType === 'mainRef') setShowMainRefSuggestions(false);
-      else setShowSideRefSuggestions(false);
-      return;
-    }
-    const filtered = refSuggestions.filter(ref =>
-      ref.toLowerCase().includes(value.toLowerCase())
-    );
-    if (refType === 'mainRef') {
-      setMainRefSuggestions(filtered);
-      setShowMainRefSuggestions(filtered.length > 0);
-    } else {
-      setSideRefSuggestions(filtered);
-      setShowSideRefSuggestions(filtered.length > 0);
-    }
-  };
-  const selectRefSuggestion = (ref, refType) => {
-    setFormData(prev => ({
-      ...prev,
-      [refType]: ref
-    }));
-    if (refType === 'mainRef') setShowMainRefSuggestions(false);
-    else setShowSideRefSuggestions(false);
   };
 
   const handleInputChange = (e) => {
@@ -418,6 +370,7 @@ const Home = () => {
                       )}
                     </div>
                   </div>
+                </div>
 
                 {/* Team B Card */}
                 <div className="group relative mb-20" style={{ overflow: 'visible' }}>
@@ -486,40 +439,16 @@ const Home = () => {
                       <h3 className="text-xl font-bold text-orange-300">Ana Hakem</h3>
                     </div>
 
-                    <div className="space-y-4 relative">
-                      <input
-                        type="text"
-                        name="mainRef"
-                        value={formData.mainRef}
-                        onChange={e => handleRefInputChange(e, 'mainRef')}
-                        onFocus={() => {
-                          if (formData.mainRef.length > 0) {
-                            const filtered = refSuggestions.filter(ref =>
-                              ref.toLowerCase().includes(formData.mainRef.toLowerCase())
-                            );
-                            setMainRefSuggestions(filtered);
-                            setShowMainRefSuggestions(filtered.length > 0);
-                          }
-                        }}
-                        onBlur={() => setTimeout(() => setShowMainRefSuggestions(false), 200)}
-                        placeholder="Ana hakem adını girin..."
-                        className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
-                      />
-                      {showMainRefSuggestions && mainRefSuggestions.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-36 min-h-[120px] overflow-y-auto">
-                          {mainRefSuggestions.map((ref, idx) => (
-                            <div
-                              key={idx}
-                              className="px-4 py-2 hover:bg-orange-500/20 cursor-pointer text-white border-b border-orange-500/20 last:border-b-0 transition-colors"
-                              onClick={() => selectRefSuggestion(ref, 'mainRef')}
-                            >
-                              {ref}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    <input
+                      type="text"
+                      name="mainRef"
+                      value={formData.mainRef}
+                      onChange={handleInputChange}
+                      placeholder="Ana hakem adını girin..."
+                      className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
+                    />
                   </div>
+                </div>
 
                 {/* Side Referee Card */}
                 <div className="group relative">
@@ -532,39 +461,14 @@ const Home = () => {
                       <h3 className="text-xl font-bold text-orange-300">Yan Hakem</h3>
                     </div>
 
-                    <div className="space-y-4 relative">
-                      <input
-                        type="text"
-                        name="sideRef"
-                        value={formData.sideRef}
-                        onChange={e => handleRefInputChange(e, 'sideRef')}
-                        onFocus={() => {
-                          if (formData.sideRef.length > 0) {
-                            const filtered = refSuggestions.filter(ref =>
-                              ref.toLowerCase().includes(formData.sideRef.toLowerCase())
-                            );
-                            setSideRefSuggestions(filtered);
-                            setShowSideRefSuggestions(filtered.length > 0);
-                          }
-                        }}
-                        onBlur={() => setTimeout(() => setShowSideRefSuggestions(false), 200)}
-                        placeholder="Yan hakem adını girin..."
-                        className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
-                      />
-                      {showSideRefSuggestions && sideRefSuggestions.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-36 min-h-[120px] overflow-y-auto">
-                          {sideRefSuggestions.map((ref, idx) => (
-                            <div
-                              key={idx}
-                              className="px-4 py-2 hover:bg-orange-500/20 cursor-pointer text-white border-b border-orange-500/20 last:border-b-0 transition-colors"
-                              onClick={() => selectRefSuggestion(ref, 'sideRef')}
-                            >
-                              {ref}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    <input
+                      type="text"
+                      name="sideRef"
+                      value={formData.sideRef}
+                      onChange={handleInputChange}
+                      placeholder="Yan hakem adını girin..."
+                      className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
+                    />
                   </div>
                 </div>
               </div>
@@ -680,6 +584,7 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
+                </div>
 
                 {/* Team B */}
                 <div className="bg-gradient-to-br from-orange-500/80 to-red-500/80 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white relative overflow-hidden">

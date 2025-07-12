@@ -368,19 +368,23 @@ const Home = () => {
         <div className="max-w-5xl mx-auto">
           {/* Header with Enhanced Styling */}
           <div className="text-center mb-16">
-            {/* LOGO KALDIRILDI */}
+            <div className="inline-block p-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm border border-cyan-500/30 mb-6">
+              <div className="w-16 h-16 mx-auto bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full flex items-center justify-center">
+                <span className="text-2xl">⚽</span>
+              </div>
+            </div>
             <h1 className="text-7xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-6 animate-pulse">
               Futbol Analiz AI
             </h1>
             <p className="text-2xl text-gray-300 font-light tracking-wide">
               Yapay Zeka Destekli Maç Analizi Sistemi
             </p>
-            {/* Badge'ler kaldırıldı, yerine açıklama cümlesi eklendi */}
-            <div className="mt-6 flex justify-center">
-              <span className="text-lg md:text-xl font-semibold bg-gradient-to-r from-cyan-400/20 to-purple-400/20 text-cyan-200 px-6 py-3 rounded-2xl shadow-lg border border-cyan-400/20">
-                Derin Analizlerle Futbolu Daha Yakından Tanıyın, Doğru Tahminlerle Maçların Keyfini Çıkarın.
-              </span>
+            <div className="mt-4 flex justify-center space-x-2">
+              <span className="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full text-sm border border-cyan-500/30">YOLO Tespit</span>
+              <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm border border-purple-500/30">Renk Analizi</span>
+              <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm border border-green-500/30">Gerçek Zamanlı</span>
             </div>
+            
             {/* Test Backend Connection Button */}
             <div className="mt-6 flex justify-center">
               <button
@@ -731,6 +735,7 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
+                </div>
 
                 {/* Team B */}
                 <div className="bg-gradient-to-br from-orange-500/80 to-red-500/80 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white relative overflow-hidden">

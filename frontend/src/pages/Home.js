@@ -1032,6 +1032,16 @@ const Home = () => {
                   : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
                 }
               </div>
+              <div className="w-full flex justify-center mt-8 mb-4">
+                <button
+                  disabled={predicting || analysisStatus !== 'completed'}
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
+                >
+                  {predicting ? 'Tahmin Yapılıyor…' : 'Sir Alex Ferguson Tahmini'}
+                </button>
+              </div>
+
+              
             </div>
           )}
         </div>

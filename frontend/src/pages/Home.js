@@ -33,6 +33,13 @@ const Home = () => {
   const [showTeamASuggestions, setShowTeamASuggestions] = useState(false);
   const [showTeamBSuggestions, setShowTeamBSuggestions] = useState(false);
 
+  const [refSuggestions, setRefSuggestions] = useState([]);
+  const [mainRefSuggestions, setMainRefSuggestions] = useState([]);
+  const [sideRefSuggestions, setSideRefSuggestions] = useState([]);
+  const [showMainRefSuggestions, setShowMainRefSuggestions] = useState(false);
+  const [showSideRefSuggestions, setShowSideRefSuggestions] = useState(false);
+
+
   // Backend URL'ini ayarla - production'da Render URL'ini kullan
   const BASE_URL = process.env.REACT_APP_API_URL || 'https://football-api.onrender.com';
   
@@ -59,6 +66,55 @@ const Home = () => {
   
     fetchTeams();
   }, []);
+
+  useEffect(() => {
+    const fetchRefs = async () => {
+      try {
+        const response = await fetch('/hakemler.json');
+        const data = await response.json();
+        setRefSuggestions(data);
+      } catch (error) {
+        console.error('Hakemler JSON yüklenemedi:', error);
+      }
+    };
+  
+    fetchRefs();
+  }, []);
+  
+  const handleRefInputChange = (e, refType) => {
+    const { value } = e.target;
+  
+    setFormData(prev => ({
+      ...prev,
+      [refType]: value
+    }));
+  
+    const filtered = refSuggestions.filter(name =>
+      name.toLowerCase().includes(value.toLowerCase())
+    );
+  
+    if (refType === 'mainRef') {
+      setMainRefSuggestions(filtered);
+      setShowMainRefSuggestions(filtered.length > 0);
+    } else {
+      setSideRefSuggestions(filtered);
+      setShowSideRefSuggestions(filtered.length > 0);
+    }
+  };
+  
+  const selectRefSuggestion = (name, refType) => {
+    setFormData(prev => ({
+      ...prev,
+      [refType]: name
+    }));
+  
+    if (refType === 'mainRef') {
+      setShowMainRefSuggestions(false);
+    } else {
+      setShowSideRefSuggestions(false);
+    }
+  };
+  
   // Otomatik tamamlama fonksiyonu
   const handleTeamInputChange = (e, teamType) => {
     const { value } = e.target;
@@ -443,10 +499,35 @@ const Home = () => {
                       type="text"
                       name="mainRef"
                       value={formData.mainRef}
-                      onChange={handleInputChange}
+                      onChange={(e) => handleRefInputChange(e, 'mainRef')}
+                      onFocus={() => {
+                        if (formData.mainRef.length > 0) {
+                          const filtered = refSuggestions.filter(name =>
+                            name.toLowerCase().includes(formData.mainRef.toLowerCase())
+                          );
+                          setMainRefSuggestions(filtered);
+                          setShowMainRefSuggestions(filtered.length > 0);
+                        }
+                      }}
+                      onBlur={() => setTimeout(() => setShowMainRefSuggestions(false), 200)}
                       placeholder="Ana hakem adını girin..."
-                      className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
+                      className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400"
                     />
+
+                    {showMainRefSuggestions && mainRefSuggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-36 overflow-y-auto">
+                        {mainRefSuggestions.map((name, index) => (
+                          <div
+                            key={index}
+                            className="px-4 py-2 hover:bg-orange-500/20 cursor-pointer text-white border-b border-orange-500/20 last:border-b-0"
+                            onClick={() => selectRefSuggestion(name, 'mainRef')}
+                          >
+                            {name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                   </div>
                 </div>
 
@@ -465,10 +546,35 @@ const Home = () => {
                       type="text"
                       name="sideRef"
                       value={formData.sideRef}
-                      onChange={handleInputChange}
+                      onChange={(e) => handleRefInputChange(e, 'sideRef')}
+                      onFocus={() => {
+                        if (formData.sideRef.length > 0) {
+                          const filtered = refSuggestions.filter(name =>
+                            name.toLowerCase().includes(formData.sideRef.toLowerCase())
+                          );
+                          setSideRefSuggestions(filtered);
+                          setShowSideRefSuggestions(filtered.length > 0);
+                        }
+                      }}
+                      onBlur={() => setTimeout(() => setShowSideRefSuggestions(false), 200)}
                       placeholder="Yan hakem adını girin..."
-                      className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/30 transition-all duration-300"
+                      className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400"
                     />
+
+                    {showSideRefSuggestions && sideRefSuggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-36 overflow-y-auto">
+                        {sideRefSuggestions.map((name, index) => (
+                          <div
+                            key={index}
+                            className="px-4 py-2 hover:bg-orange-500/20 cursor-pointer text-white border-b border-orange-500/20 last:border-b-0"
+                            onClick={() => selectRefSuggestion(name, 'sideRef')}
+                          >
+                            {name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                   </div>
                 </div>
               </div>

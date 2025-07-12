@@ -321,8 +321,19 @@ const Home = () => {
         ))}
       </div>
 
-      <div className="absolute top-4 left-4 z-50">
-        <img src="/logo.png" alt="Futbol Analiz AI Logo" className="w-60 h-60 rounded-full shadow-lg" />
+      <div className="absolute top-4 left-4 z-50 flex flex-col items-start">
+        <div className="flex items-center space-x-3">
+          <img
+            src="/logo.png"
+            alt="Futbol Analiz AI Logo"
+            className="w-25 h-25 rounded-full shadow-lg transition-transform duration-300 hover:rotate-12"
+            style={{ cursor: 'pointer' }}
+          />
+          <span className="text-xl font-bold text-cyan-200 drop-shadow">Futbol Analiz AI</span>
+        </div>
+        <span className="text-xs text-gray-300 mt-1 ml-1 max-w-[200px]">
+          Derin Analizlerle Futbolu Daha Yakından Tanıyın, Doğru Tahminlerle Maçların Keyfini Çıkarın.
+        </span>
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-8">

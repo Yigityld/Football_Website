@@ -510,7 +510,8 @@ const Home = () => {
                         }
                       }}
                       onBlur={() => setTimeout(() => setShowMainRefSuggestions(false), 200)}
-                      placeholder="Ana hakem adını girin..."
+                      placeholder="Ana hakem adını girin... (örn: Cihan Aydın)"
+                      autoComplete="off"
                       className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400"
                     />
 
@@ -557,7 +558,8 @@ const Home = () => {
                         }
                       }}
                       onBlur={() => setTimeout(() => setShowSideRefSuggestions(false), 200)}
-                      placeholder="Yan hakem adını girin..."
+                      placeholder="Yan hakem adını girin... (örn: Halil Umut Meler)"
+                      autoComplete="off"
                       className="w-full px-4 py-3 bg-black/50 border border-orange-500/50 rounded-xl text-white placeholder-gray-400"
                     />
 

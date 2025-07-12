@@ -707,6 +707,7 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
+                </div>
 
                 {/* Team B */}
                 <div className="bg-gradient-to-br from-orange-500/80 to-red-500/80 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white relative overflow-hidden">
@@ -1030,16 +1031,6 @@ const Home = () => {
                   ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
                   : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
                 }
-              </div>
-
-              {/* Sir Alex Ferguson Tahmini Butonu */}
-              <div className="w-full flex justify-center mt-4">
-                <button
-                  className="px-6 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg font-bold text-lg shadow transition-all duration-300"
-                  type="button"
-                >
-                  Sir Alex Ferguson Tahmini
-                </button>
               </div>
             </div>
           )}

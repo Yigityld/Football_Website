@@ -269,6 +269,28 @@ const Home = () => {
     }
   };
 
+  // Sir Alex Ferguson tahmini fonksiyonu
+  const handleFergusonPredict = async () => {
+    setPredicting(true);
+    setPrediction('');
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('team_a', formData.teamA);
+      formDataToSend.append('team_b', formData.teamB);
+      // Özel endpoint veya parametre ekle
+      const response = await fetch(`${BASE_URL}/predict-ferguson`, {
+        method: 'POST',
+        body: formDataToSend
+      });
+      const data = await response.json();
+      setPrediction(data.prediction ?? 'Ferguson tahmini alınamadı');
+    } catch (err) {
+      setPrediction('Ferguson tahmin hatası');
+    } finally {
+      setPredicting(false);
+    }
+  };
+
   const handleGoalAnalysis = () => {
     if (!analysisResults) return;
     const teamAMatches = analysisResults.teams.team_a.last_matches || [];
@@ -707,7 +729,6 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
-                </div>
 
                 {/* Team B */}
                 <div className="bg-gradient-to-br from-orange-500/80 to-red-500/80 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white relative overflow-hidden">
@@ -1012,13 +1033,26 @@ const Home = () => {
                 </div>
               )}
 
-              <div className="w-full flex justify-center mt-8 mb-4">
+              {/* Prediction Buttons Box */}
+              <div className="relative flex justify-center mt-8 mb-4 prediction-box">
                 <button
                   onClick={handlePredict}
                   disabled={predicting || analysisStatus !== 'completed'}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow z-10"
                 >
                   {predicting ? 'Tahmin Yapılıyor…' : 'Futbol Ustasına Maçı Sor'}
+                </button>
+                <button
+                  onClick={handleFergusonPredict}
+                  disabled={predicting || analysisStatus !== 'completed'}
+                  className="ml-4 px-6 py-2 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white rounded-lg font-extrabold text-lg shadow-lg border-4 border-yellow-400 z-10 relative ferguson-btn"
+                  style={{
+                    boxShadow: '0 8px 32px 0 rgba(255, 0, 100, 0.25), 0 0 0 4px #fff2',
+                    letterSpacing: '1px'
+                  }}
+                >
+                  <span role="img" aria-label="ferguson" className="mr-2">🧑‍🦳</span>
+                  Sir Alex Ferguson Tahmini
                 </button>
               </div>
 
@@ -1043,66 +1077,49 @@ const Home = () => {
           0% { transform: translate(0, 0); }
           100% { transform: translate(50px, 50px); }
         }
-      `}</style>
-      <style jsx>{`
-        .modern-card {
-          border-radius: 1.5rem;
-          box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
-          padding: 2rem;
-          backdrop-filter: blur(8px);
-          transition: all 0.3s;
-          border-width: 4px;
+        .prediction-box {
           position: relative;
-          overflow: hidden;
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
-        .bg-cyan-gradient {
-          background: linear-gradient(135deg, #164e63 0%, #0891b2 100%) !important;
+        .prediction-box::before {
+          content: "";
+          position: absolute;
+          width: 100%; height: 100%;
+          left: 0; top: 0;
+          filter: drop-shadow(0 15px 50px #000);
+          border-radius: 20px;
+          background: linear-gradient(135deg, #f59e42 0%, #0891b2 100%);
+          z-index: 0;
+          animation: rotating 4s linear infinite;
+          opacity: 0.7;
         }
-        .bg-purple-gradient {
-          background: linear-gradient(135deg, #581c87 0%, #a21caf 100%) !important;
+        .prediction-box::after {
+          content: "";
+          position: absolute;
+          inset: 4px;
+          background: #2d2d39;
+          border-radius: 15px;
+          border: 8px solid #25252b;
+          z-index: 0;
         }
-        .bg-amber-gradient {
-          background: linear-gradient(135deg, #78350f 0%, #f59e42 100%) !important;
+        @keyframes rotating {
+          0% { transform: rotate(0deg);}
+          100% { transform: rotate(360deg);}
         }
-        .bg-green-gradient {
-          background: linear-gradient(135deg, #14532d 0%, #22c55e 100%) !important;
-        }
-        .modern-card:hover {
-          transform: scale(1.04);
-          box-shadow: 0 8px 32px 0 rgba(0,0,0,0.35), 0 0 0 4px var(--tw-border-opacity,1);
-          z-index: 2;
-        }
-        .animate-border-cyan {
-          border-image: linear-gradient(90deg, #06b6d4, #3b82f6, #06b6d4) 1;
-          animation: borderMoveCyan 3s linear infinite;
-        }
-        .animate-border-purple {
-          border-image: linear-gradient(90deg, #a21caf, #6366f1, #a21caf) 1;
-          animation: borderMovePurple 3s linear infinite;
-        }
-        .animate-border-amber {
+        .ferguson-btn {
+          animation: pulseFerguson 2s infinite alternate;
+          border-radius: 16px !important;
+          border-width: 4px !important;
+          border-style: solid !important;
           border-image: linear-gradient(90deg, #f59e42, #fbbf24, #f59e42) 1;
-          animation: borderMoveAmber 3s linear infinite;
         }
-        .animate-border-green {
-          border-image: linear-gradient(90deg, #22c55e, #10b981, #22c55e) 1;
-          animation: borderMoveGreen 3s linear infinite;
-        }
-        @keyframes borderMoveCyan {
-          0% { border-image-source: linear-gradient(90deg, #06b6d4, #3b82f6, #06b6d4);}
-          100% { border-image-source: linear-gradient(270deg, #06b6d4, #3b82f6, #06b6d4);}
-        }
-        @keyframes borderMovePurple {
-          0% { border-image-source: linear-gradient(90deg, #a21caf, #6366f1, #a21caf);}
-          100% { border-image-source: linear-gradient(270deg, #a21caf, #6366f1, #a21caf);}
-        }
-        @keyframes borderMoveAmber {
-          0% { border-image-source: linear-gradient(90deg, #f59e42, #fbbf24, #f59e42);}
-          100% { border-image-source: linear-gradient(270deg, #f59e42, #fbbf24, #f59e42);}
-        }
-        @keyframes borderMoveGreen {
-          0% { border-image-source: linear-gradient(90deg, #22c55e, #10b981, #22c55e);}
-          100% { border-image-source: linear-gradient(270deg, #22c55e, #10b981, #22c55e);}
+        @keyframes pulseFerguson {
+          0% { box-shadow: 0 0 20px 0 #f59e42; }
+          100% { box-shadow: 0 0 40px 10px #fbbf24; }
         }
       `}</style>
     </div>

@@ -322,7 +322,7 @@ const Home = () => {
       </div>
 
       <div className="absolute top-4 left-4 z-50">
-        <img src="/logo.png" alt="Futbol Analiz AI Logo" className="w-75 h-75 rounded-full shadow-lg" />
+        <img src="/logo.png" alt="Futbol Analiz AI Logo" className="w-60 h-60 rounded-full shadow-lg" />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-8">

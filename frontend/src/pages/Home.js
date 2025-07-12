@@ -735,7 +735,6 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
-                </div>
 
                 {/* Team B */}
                 <div className="bg-gradient-to-br from-orange-500/80 to-red-500/80 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white relative overflow-hidden">
@@ -1060,26 +1059,26 @@ const Home = () => {
                   : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
                 }
               </div>
-              <div className="w-full flex justify-center mt-8 mb-4">
+              <div className="relative box w-full flex flex-col items-center mt-8 mb-4">
                 <button
                   onClick={handlePredictSirAlex}
                   disabled={predictingSirAlex || analysisStatus !== 'completed'}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow mb-4"
                 >
                   {predictingSirAlex ? 'Tahmin Yapılıyor…' : 'Sir Alex Ferguson Tahmini'}
                 </button>
+                </div>
+                <div className="w-full max-w-xl mt-2 p-4 bg-white/10 rounded-xl border border-white/20 relative z-10" style={{backdropFilter: 'blur(4px)'}}>
+                  <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
+                    🤖 Maç Sonucu Tahmini
+                  </h3>
+                  {predictionSirAlex
+                    ? <p className="text-center text-white text-2xl font-mono">{predictionSirAlex}</p>
+                    : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
+                  }
+                </div>
               </div>
-              <div className="mt-2 p-4 bg-white/10 rounded-xl border border-white/20">
-                <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
-                  🤖 Maç Sonucu Tahmini
-                </h3>
-                {predictionSirAlex
-                  ? <p className="text-center text-white text-2xl font-mono">{predictionSirAlex}</p>
-                  : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
-                }
-              </div>
-
-              
+                  
             </div>
           )}
         </div>

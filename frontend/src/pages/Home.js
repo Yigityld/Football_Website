@@ -269,6 +269,32 @@ const Home = () => {
     }
   };
 
+  // Sir Alex modelinden tahmin almak için
+  const handlePredictSirAlex = async () => {
+    if (!formData.teamA || !formData.teamB) return;
+    setPredicting(true);
+    setPrediction('');
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('team_a', formData.teamA);
+      formDataToSend.append('team_b', formData.teamB);
+      // Sir Alex modeli kullanılsın diye bu flag’i ekliyoruz
+      formDataToSend.append('use_sir_alex', 'true');
+
+      const response = await fetch(`${BASE_URL}/predict-match`, {
+        method: 'POST',
+        body: formDataToSend
+      });
+      const data = await response.json();
+      setPrediction(data.prediction ?? 'Tahmin alınamadı');
+    } catch (err) {
+      setPrediction('Tahmin hatası');
+    } finally {
+      setPredicting(false);
+    }
+  };
+
   const handleGoalAnalysis = () => {
     if (!analysisResults) return;
     const teamAMatches = analysisResults.teams.team_a.last_matches || [];
@@ -1034,6 +1060,7 @@ const Home = () => {
               </div>
               <div className="w-full flex justify-center mt-8 mb-4">
                 <button
+                  onClick={handlePredictSirAlex}
                   disabled={predicting || analysisStatus !== 'completed'}
                   className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
                 >

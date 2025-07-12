@@ -707,6 +707,7 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
+                </div>
 
                 {/* Team B */}
                 <div className="bg-gradient-to-br from-orange-500/80 to-red-500/80 border-2 border-orange-400 rounded-2xl shadow-lg p-8 text-white relative overflow-hidden">
@@ -1011,98 +1012,97 @@ const Home = () => {
                 </div>
               )}
 
+              <div className="w-full flex justify-center mt-8 mb-4">
+                <button
+                  onClick={handlePredict}
+                  disabled={predicting || analysisStatus !== 'completed'}
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow"
+                >
+                  {predicting ? 'Tahmin Yapılıyor…' : 'Futbol Ustasına Maçı Sor'}
+                </button>
+              </div>
+
+              {/* Prediction Section */}
+              <div className="mt-2 p-4 bg-white/10 rounded-xl border border-white/20">
+                <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
+                  🤖 Maç Sonucu Tahmini
+                </h3>
+                {prediction
+                  ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
+                  : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
+                }
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Prediction Box (Butonlar ve Sonuç) */}
-      <div className="prediction-outer-box">
-        <div className="relative flex justify-center mt-8 mb-4 z-10">
-          <button
-            onClick={handlePredict}
-            disabled={predicting || analysisStatus !== 'completed'}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow z-10"
-          >
-            {predicting ? 'Tahmin Yapılıyor…' : 'Futbol Ustasına Maçı Sor'}
-          </button>
-          <button
-            onClick={handleFergusonPredict}
-            disabled={predicting || analysisStatus !== 'completed'}
-            className="ml-4 px-6 py-2 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white rounded-lg font-extrabold text-lg shadow-lg border-4 border-yellow-400 z-10 relative ferguson-btn"
-            style={{
-              boxShadow: '0 8px 32px 0 rgba(255, 0, 100, 0.25), 0 0 0 4px #fff2',
-              letterSpacing: '1px'
-            }}
-          >
-            <span role="img" aria-label="ferguson" className="mr-2">🧑‍🦳</span>
-            Sir Alex Ferguson Tahmini
-          </button>
-        </div>
-        <div className="prediction-inner-box mt-2 p-4">
-          <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
-            🤖 Maç Sonucu Tahmini
-          </h3>
-          {prediction
-            ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
-            : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
-          }
-        </div>
-      </div>
       {/* Custom CSS for animations */}
       <style jsx>{`
         @keyframes gridMove {
           0% { transform: translate(0, 0); }
           100% { transform: translate(50px, 50px); }
         }
-        .prediction-outer-box {
+      `}</style>
+      <style jsx>{`
+        .modern-card {
+          border-radius: 1.5rem;
+          box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
+          padding: 2rem;
+          backdrop-filter: blur(8px);
+          transition: all 0.3s;
+          border-width: 4px;
           position: relative;
-          margin: 2rem auto 1rem auto;
-          max-width: 700px;
-          z-index: 1;
+          overflow: hidden;
         }
-        .prediction-outer-box::before {
-          content: "";
-          position: absolute;
-          width: 100%; height: 100%;
-          left: 0; top: 0;
-          filter: drop-shadow(0 15px 50px #000);
-          border-radius: 20px;
-          background: linear-gradient(135deg, #f59e42 0%, #0891b2 100%);
-          z-index: 0;
-          animation: rotating 4s linear infinite;
-          animation-delay: -1s;
-          opacity: 0.7;
+        .bg-cyan-gradient {
+          background: linear-gradient(135deg, #164e63 0%, #0891b2 100%) !important;
         }
-        .prediction-outer-box::after {
-          content: "";
-          position: absolute;
-          inset: 4px;
-          background: #2d2d39;
-          border-radius: 15px;
-          border: 8px solid #25252b;
-          z-index: 0;
+        .bg-purple-gradient {
+          background: linear-gradient(135deg, #581c87 0%, #a21caf 100%) !important;
         }
-        .prediction-inner-box {
-          position: relative;
-          z-index: 1;
-          background: transparent;
-          border-radius: 15px;
+        .bg-amber-gradient {
+          background: linear-gradient(135deg, #78350f 0%, #f59e42 100%) !important;
         }
-        @keyframes rotating {
-          0% { transform: rotate(0deg);}
-          100% { transform: rotate(360deg);}
+        .bg-green-gradient {
+          background: linear-gradient(135deg, #14532d 0%, #22c55e 100%) !important;
         }
-        .ferguson-btn {
-          animation: pulseFerguson 2s infinite alternate;
-          border-radius: 16px !important;
-          border-width: 4px !important;
-          border-style: solid !important;
+        .modern-card:hover {
+          transform: scale(1.04);
+          box-shadow: 0 8px 32px 0 rgba(0,0,0,0.35), 0 0 0 4px var(--tw-border-opacity,1);
+          z-index: 2;
+        }
+        .animate-border-cyan {
+          border-image: linear-gradient(90deg, #06b6d4, #3b82f6, #06b6d4) 1;
+          animation: borderMoveCyan 3s linear infinite;
+        }
+        .animate-border-purple {
+          border-image: linear-gradient(90deg, #a21caf, #6366f1, #a21caf) 1;
+          animation: borderMovePurple 3s linear infinite;
+        }
+        .animate-border-amber {
           border-image: linear-gradient(90deg, #f59e42, #fbbf24, #f59e42) 1;
+          animation: borderMoveAmber 3s linear infinite;
         }
-        @keyframes pulseFerguson {
-          0% { box-shadow: 0 0 20px 0 #f59e42; }
-          100% { box-shadow: 0 0 40px 10px #fbbf24; }
+        .animate-border-green {
+          border-image: linear-gradient(90deg, #22c55e, #10b981, #22c55e) 1;
+          animation: borderMoveGreen 3s linear infinite;
+        }
+        @keyframes borderMoveCyan {
+          0% { border-image-source: linear-gradient(90deg, #06b6d4, #3b82f6, #06b6d4);}
+          100% { border-image-source: linear-gradient(270deg, #06b6d4, #3b82f6, #06b6d4);}
+        }
+        @keyframes borderMovePurple {
+          0% { border-image-source: linear-gradient(90deg, #a21caf, #6366f1, #a21caf);}
+          100% { border-image-source: linear-gradient(270deg, #a21caf, #6366f1, #a21caf);}
+        }
+        @keyframes borderMoveAmber {
+          0% { border-image-source: linear-gradient(90deg, #f59e42, #fbbf24, #f59e42);}
+          100% { border-image-source: linear-gradient(270deg, #f59e42, #fbbf24, #f59e42);}
+        }
+        @keyframes borderMoveGreen {
+          0% { border-image-source: linear-gradient(90deg, #22c55e, #10b981, #22c55e);}
+          100% { border-image-source: linear-gradient(270deg, #22c55e, #10b981, #22c55e);}
         }
       `}</style>
     </div>

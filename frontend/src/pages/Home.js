@@ -373,7 +373,7 @@ const Home = () => {
                       
                       {/* Öneriler listesi */}
                       {showTeamASuggestions && teamASuggestions.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-40 overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-36 min-h-[120px] overflow-y-auto">
                           {teamASuggestions.map((team, index) => (
                             <div
                               key={index}
@@ -426,7 +426,7 @@ const Home = () => {
                       
                       {/* Öneriler listesi */}
                       {showTeamBSuggestions && teamBSuggestions.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-40 overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border border-orange-500/50 rounded-xl mt-1 max-h-36 min-h-[120px] overflow-y-auto">
                           {teamBSuggestions.map((team, index) => (
                             <div
                               key={index}
@@ -444,7 +444,7 @@ const Home = () => {
               </div>
 
               {/* Referees Section with Enhanced Cards */}
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-16">
                 {/* Main Referee Card */}
                 <div className="group relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>

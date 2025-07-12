@@ -331,7 +331,7 @@ const Home = () => {
           />
           <span className="text-xl font-bold text-cyan-200 drop-shadow">Futbol Analiz AI</span>
         </div>
-        <span className="text-xs text-gray-300 mt-1 ml-1 max-w-[200px]">
+        <span className="text-xs text-gray-300 mt-1 ml-1 max-w-[400px]">
           Derin Analizlerle Futbolu Daha Yakından Tanıyın, Doğru Tahminlerle Maçların Keyfini Çıkarın.
         </span>
       </div>

@@ -414,9 +414,76 @@ def sor_hf(prompt: str) -> str:
         print(f"[GPT_TAHMIN] [sor_hf] SSE polling exception: {e}", flush=True)
         return f"[ERROR] SSE polling exception: {e}"
 
+def sor_hf_sir_alex(prompt: str) -> str:
+    import uuid
+    import json
+    session_hash = f"sess-{uuid.uuid4().hex[:8]}"
+    fn_index = 2  # app.py'de fonksiyon indexi 2 olmalı
+    trigger_id = 12
+    join_url = "https://husodu73-modelalex.hf.space/gradio_api/queue/join"
+    data_url = "https://husodu73-modelalex.hf.space/gradio_api/queue/data"
+    headers = {"Content-Type": "application/json"}
+    join_payload = {
+        "data": [prompt],
+        "event_data": None,
+        "fn_index": fn_index,
+        "trigger_id": trigger_id,
+        "session_hash": session_hash
+    }
+    print(f"[GPT_TAHMIN] [sor_hf_sir_alex] Prompt hazırlanıyor: {prompt[:1800]}...", flush=True)
+    try:
+        print(f"[GPT_TAHMIN] [sor_hf_sir_alex] queue/join endpointine istek atılıyor... (session_hash={session_hash})", flush=True)
+        join_resp = requests.post(join_url, headers=headers, data=json.dumps(join_payload), timeout=30)
+        print(f"[GPT_TAHMIN] [sor_hf_sir_alex] queue/join status: {join_resp.status_code}", flush=True)
+        if join_resp.status_code != 200:
+            print(f"[GPT_TAHMIN] [sor_hf_sir_alex] queue/join başarısız: {join_resp.text}", flush=True)
+            return f"[ERROR] queue/join failed: {join_resp.status_code} {join_resp.text}"
+        join_json = join_resp.json()
+        print(f"[GPT_TAHMIN] [sor_hf_sir_alex] queue/join yanıtı: {join_json}", flush=True)
+        event_id = join_json.get("event_id") or join_json.get("event_id", None)
+        print(f"[GPT_TAHMIN] [sor_hf_sir_alex] event_id: {event_id}", flush=True)
+        if not event_id:
+            print(f"[GPT_TAHMIN] [sor_hf_sir_alex] event_id alınamadı: {join_json}", flush=True)
+            return f"[ERROR] queue/join: event_id alınamadı: {join_json}"
+    except Exception as e:
+        print(f"[GPT_TAHMIN] [sor_hf_sir_alex] queue/join exception: {e}", flush=True)
+        return f"[ERROR] queue/join exception: {e}"
 
-def predict_match(team_a: str, team_b: str) -> str:
-    print(f"[GPT_TAHMIN] [predict_match] Butona basıldı! team_a={team_a}, team_b={team_b}", flush=True)
+    # SSE polling ile sonucu al
+    import time
+    poll_url = f"{data_url}?session_hash={session_hash}&event_id={event_id}"
+    print(f"[GPT_TAHMIN] [sor_hf] queue/data SSE polling başlıyor... (event_id={event_id})", flush=True)
+    try:
+        with requests.get(poll_url, stream=True, timeout=120) as resp:
+            for line in resp.iter_lines(decode_unicode=True):
+                if line and line.startswith("data: "):
+                    data_json = line[6:]
+                    print(f"[GPT_TAHMIN] [sor_hf] SSE satırı: {data_json}", flush=True)
+                    try:
+                        data = json.loads(data_json)
+                        print(f"[GPT_TAHMIN] [sor_hf] SSE JSON: {data}", flush=True)
+                        if data.get("msg") == "process_completed":
+                            output = data.get("output", {})
+                            if output.get("data"):
+                                # output["data"] genellikle bir liste, ilk elemanı döndür
+                                return output["data"][0]
+                            elif output.get("error"):
+                                return f"[ERROR] {output['error']}"
+                        elif data.get("msg") == "process_completed" and data.get("success") is False:
+                            return f"[ERROR] process not successful"
+                    except Exception as e:
+                        print(f"[GPT_TAHMIN] [sor_hf] SSE JSON parse hatası: {e}", flush=True)
+                time.sleep(0.1)
+        print(f"[GPT_TAHMIN] [sor_hf] SSE polling tamamlandı, sonuç alınamadı.", flush=True)
+        return "[ERROR] SSE'den sonuç alınamadı"
+    except Exception as e:
+        print(f"[GPT_TAHMIN] [sor_hf] SSE polling exception: {e}", flush=True)
+        return f"[ERROR] SSE polling exception: {e}"
+
+
+
+def predict_match(team_a: str, team_b: str, use_sir_alex: bool = False) -> str:
+    print(f"[GPT_TAHMIN] [predict_match] Called! team_a={team_a}, team_b={team_b}, use_sir_alex={use_sir_alex}", flush=True)
     maclar_a, wins_a, draws_a, losses_a, _ = get_team_last_5_matches_with_tactics(team_a)
     # print(f"[GPT_TAHMIN] [predict_match] {team_a} son 5 maç: {maclar_a}", flush=True)
     maclar_b, wins_b, draws_b, losses_b, _ = get_team_last_5_matches_with_tactics(team_b)
@@ -429,6 +496,9 @@ def predict_match(team_a: str, team_b: str) -> str:
         team_b, maclar_b, wins_b, draws_b, losses_b
     )
     print(f"[GPT_TAHMIN] [predict_match] Hazırlanan prompt:\n{prompt}", flush=True)
-    result = sor_hf(prompt)
+    if use_sir_alex:
+        result = sor_hf_sir_alex(prompt)
+    else:
+        result = sor_hf(prompt)
     print(f"[GPT_TAHMIN] [predict_match] Sonuç: {result}", flush=True)
     return result

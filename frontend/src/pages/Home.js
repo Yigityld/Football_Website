@@ -326,7 +326,7 @@ const Home = () => {
           <img
             src="/logo.png"
             alt="Futbol Analiz AI Logo"
-            className="w-12 h-12 rounded-full shadow-lg transition-transform duration-300 hover:rotate-12"
+            className="w-36 h-36 rounded-full shadow-lg transition-transform duration-300 hover:rotate-12"
             style={{ cursor: 'pointer' }}
           />
           <span className="text-xl font-bold text-cyan-200 drop-shadow">Futbol Analiz AI</span>

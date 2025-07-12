@@ -335,11 +335,11 @@ const Home = () => {
 
             <form onSubmit={handleStartAnalysis} className="relative z-10 space-y-8">
               {/* Teams Section with Enhanced Cards */}
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-8" style={{ overflow: 'visible' }}>
                 {/* Team A Card */}
-                <div className="group relative">
+                <div className="group relative" style={{ overflow: 'visible' }}>
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/50 hover:border-orange-400/70 transition-all duration-300">
+                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/50 hover:border-orange-400/70 transition-all duration-300" style={{ overflow: 'visible' }}>
                     <div className="flex items-center mb-4">
                       <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mr-3">
                         <span className="text-white font-bold">A</span>
@@ -389,9 +389,9 @@ const Home = () => {
                 </div>
 
                 {/* Team B Card */}
-                <div className="group relative">
+                <div className="group relative" style={{ overflow: 'visible' }}>
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/50 hover:border-orange-400/70 transition-all duration-300">
+                  <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/50 hover:border-orange-400/70 transition-all duration-300" style={{ overflow: 'visible' }}>
                     <div className="flex items-center mb-4">
                       <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mr-3">
                         <span className="text-white font-bold">B</span>

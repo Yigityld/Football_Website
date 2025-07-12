@@ -269,28 +269,6 @@ const Home = () => {
     }
   };
 
-  // Sir Alex Ferguson tahmini fonksiyonu
-  const handleFergusonPredict = async () => {
-    setPredicting(true);
-    setPrediction('');
-    try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('team_a', formData.teamA);
-      formDataToSend.append('team_b', formData.teamB);
-      // Özel endpoint veya parametre ekle
-      const response = await fetch(`${BASE_URL}/predict-ferguson`, {
-        method: 'POST',
-        body: formDataToSend
-      });
-      const data = await response.json();
-      setPrediction(data.prediction ?? 'Ferguson tahmini alınamadı');
-    } catch (err) {
-      setPrediction('Ferguson tahmin hatası');
-    } finally {
-      setPredicting(false);
-    }
-  };
-
   const handleGoalAnalysis = () => {
     if (!analysisResults) return;
     const teamAMatches = analysisResults.teams.team_a.last_matches || [];
@@ -1033,59 +1011,57 @@ const Home = () => {
                 </div>
               )}
 
-              {/* Prediction Buttons Box */}
-              <div className="relative flex justify-center mt-8 mb-4 prediction-box">
-                <button
-                  onClick={handlePredict}
-                  disabled={predicting || analysisStatus !== 'completed'}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow z-10"
-                >
-                  {predicting ? 'Tahmin Yapılıyor…' : 'Futbol Ustasına Maçı Sor'}
-                </button>
-                <button
-                  onClick={handleFergusonPredict}
-                  disabled={predicting || analysisStatus !== 'completed'}
-                  className="ml-4 px-6 py-2 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white rounded-lg font-extrabold text-lg shadow-lg border-4 border-yellow-400 z-10 relative ferguson-btn"
-                  style={{
-                    boxShadow: '0 8px 32px 0 rgba(255, 0, 100, 0.25), 0 0 0 4px #fff2',
-                    letterSpacing: '1px'
-                  }}
-                >
-                  <span role="img" aria-label="ferguson" className="mr-2">🧑‍🦳</span>
-                  Sir Alex Ferguson Tahmini
-                </button>
-              </div>
-
-              {/* Prediction Section */}
-              <div className="mt-2 p-4 bg-white/10 rounded-xl border border-white/20">
-                <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
-                  🤖 Maç Sonucu Tahmini
-                </h3>
-                {prediction
-                  ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
-                  : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
-                }
-              </div>
             </div>
           )}
         </div>
       </div>
 
+      {/* Prediction Box (Butonlar ve Sonuç) */}
+      <div className="prediction-outer-box">
+        <div className="relative flex justify-center mt-8 mb-4 z-10">
+          <button
+            onClick={handlePredict}
+            disabled={predicting || analysisStatus !== 'completed'}
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-bold text-lg shadow z-10"
+          >
+            {predicting ? 'Tahmin Yapılıyor…' : 'Futbol Ustasına Maçı Sor'}
+          </button>
+          <button
+            onClick={handleFergusonPredict}
+            disabled={predicting || analysisStatus !== 'completed'}
+            className="ml-4 px-6 py-2 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white rounded-lg font-extrabold text-lg shadow-lg border-4 border-yellow-400 z-10 relative ferguson-btn"
+            style={{
+              boxShadow: '0 8px 32px 0 rgba(255, 0, 100, 0.25), 0 0 0 4px #fff2',
+              letterSpacing: '1px'
+            }}
+          >
+            <span role="img" aria-label="ferguson" className="mr-2">🧑‍🦳</span>
+            Sir Alex Ferguson Tahmini
+          </button>
+        </div>
+        <div className="prediction-inner-box mt-2 p-4">
+          <h3 className="text-xl font-bold text-center text-green-300 mb-2 font-sans">
+            🤖 Maç Sonucu Tahmini
+          </h3>
+          {prediction
+            ? <p className="text-center text-white text-2xl font-mono">{prediction}</p>
+            : <p className="text-center text-gray-400">Butona basın, tahmin gelsin</p>
+          }
+        </div>
+      </div>
       {/* Custom CSS for animations */}
       <style jsx>{`
         @keyframes gridMove {
           0% { transform: translate(0, 0); }
           100% { transform: translate(50px, 50px); }
         }
-        .prediction-box {
+        .prediction-outer-box {
           position: relative;
-          margin-top: 2rem;
-          margin-bottom: 1rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          margin: 2rem auto 1rem auto;
+          max-width: 700px;
+          z-index: 1;
         }
-        .prediction-box::before {
+        .prediction-outer-box::before {
           content: "";
           position: absolute;
           width: 100%; height: 100%;
@@ -1095,9 +1071,10 @@ const Home = () => {
           background: linear-gradient(135deg, #f59e42 0%, #0891b2 100%);
           z-index: 0;
           animation: rotating 4s linear infinite;
+          animation-delay: -1s;
           opacity: 0.7;
         }
-        .prediction-box::after {
+        .prediction-outer-box::after {
           content: "";
           position: absolute;
           inset: 4px;
@@ -1105,6 +1082,12 @@ const Home = () => {
           border-radius: 15px;
           border: 8px solid #25252b;
           z-index: 0;
+        }
+        .prediction-inner-box {
+          position: relative;
+          z-index: 1;
+          background: transparent;
+          border-radius: 15px;
         }
         @keyframes rotating {
           0% { transform: rotate(0deg);}
